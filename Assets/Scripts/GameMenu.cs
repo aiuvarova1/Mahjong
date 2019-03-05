@@ -12,14 +12,14 @@ public class GameMenu : MonoBehaviour {
         networkManager = (NewNetworkManager)NetworkManager.singleton;
 	}
 
-    public void LeaveRoom()
-    {
-        MatchInfo match = networkManager.matchInfo;
+    //public void LeaveRoom()
+    //{
+    //    MatchInfo match = networkManager.matchInfo;
 
-        //GetComponent<Player>().AddCamera();
-        //GameManager.AddCameras(GetComponent<Player>().Cam.name);
-        networkManager.matchMaker.DropConnection(match.networkId, match.nodeId, 0, networkManager.OnDropConnection);
-        networkManager.StopHost();
-    }
+    //    //GetComponent<Player>().AddCamera();
+    //    //GameManager.AddCameras(GetComponent<Player>().Cam.name);
+    //    networkManager.matchMaker.DropConnection(match.networkId, match.nodeId, 0, networkManager.OnDropConnection);
+    //    networkManager.StopHost();
+    //}
 	
 }

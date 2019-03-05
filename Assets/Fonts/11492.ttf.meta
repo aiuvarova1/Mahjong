@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: b7863451ede011444a66b2e0e1ff6850
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: 0
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Tokio
+  fontNames:
+  - Tokio
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 2921faca5f3f4054d963b396e9c464ec, type: 3}
+  customCharacters: 
+  fontRenderingMode: 3
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

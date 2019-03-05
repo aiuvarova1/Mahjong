@@ -15,22 +15,24 @@ public class JoinGame : MonoBehaviour
     public GameObject parentPanel;
     public Text status;
 
-    float repeatTime = 4;
-    float currentTime;
-
     static NewNetworkManager networkManager;
+
+    IEnumerator refresher;
+
+    bool refresh = true;
 
     // Use this for initialization
     void Start()
     {
-        //in ms
-        currentTime = (repeatTime+5);
+        refresher = Refresher();
+
         networkManager = (NewNetworkManager)NetworkManager.singleton;
         if (networkManager.matchMaker == null)
             networkManager.StartMatchMaker();
 
         status.text = "Loading...";
         RefreshRoomList();
+        StartCoroutine(refresher);
         
     }
 
@@ -81,25 +83,67 @@ public class JoinGame : MonoBehaviour
     {
         Debug.Log("meow");
         networkManager.matchMaker.JoinMatch(match.networkId, "", "", "", 0, 0, networkManager.OnMatchJoined);
+        StopCoroutine(refresher);
         ClearRoomList();
-        status.text = "Joining...";
+
+        //status.text = "Joining...";
+        //StopCoroutine(Refresher());
+
+        StartCoroutine(WaitForJoin());
+        
+        //RefreshRoomList();
+       //
+
     }
+    IEnumerator WaitForJoin()
+    {
+        //ClearRoomList();
+        
+        int countdown = 10;
+        while (countdown > 0)
+        {
+            status.text = "Joining... (" + countdown + ")";
+
+            yield return new WaitForSeconds(1);
+
+            countdown--;
+        }
+
+        // Failed to connect
+       
+        status.text = "Failed to connect";
+        yield return new WaitForSeconds(1);
+
+        MatchInfo matchInfo = networkManager.matchInfo;
+        if (matchInfo != null)
+        {
+            networkManager.matchMaker.DropConnection(matchInfo.networkId, matchInfo.nodeId, 0, networkManager.OnDropConnection);
+            networkManager.StopHost();
+        }
+
+        yield return new WaitForSeconds(2);
+        StartCoroutine(refresher);
+
+    }
+
+    IEnumerator Refresher()
+    {
+        yield return new WaitForSeconds(2);
+        while (SceneManager.GetActiveScene().name == "Lobby")
+
+        {
+            yield return new WaitForSeconds(4);
+            
+            RefreshRoomList();
+
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        //refreshes list if Menu scene is active and lobby panel is on (every 4 seconds)
-        if (SceneManager.GetActiveScene().name == "Lobby")
 
-        {
-            currentTime -= Time.deltaTime;
-           //Debug.Log(currentTime);
-            if (currentTime <= 0)
-            {
-                Debug.Log("Refresh");
-                RefreshRoomList();
-                currentTime = repeatTime;
-            }
-        }
+        
 
     }
 }

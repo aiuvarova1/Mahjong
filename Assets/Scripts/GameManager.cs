@@ -5,23 +5,25 @@ using UnityEngine.Networking;
 
 public class GameManager : NetworkBehaviour
 {
-    
+    public static GameManager instance = null;
 
-    public static List<Player> players = new List<Player>();
-    private void Start()
+    private void Awake()
     {
-        
-        
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this) Destroy(gameObject);
+    }
+
+    public void GetReady()
+    {
 
     }
 
-    public static void AddPlayer(Player myPlayer)
+    // Update is called once per frame
+    void Update()
     {
-        players.Add(myPlayer);
+        
     }
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //}
 }

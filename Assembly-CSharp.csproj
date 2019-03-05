@@ -66,11 +66,13 @@
     <Compile Include="Assets\Scripts\GameMenu.cs" />
     <Compile Include="Assets\Scripts\HostGame.cs" />
     <Compile Include="Assets\Scripts\JoinGame.cs" />
+    <Compile Include="Assets\Scripts\Loader.cs" />
     <Compile Include="Assets\Scripts\MenuManager.cs" />
     <Compile Include="Assets\Scripts\NewNetworkManager.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
+    <Compile Include="Assets\Scripts\PlayerUI.cs" />
     <Compile Include="Assets\Scripts\RoomListItem.cs" />
-    <Compile Include="Assets\Scripts\Test.cs" />
+    <Compile Include="Assets\Scripts\SetupPlayer.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/Project/Mahjong/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

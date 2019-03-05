@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 20189199859063954}
   - component: {fileID: 81302776970760836}
   - component: {fileID: 114490764557015572}
-  - component: {fileID: 114777160383639306}
   m_Layer: 0
   m_Name: Camera2
   m_TagString: Untagged
@@ -117,16 +116,3 @@ MonoBehaviour:
     i15: 0
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 0
---- !u!114 &114777160383639306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1558582040666330}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36fdb9437d6c9ef4bb76c7713ecef5f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allCameras: []
