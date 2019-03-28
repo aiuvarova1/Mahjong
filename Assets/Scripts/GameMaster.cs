@@ -5,7 +5,8 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    const uint playersToStart = 3;
+    const uint playersToStart = 2;
+    
     public static GameMaster instance = null;
 
     public SyncListInt availableCameras = new SyncListInt();
@@ -48,10 +49,11 @@ public class GameMaster : NetworkBehaviour
         }
     }
 
-    public void AddPlayer(string netID, int ord)
+    public void AddPlayer(string netID, int ord, string wind)
     {
         availableCameras.Remove(ord);
         GameMaster.instance.players[netID].order = ord;
+        instance.players[netID].wind= wind;
     }
 
     public void RegisterPlayer(string netID, Player player)
@@ -81,7 +83,7 @@ public class GameMaster : NetworkBehaviour
     {
         foreach (Player player in players.Values)
         {
-            player.GetComponent<PlayerUI>().TargetStartGame(player.connectionToClient);
+            player.GetComponent<PlayerUI>().TargetStopWaiting(player.connectionToClient);
         }
     }
 
@@ -99,17 +101,46 @@ public class GameMaster : NetworkBehaviour
     private void Update()
     {
         if (!isServer) return;
-        if (playerCount == playersToStart && gameState=="prepare") gameState = "ready";
-        if (gameState == "ready")
+
+        switch (gameState)
         {
-            gameState = "waiting";
-            GetReady();
+            case "prepare":
+                if (playerCount == playersToStart) gameState = "ready";
+                return;
+            case "ready":
+                gameState = "waiting";
+                GetReady();
+                return;
+            case "waiting":
+                if (playersToStart != playerCount)
+                {
+                    gameState = "prepare";
+                    SetReady();
+
+                }
+                if (readyPlayers == playersToStart)
+                {
+                    gameState = "start";
+                    SetReady();
+                }
+                return;
+            case "start":
+                GameManager.instance.StartGame();
+
+                gameState = "starting";
+                return;
         }
-        if (gameState == "waiting" && readyPlayers == playersToStart)
-        {
-            gameState = "start";
-            SetReady();
-        }
+        //if (playerCount == playersToStart && gameState=="prepare") gameState = "ready";
+        //if (gameState == "ready")
+        //{
+        //    gameState = "waiting";
+        //    GetReady();
+        //}
+        //if (gameState == "waiting" && readyPlayers == playersToStart)
+        //{
+        //    gameState = "start";
+        //    SetReady();
+        //}
 
     }
 }

@@ -19,8 +19,6 @@ public class JoinGame : MonoBehaviour
 
     IEnumerator refresher;
 
-    bool refresh = true;
-
     // Use this for initialization
     void Start()
     {

@@ -13,16 +13,22 @@ public class NewNetworkManager : NetworkManager
     public GameObject error;
     public Text errorText;
 
-    public override void OnClientDisconnect(NetworkConnection conn)
-    {
-        conn.playerControllers[0].gameObject.GetComponent<PlayerUI>().LeaveRoom();
-        base.OnClientDisconnect(conn);
-    }
+    //public override void OnClientDisconnect(NetworkConnection conn)
+    //{
+    //    conn.playerControllers[0].gameObject.GetComponent<PlayerUI>().LeaveRoom();
+    //    base.OnClientDisconnect(conn);
+    //}
 
     void ShowErrorMessage(string message)
     {
         error.SetActive(true);
         errorText.text = message;
+    }
+
+    public override void OnClientConnect(NetworkConnection conn)
+    {
+        base.OnClientConnect(conn);
+        Debug.Log(conn.connectionId);
     }
 
 
@@ -36,10 +42,7 @@ public class NewNetworkManager : NetworkManager
             //JoinGame.RefreshRoomList();
 
     }
-    public override void OnServerConnect(NetworkConnection conn)
-    {
-        base.OnServerConnect(conn);
-    }
+
 
     public override void OnMatchJoined(bool success, string extendedInfo, MatchInfo matchInfo)
     {
@@ -50,11 +53,6 @@ public class NewNetworkManager : NetworkManager
 
     }
 
-    public override void OnServerDisconnect(NetworkConnection conn)
-    {
 
-        base.OnServerDisconnect(conn);
-
-    }
 }
 

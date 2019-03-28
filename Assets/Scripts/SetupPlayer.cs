@@ -27,23 +27,48 @@ public class SetupPlayer : NetworkBehaviour
         player.order = order;
 
         player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);
+        AssignWind();
 
-        CmdAddPlayer(player.order);
+        CmdAddPlayer(player.order,player.wind);
 
         
     } 
 
-    [Command]
-    void CmdAddPlayer(int ord)
+    void AssignWind()
     {
-        RpcAddPlayer(ord);
+        switch (player.order)
+        {
+            case 0:
+                player.wind = "East";
+                return;
+            case 1:
+                player.wind = "South";
+                return;
+            case 2:
+                player.wind = "West";
+                return;
+            case 3:
+                player.wind = "North";
+                return;
+            default:
+                Debug.LogError($"Order {player.order} is incorrect");
+                return;
+
+        }
+
+    }
+
+    [Command]
+    void CmdAddPlayer(int ord,string wind)
+    {
+        RpcAddPlayer(ord,wind);
     }
 
     [ClientRpc]
-    void RpcAddPlayer(int ord)
+    void RpcAddPlayer(int ord,string wind)
     {
-        GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(),ord);
-        Debug.Log($"Camera {ord} ");
+        GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(),ord,wind);
+        Debug.Log($"Camera {ord}, wind {wind}");
         Debug.Log(GameMaster.instance.playerCount + "players");
 
         Debug.Log(GameMaster.instance.availableCameras.Count + "cameras");
@@ -88,15 +113,15 @@ public class SetupPlayer : NetworkBehaviour
         GetComponent<PlayerUI>().DropConnection();
     }
 
-    void OnApplicationQuit()
-    {
-        if (isLocalPlayer)
-        {
-            CmdUnregisterPlayer(GetComponent<NetworkIdentity>().netId.ToString());
-        }
-        if (isServer)
-        {
-            RpcUnregisterPlayer(GetComponent<NetworkIdentity>().netId.ToString());
-        }
-    }
+    //void OnApplicationQuit()
+    //{
+    //    if (isLocalPlayer)
+    //    {
+    //        CmdUnregisterPlayer(GetComponent<NetworkIdentity>().netId.ToString());
+    //    }
+    //    if (isServer)
+    //    {
+    //        RpcUnregisterPlayer(GetComponent<NetworkIdentity>().netId.ToString());
+    //    }
+    //}
 }

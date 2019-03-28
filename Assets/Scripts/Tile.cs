@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 
 
-public class Tile
+public class Tile:MonoBehaviour
 {
     public string name;
     public GameObject tile;

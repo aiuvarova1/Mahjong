@@ -132,12 +132,13 @@ public class PlayerUI : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TargetStartGame(NetworkConnection conn)
+    public void TargetStopWaiting(NetworkConnection conn)
     {
         StopCoroutine(starter);
         infoPanel.SetActive(false);
         infoText.text = " ";
     }
+    
 
     public void Update()
     {
