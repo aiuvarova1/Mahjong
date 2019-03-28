@@ -23,6 +23,7 @@ public class PlayerUI : NetworkBehaviour
     [SerializeField]
     GameObject startButton;
 
+
     [SerializeField]
     public Canvas canvas;
 
@@ -31,12 +32,15 @@ public class PlayerUI : NetworkBehaviour
     public bool leave = false;
     public bool ready = false;
 
+    public GameObject blackScreen;
+
 
     private void Start()
     {
         player = gameObject.GetComponent<Player>();
         networkManager = (NewNetworkManager)NetworkManager.singleton;
         //if(isLocalPlayer)
+       // blackScreen = GameObject.Find("BlackScreen");
             
         
        // StartCoroutine(starter);
@@ -46,6 +50,50 @@ public class PlayerUI : NetworkBehaviour
     {
         starter = WaitForStart();
         infoPanel.SetActive(false);
+    }
+
+     IEnumerator DarkenTheScreen()
+    {
+        yield return new WaitForSeconds(0.4f);
+        for (float f = 0; f < 1.1; f += 0.1f)
+        {
+            Debug.Log(f);
+            Color color = blackScreen.GetComponent<Image>().color;
+            color.a = f;
+            blackScreen.GetComponent<Image>().color = color;
+            
+            yield return new WaitForSeconds(0.02f);
+        }
+    }
+
+    [TargetRpc]
+    public void TargetStartDarken(NetworkConnection conn)
+    {
+        StartCoroutine("DarkenTheScreen");
+    }
+
+    IEnumerator LightenTheScreen()
+    {
+        //yield return new WaitForSeconds(0.4f);
+        for (float f = 1; f >-0.1; f -= 0.1f)
+        {
+            Debug.Log(f);
+            Color color = blackScreen.GetComponent<Image>().color;
+            
+            color.a = f;
+
+            if (f < 0) color.a = 0;
+
+            blackScreen.GetComponent<Image>().color = color;
+
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
+    [TargetRpc]
+    public void TargetStartLighten(NetworkConnection conn)
+    {
+        StartCoroutine("LightenTheScreen");
     }
 
 

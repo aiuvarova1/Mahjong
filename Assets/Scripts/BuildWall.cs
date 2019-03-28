@@ -16,8 +16,8 @@ public class BuildWall : MonoBehaviour {
 
     //for texture
     static List<Vector2> coordinates = new List<Vector2>(42);
-    static List<Tile> availableTiles = new List<Tile>(144);
-    public static List<int> indexes = new List<int>();
+     List<Tile> availableTiles = new List<Tile>(144);
+    public  List<int> indexes = new List<int>();
 
     public static BuildWall instance;
 
@@ -86,7 +86,8 @@ public class BuildWall : MonoBehaviour {
             tiles[i] = new List<Tile>(36);
         }
 
-        FillCoordinates();
+        if(coordinates.Count==0)
+            FillCoordinates();
         CreateTileVariants(tilePrefab);
 
         CreateWall(1, tilePrefab,ref ind);
@@ -106,6 +107,7 @@ public class BuildWall : MonoBehaviour {
 
     public void CreateWall(int num,GameObject tile,ref List<int> ind)
     {
+        Debug.Log(availableTiles.Count+"av tiles");
         //coordinates of first right tile in the second row
         Vector3 start=new Vector3();
         float rotation=90;

@@ -87,6 +87,22 @@ public class GameMaster : NetworkBehaviour
         }
     }
 
+    public void DarkenScreens()
+    {
+        foreach (Player player in players.Values)
+        {
+            player.GetComponent<PlayerUI>().TargetStartDarken(player.connectionToClient);
+        }
+    }
+
+    public void LightenScreens()
+    {
+        foreach (Player player in players.Values)
+        {
+            player.GetComponent<PlayerUI>().TargetStartLighten(player.connectionToClient);
+        }
+    }
+
     public void KickAFK()
     {
         
