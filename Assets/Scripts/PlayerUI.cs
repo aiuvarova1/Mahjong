@@ -57,7 +57,7 @@ public class PlayerUI : NetworkBehaviour
         yield return new WaitForSeconds(0.4f);
         for (float f = 0; f < 1.1; f += 0.1f)
         {
-            Debug.Log(f);
+
             Color color = blackScreen.GetComponent<Image>().color;
             color.a = f;
             blackScreen.GetComponent<Image>().color = color;
@@ -77,7 +77,7 @@ public class PlayerUI : NetworkBehaviour
         //yield return new WaitForSeconds(0.4f);
         for (float f = 1; f >-0.1; f -= 0.1f)
         {
-            Debug.Log(f);
+
             Color color = blackScreen.GetComponent<Image>().color;
             
             color.a = f;

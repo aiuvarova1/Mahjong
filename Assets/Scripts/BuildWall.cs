@@ -12,7 +12,8 @@ public class BuildWall : MonoBehaviour {
 
     public GameObject tilePrefab;
 
-    public List<Tile> [] tiles=new List<Tile>[4];
+    //public List<Tile> [] tiles=new List<Tile>[4];
+    public List<List<WallPair>> tiles = new List<List<WallPair>>(4);
 
     //for texture
     static List<Vector2> coordinates = new List<Vector2>(42);
@@ -83,7 +84,9 @@ public class BuildWall : MonoBehaviour {
 
         for (int i = 0; i < 4; i++)
         {
-            tiles[i] = new List<Tile>(36);
+            // tiles[i] = new List<Tile>(36);
+            tiles.Add(new List<WallPair>(18));
+            
         }
 
         if(coordinates.Count==0)
@@ -142,29 +145,44 @@ public class BuildWall : MonoBehaviour {
 
             //int randomTileIndex = Random.Range(0, availableTiles.Count);
 
-
             //tiles[num-1].Add(availableTiles[randomTileIndex]);
 
-            tiles[num - 1].Add(availableTiles[ind[0]]);
+            
+
+
+            //tiles[num - 1].Add(availableTiles[ind[0]]);
+            Tile upper = availableTiles[ind[0]];
 
             availableTiles.RemoveAt(ind[0]);
             ind.RemoveAt(0);
 
-            tiles[num - 1][2*i].tile.transform.position=upperPosition;
-            tiles[num - 1][2 * i].tile.transform.rotation = Quaternion.Euler(0,rotation,0);
+            //tiles[num - 1][2*i].tile.transform.position=upperPosition;
+            //tiles[num - 1][2 * i].tile.transform.rotation = Quaternion.Euler(0,rotation,0);
+            upper.tile.transform.position = upperPosition;
+            upper.tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
 
             //first row(odd)
 
             //randomTileIndex = Random.Range(0, availableTiles.Count);
             //tiles[num-1].Add(availableTiles[randomTileIndex]);
-            tiles[num - 1].Add(availableTiles[ind[0]]);
+
+
+
+            //tiles[num - 1].Add(availableTiles[ind[0]]);
+            Tile lower = availableTiles[ind[0]];
 
             availableTiles.RemoveAt(ind[0]);
             ind.RemoveAt(0);
 
             //tiles[num - 1].Add(new Tile(Instantiate(tile)));
-            tiles[num - 1][2 * i+1].tile.transform.position = lowerPosition;
-            tiles[num - 1][2 * i+1].tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
+
+            //tiles[num - 1][2 * i+1].tile.transform.position = lowerPosition;
+            //tiles[num - 1][2 * i+1].tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
+
+            lower.tile.transform.position = lowerPosition;
+            lower.tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
+
+            tiles[num - 1].Add(new WallPair(upper, lower));
         }
 
     }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Player : NetworkBehaviour {
-
+public class Player : NetworkBehaviour
+{
+    List<Tile> tiles = new List<Tile>();
 
 
     public Camera Camera { get; set; }

@@ -42,9 +42,9 @@ public class GameManager : NetworkBehaviour
 
         StartCoroutine(Lighten());
 
-        Wall.instance.Initialize(BuildWall.instance.tiles);
+       Wall.instance.Initialize(BuildWall.instance.tiles);
 
-        List<Tile>[] tiles = Wall.instance.tiles;
+
 
 
     }
