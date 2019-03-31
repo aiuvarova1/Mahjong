@@ -54,7 +54,7 @@ public class PlayerUI : NetworkBehaviour
 
      IEnumerator DarkenTheScreen()
     {
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.3f);
         for (float f = 0; f < 1.1; f += 0.1f)
         {
 
@@ -62,9 +62,11 @@ public class PlayerUI : NetworkBehaviour
             color.a = f;
             blackScreen.GetComponent<Image>().color = color;
             
-            yield return new WaitForSeconds(0.02f);
+            yield return new WaitForSeconds(0.005f);
         }
+        
     }
+
 
     [TargetRpc]
     public void TargetStartDarken(NetworkConnection conn)
@@ -86,7 +88,7 @@ public class PlayerUI : NetworkBehaviour
 
             blackScreen.GetComponent<Image>().color = color;
 
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.005f);
         }
     }
 
@@ -125,7 +127,7 @@ public class PlayerUI : NetworkBehaviour
 
     IEnumerator WaitForStart()
     {
-        Debug.Log("wait");
+
         int countdown = 20;
 
         string prefix = "Ready to start? ";
@@ -162,9 +164,9 @@ public class PlayerUI : NetworkBehaviour
 
     public void MarkReady()
     {
-        Debug.Log(isLocalPlayer);
         if (isLocalPlayer) CmdMarkReady();
     }
+
     [Command]
     public void CmdMarkReady()
     {
@@ -176,7 +178,7 @@ public class PlayerUI : NetworkBehaviour
     {
         ready = true;
         GameMaster.instance.readyPlayers++;
-        Debug.Log(GameMaster.instance.readyPlayers);
+
     }
 
     [TargetRpc]

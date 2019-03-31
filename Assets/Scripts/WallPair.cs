@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-
+[Serializable]
 public class WallPair
 {
     public Tile upperTile;

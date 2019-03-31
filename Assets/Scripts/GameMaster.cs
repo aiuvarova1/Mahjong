@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    const uint playersToStart = 1;
+    const uint playersToStart = 2;
     
     public static GameMaster instance = null;
 
@@ -14,6 +14,7 @@ public class GameMaster : NetworkBehaviour
     public int playerCount;
 
     public int readyPlayers;
+
 
     [SyncVar]
     public string gameState = "prepare";
@@ -113,6 +114,14 @@ public class GameMaster : NetworkBehaviour
         }
         gameState = "prepare";
     }
+
+    //public List<List<WallPair>> ReturnTiles()
+    //{
+    //    foreach (Player player in players.Values)
+    //    {
+    //        if(BuildWall.instance.tiles.Count==0) BuildWall.instance.tiles.Count=player.
+    //    }
+    //}
 
     private void Update()
     {

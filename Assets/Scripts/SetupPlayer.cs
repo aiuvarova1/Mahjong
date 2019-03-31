@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System;
 
 [RequireComponent(typeof(Player))]
 
@@ -23,7 +24,18 @@ public class SetupPlayer : NetworkBehaviour
 
         Debug.Log(GameMaster.instance.availableCameras.Count);
 
-        int order= GameMaster.instance.availableCameras[Random.Range(0, GameMaster.instance.availableCameras.Count)];
+        int order=0;
+
+        try
+        {
+            order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count)];
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            GetComponent<PlayerUI>().DropConnection();
+        }
+
+
         player.order = order;
 
         player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);

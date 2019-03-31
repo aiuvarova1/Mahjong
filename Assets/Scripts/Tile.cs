@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using System;
 
-
+[Serializable]
 public class Tile
 {
     public string name;
@@ -18,6 +19,18 @@ public class Tile
             CreateFace(coords);
         CreateName(coords);
 
+    }
+
+    public void MakeVisible()
+    {
+        Material[] materials = tile.GetComponent<Renderer>().materials;
+
+        for (int i = 0; i < materials.Length; i++)
+        {
+            Color color = materials[i].color;
+            color.a = 1;
+            materials[i].color = color;
+        }
     }
 
     void CreateName(Vector2 coordinates)
