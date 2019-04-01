@@ -115,13 +115,24 @@ public class GameMaster : NetworkBehaviour
         gameState = "prepare";
     }
 
-    //public List<List<WallPair>> ReturnTiles()
-    //{
-    //    foreach (Player player in players.Values)
-    //    {
-    //        if(BuildWall.instance.tiles.Count==0) BuildWall.instance.tiles.Count=player.
-    //    }
-    //}
+
+    void AssignWinds()
+    {
+        
+        foreach (Player player in players.Values)
+        {
+            TargetAddWind(player.connectionToClient);
+        }
+    }
+
+    [TargetRpc]
+    void TargetAddWind(NetworkConnection conn)
+    {
+        GameObject.FindWithTag("Player").GetComponent<Player>().CmdAddWind();
+    }
+
+    
+   
 
     private void Update()
     {
@@ -152,6 +163,7 @@ public class GameMaster : NetworkBehaviour
                 }
                 return;
             case "start":
+                AssignWinds();
                 GameManager.instance.StartGame();
 
                 gameState = "starting";

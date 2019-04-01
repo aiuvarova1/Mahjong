@@ -16,6 +16,8 @@ public class GameManager : NetworkBehaviour
 
     public bool wallIsBuilt = false;
 
+   public  List<Wind> winds = new List<Wind>();
+
     private void Awake()
     {
         if (instance == null)
@@ -23,12 +25,17 @@ public class GameManager : NetworkBehaviour
             instance = this;
         }
         else if (instance != this) Destroy(gameObject);
+
+        winds.Add(new East());
+        winds.Add(new South());
+        winds.Add(new West());
+        winds.Add(new North());
         
     }
 
     public void StartGame()
     {
-
+        
         BuildWall.instance.FillIndexes();
 
         var o = new MemoryStream(); //Create something to hold the data
@@ -51,19 +58,26 @@ public class GameManager : NetworkBehaviour
 
         Debug.Log(BuildWall.instance.tiles.Count + "tiles");
 
-        
+        //winds.Sort();
+        //winds.Reverse();
+
+
 
     }
 
     public void DistributeTiles()
     {
         Wall.instance.AssighFreeTiles();
+
+        Wall.instance.DistributeTiles();
     }
 
     [ClientRpc]
     void RpcBuildOnAllClients(string data)
     {
-        
+
+       
+
         if (isServer) return;
 
         var ins = new MemoryStream(Convert.FromBase64String(data)); //Create an input stream from the string

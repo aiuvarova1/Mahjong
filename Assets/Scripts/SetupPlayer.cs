@@ -38,6 +38,8 @@ public class SetupPlayer : NetworkBehaviour
 
         player.order = order;
 
+        gameObject.tag = "Player";
+
         player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);
         AssignWind();
 
@@ -52,15 +54,19 @@ public class SetupPlayer : NetworkBehaviour
         {
             case 0:
                 player.wind = "East";
+
                 return;
             case 1:
                 player.wind = "South";
+
                 return;
             case 2:
                 player.wind = "West";
+
                 return;
             case 3:
                 player.wind = "North";
+
                 return;
             default:
                 Debug.LogError($"Order {player.order} is incorrect");

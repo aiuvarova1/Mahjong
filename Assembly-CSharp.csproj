@@ -83,6 +83,7 @@
     <Compile Include="Assets\Scripts\Wall.cs" />
     <Compile Include="Assets\Scripts\WallPair.cs" />
     <Compile Include="Assets\Scripts\West.cs" />
+    <Compile Include="Assets\Scripts\Wind.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/Project/Mahjong/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

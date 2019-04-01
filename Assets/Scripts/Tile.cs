@@ -18,6 +18,7 @@ public class Tile
         if(!created)
             CreateFace(coords);
         CreateName(coords);
+        Debug.Log(name);
 
     }
 

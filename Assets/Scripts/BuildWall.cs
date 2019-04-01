@@ -16,8 +16,10 @@ public class BuildWall : MonoBehaviour {
     public List<List<WallPair>> tiles = new List<List<WallPair>>(4);
 
     //for texture
-    static List<Vector2> coordinates = new List<Vector2>(42);
+   public List<Vector2> coordinates = new List<Vector2>();
      List<Tile> availableTiles = new List<Tile>(144);
+    List<int> availableTilesIndexes = new List<int>();
+
     public  List<int> indexes = new List<int>();
 
     public static BuildWall instance;
@@ -29,6 +31,11 @@ public class BuildWall : MonoBehaviour {
             instance = this;
         }
         else if (instance != this) Destroy(gameObject);
+
+        for (int i = 0; i < 144; i++)
+        {
+            availableTilesIndexes.Add(i);
+        }
     }
 
     //all possible texture coordinates
@@ -71,7 +78,7 @@ public class BuildWall : MonoBehaviour {
             {
                 for (int k = 0; k < 3; k++)
                 {
-                    availableTiles.Add(new Tile(Instantiate(availableTiles[i].tile), true, coordinates[i]));
+                    availableTiles.Add(new Tile(Instantiate(availableTiles[availableTiles.Count-1].tile), true, coordinates[i]));
                 }
             }
 
@@ -104,9 +111,18 @@ public class BuildWall : MonoBehaviour {
 
     public void FillIndexes()
     {
-        for (int i = 143; i >= 0; i--)
+        //for (int i = 143; i >= 0; i--)
+        //{
+        //    indexes.Add(Random.Range(0, i + 1));
+        //}
+
+        for (int i = 0; i < 144; i++)
         {
-            indexes.Add(Random.Range(0, i+1));
+            int index = Random.Range(0, availableTilesIndexes.Count);
+            indexes.Add(availableTilesIndexes[index]);
+
+            availableTilesIndexes.RemoveAt(index);
+           
         }
     }
 
@@ -148,7 +164,7 @@ public class BuildWall : MonoBehaviour {
 
             Tile upper = availableTiles[ind[0]];
 
-            availableTiles.RemoveAt(ind[0]);
+            //availableTiles.RemoveAt(ind[0]);
             ind.RemoveAt(0);
 
             
@@ -160,7 +176,7 @@ public class BuildWall : MonoBehaviour {
           
             Tile lower = availableTiles[ind[0]];
 
-            availableTiles.RemoveAt(ind[0]);
+           // availableTiles.RemoveAt(ind[0]);
             ind.RemoveAt(0);
 
            

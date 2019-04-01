@@ -8,24 +8,49 @@ public class BezierMove : MonoBehaviour
 
    // public Transform transformBegin;
     public Vector3 endPoint;
+    Quaternion endRotation;
 
     Vector3 p0, p1, p3;
 
     int num = 1;
+
     bool moving = false;
-    float speed = 6f;
+    bool rotating = false;
+
+
+    float speed = 30f;
 
     List<Vector3> pos = new List<Vector3>();
 
-    public void Move()
+    public void OpenTile(float rotation)
     {
-       // FillArray();
+        endRotation= Quaternion.Euler(-90, rotation, 0);
+        transform.position = new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z);
+        rotating = true;
+    }
+
+    public void Move(Vector3 end,float rotation )
+    {
+        FillArray(transform.position,end);
 
         //moving from pos[0] to pos[1]
 
-        //transformEnd.position = pos[1];
+        endPoint = pos[1];
+        endRotation = Quaternion.Euler(0, rotation, 0);
+        StartCoroutine(WaitForMoving(rotation));
+        
 
-       // moving = true;
+    }
+
+    IEnumerator WaitForMoving(float rotation)
+    {
+        yield return new WaitForSeconds(0.1f);
+        moving = true;
+        rotating = true;
+        while (moving)
+            yield return new WaitForSeconds(0.1f);
+        OpenTile(rotation);
+
     }
 
 
@@ -41,9 +66,9 @@ public class BezierMove : MonoBehaviour
     {
         p0 = x0;
         p3 = x3;
-        p1 = new Vector3(1.5f, 2.5f, 1.5f);
+        p1 = new Vector3((p0.x+p3.x)/2f, 5.4f, (p0.z + p3.z) / 2f);
 
-        for (float t = 0; t <= 1; t += 0.02f)
+        for (float t = 0; t <= 1; t += 0.02555f)
         {
             pos.Add(GetBezierPosition(t));
         }
@@ -56,6 +81,7 @@ public class BezierMove : MonoBehaviour
 
     IEnumerator MoveNewFreeTiles(GameObject newTile,bool isFirst)
     {
+        speed = 12f;
         if(!isFirst)
             yield return new WaitForSeconds(0.8f);
         MoveTile(transform.position.x, thirdRowHeight, transform.position.z);
@@ -96,23 +122,43 @@ public class BezierMove : MonoBehaviour
 
     private void Update()
     {
-        if (!moving) return;
-
-        if (transform.position == endPoint)
+        if (moving)
         {
-            num++;
-            if (num >= pos.Count)
+
+            if (transform.position == endPoint)
             {
-                moving = false;
-                pos.Clear();
+                num++;
+                if (num >= pos.Count)
+                {
+                    moving = false;
+                    pos.Clear();
+                    return;
+                }
+                endPoint = pos[num];
+            }
+            float step = speed * Time.deltaTime;
+
+            // Move our position a step closer to the target.
+            transform.position = Vector3.MoveTowards(transform.position, endPoint, step);
+        }
+        if (rotating)
+        {
+            if (transform.rotation == endRotation)
+            {
+                rotating = false;
                 return;
             }
-            endPoint = pos[num];
-        }
-        float step = speed * Time.deltaTime;
+            //Vector3 direction = (endPoint - transform.position).normalized;
 
-        // Move our position a step closer to the target.
-        transform.position = Vector3.MoveTowards(transform.position, endPoint, step);
+            //create the rotation we need to be in to look at the target
+            //Quaternion lookRotation = Quaternion.LookRotation(direction);
+
+            //rotate us over time according to speed until we are in the required rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation, endRotation, Time.deltaTime * speed);
+            
+        }
+
+
 
     }
 
