@@ -32,11 +32,11 @@ public class Wall : NetworkBehaviour
 
     public void AssighFreeTiles()
     {
-        //int wallNum = Random.Range(0, tiles.Count);
-        //int restNum = Random.Range(2, 13);
+        int wallNum = Random.Range(0, tiles.Count);
+        int restNum = Random.Range(2, 13);
 
-        int wallNum = 2;
-       int  restNum = 10;
+       // int wallNum = 2;
+       //int  restNum = 10;
 
         beginningWall = wallNum;
         beginningPair = restNum;

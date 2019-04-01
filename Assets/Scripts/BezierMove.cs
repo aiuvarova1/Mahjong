@@ -18,7 +18,7 @@ public class BezierMove : MonoBehaviour
     bool rotating = false;
 
 
-    float speed = 30f;
+    float speed = 20f;
 
     List<Vector3> pos = new List<Vector3>();
 
@@ -66,9 +66,9 @@ public class BezierMove : MonoBehaviour
     {
         p0 = x0;
         p3 = x3;
-        p1 = new Vector3((p0.x+p3.x)/2f, 5.4f, (p0.z + p3.z) / 2f);
+        p1 = new Vector3((p0.x+p3.x)/2f, 8.4f, (p0.z + p3.z) / 2f);
 
-        for (float t = 0; t <= 1; t += 0.02555f)
+        for (float t = 0; t <= 1; t += 0.5f)
         {
             pos.Add(GetBezierPosition(t));
         }
