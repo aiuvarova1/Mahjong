@@ -1047,3 +1047,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58fa931b78ca5e94baf10a0b5e768909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  freeTiles: []

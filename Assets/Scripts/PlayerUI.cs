@@ -90,6 +90,13 @@ public class PlayerUI : NetworkBehaviour
 
             yield return new WaitForSeconds(0.005f);
         }
+        CmdSetWallBuilt();
+    }
+
+    [Command]
+    void CmdSetWallBuilt()
+    {
+        GameManager.instance.wallIsBuilt = true;
     }
 
     [TargetRpc]

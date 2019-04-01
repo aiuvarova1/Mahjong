@@ -6,14 +6,14 @@ public class BezierMove : MonoBehaviour
 {
     float thirdRowHeight = 3.4f;
 
-    public Transform transformBegin;
-    public Transform transformEnd;
+   // public Transform transformBegin;
+    public Vector3 endPoint;
 
     Vector3 p0, p1, p3;
 
     int num = 1;
     bool moving = false;
-    float speed = 3f;
+    float speed = 6f;
 
     List<Vector3> pos = new List<Vector3>();
 
@@ -23,9 +23,9 @@ public class BezierMove : MonoBehaviour
 
         //moving from pos[0] to pos[1]
 
-        transformEnd.position = pos[1];
+        //transformEnd.position = pos[1];
 
-        moving = true;
+       // moving = true;
     }
 
 
@@ -49,13 +49,15 @@ public class BezierMove : MonoBehaviour
         }
     }
 
-    public void StartMoveNewFreeTiles(GameObject tile)
+    public void StartMoveNewFreeTiles(GameObject tile,bool isFirst)
     {
-        StartCoroutine(MoveNewFreeTiles(tile));
+        StartCoroutine(MoveNewFreeTiles(tile,isFirst));
     }
 
-    IEnumerator MoveNewFreeTiles(GameObject newTile)
+    IEnumerator MoveNewFreeTiles(GameObject newTile,bool isFirst)
     {
+        if(!isFirst)
+            yield return new WaitForSeconds(0.8f);
         MoveTile(transform.position.x, thirdRowHeight, transform.position.z);
         yield return new WaitForSeconds(0.8f);
 
@@ -67,7 +69,7 @@ public class BezierMove : MonoBehaviour
 
     void MoveTile(float x,float y,float z)
     {
-        transformEnd.position = new Vector3(x,y,z);
+        endPoint = new Vector3(x,y,z);
         moving = true;
     }
 
@@ -96,7 +98,7 @@ public class BezierMove : MonoBehaviour
     {
         if (!moving) return;
 
-        if (transform.position == transformEnd.position)
+        if (transform.position == endPoint)
         {
             num++;
             if (num >= pos.Count)
@@ -105,12 +107,12 @@ public class BezierMove : MonoBehaviour
                 pos.Clear();
                 return;
             }
-            transformEnd.position = pos[num];
+            endPoint = pos[num];
         }
         float step = speed * Time.deltaTime;
 
         // Move our position a step closer to the target.
-        transform.position = Vector3.MoveTowards(transform.position, transformEnd.position, step);
+        transform.position = Vector3.MoveTowards(transform.position, endPoint, step);
 
     }
 

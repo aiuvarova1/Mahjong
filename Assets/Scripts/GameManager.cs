@@ -14,7 +14,7 @@ public class GameManager : NetworkBehaviour
     public static GameManager instance = null;
     BinaryFormatter bf;
 
-    Wall wall;
+    public bool wallIsBuilt = false;
 
     private void Awake()
     {
@@ -23,15 +23,11 @@ public class GameManager : NetworkBehaviour
             instance = this;
         }
         else if (instance != this) Destroy(gameObject);
-
-        wall = new Wall();
         
     }
 
     public void StartGame()
     {
-
-        
 
         BuildWall.instance.FillIndexes();
 
@@ -41,37 +37,33 @@ public class GameManager : NetworkBehaviour
         bf.Serialize(o, BuildWall.instance.indexes); //Save the list
 
         var data = Convert.ToBase64String(o.GetBuffer()); //Convert the data to a string
+        BuildWall.instance.Build(BuildWall.instance.indexes);
 
         RpcBuildOnAllClients(data);
         //for server
-        BuildWall.instance.Build(BuildWall.instance.indexes);
+        
 
         GameMaster.instance.DarkenScreens();
 
         StartCoroutine(Build());
 
-        //while (true)
-        //{
-        //    if (build)
-        //    {
-        //        BuildWall.instance.Build();
-        //        break ;
-        //    }
-        //}
-
         StartCoroutine(Lighten());
-
-       // wall.Initialize(BuildWall.instance.tiles);
 
         Debug.Log(BuildWall.instance.tiles.Count + "tiles");
 
-        // wall.AssighFreeTiles();
+        
 
+    }
+
+    public void DistributeTiles()
+    {
+        Wall.instance.AssighFreeTiles();
     }
 
     [ClientRpc]
     void RpcBuildOnAllClients(string data)
     {
+        
         if (isServer) return;
 
         var ins = new MemoryStream(Convert.FromBase64String(data)); //Create an input stream from the string
@@ -111,6 +103,8 @@ public class GameManager : NetworkBehaviour
             }
         }
     }
+
+
 
 
 

@@ -90,6 +90,7 @@ public class BuildWall : MonoBehaviour {
 
         if(coordinates.Count==0)
             FillCoordinates();
+
         CreateTileVariants(tilePrefab);
 
 
@@ -97,6 +98,8 @@ public class BuildWall : MonoBehaviour {
         CreateWall(2, tilePrefab,ref ind);
         CreateWall(3, tilePrefab,ref ind);
         CreateWall(4, tilePrefab,ref ind);
+
+        Wall.instance.Initialize(tiles);
     }
 
     public void FillIndexes()

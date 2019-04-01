@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    const uint playersToStart = 2;
+    const uint playersToStart = 1;
     
     public static GameMaster instance = null;
 
@@ -15,9 +15,9 @@ public class GameMaster : NetworkBehaviour
 
     public int readyPlayers;
 
-
+    //"prepare" by default
     [SyncVar]
-    public string gameState = "prepare";
+    public string gameState = "start";
 
     [SerializeField]
     public List<Camera> allCameras = new List<Camera>();
@@ -127,6 +127,8 @@ public class GameMaster : NetworkBehaviour
     {
         if (!isServer) return;
 
+        //Debug.Log("upd"+gameState);
+
         switch (gameState)
         {
             case "prepare":
@@ -154,6 +156,19 @@ public class GameMaster : NetworkBehaviour
 
                 gameState = "starting";
                 return;
+
+            case "starting":
+
+                if (GameManager.instance.wallIsBuilt)
+                {
+                    GameManager.instance.DistributeTiles();
+                    //Debug.Log("free tiles");
+                    gameState = "tst";
+                }
+                return;
+            default:
+                return;
+
         }
         //if (playerCount == playersToStart && gameState=="prepare") gameState = "ready";
         //if (gameState == "ready")

@@ -5,19 +5,20 @@ using UnityEngine.Networking;
 
 public class Wall : NetworkBehaviour
 {
-    //public static Wall instance;
-
-    //private void Awake()
-    //{
-    //    if (instance == null)
-    //    {
-    //        instance = this;
-    //    }
-    //    else if (instance != this) Destroy(gameObject);
-    //}
 
     public List<List<WallPair>> tiles;
     public List<Tile> freeTiles = new List<Tile>();
+    public static Wall instance = null;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this) Destroy(gameObject);
+
+    }
 
     public void Initialize(List<List<WallPair>> tiles)
     {
@@ -27,26 +28,27 @@ public class Wall : NetworkBehaviour
 
     public void AssighFreeTiles()
     {
-        int wallNum = Random.Range(0, tiles.Count);
-        int restNum = Random.Range(2, 13);
+        //int wallNum = Random.Range(0, tiles.Count);
+        //int restNum = Random.Range(2, 13);
+        int wallNum = 1;
+        int restNum = 5;
 
-        Debug.Log(tiles.Count);
-        //Debug.Log(tiles[wallNum].Count);
+        Debug.Log(wallNum);
+        Debug.Log(restNum);
 
-        //freeTiles.Add(tiles[wallNum][restNum].upperTile);
-        //freeTiles.Add(tiles[wallNum][restNum].lowerTile);
-
-        //RpcLieFreeTiles(freeTiles[0].tile,freeTiles[1].tile,
-           // tiles[wallNum][restNum-2].upperTile.tile, tiles[wallNum][restNum - 1].upperTile.tile);
+        RpcLieFreeTiles(wallNum,restNum);
 
     }
 
     [ClientRpc]
-    void RpcLieFreeTiles(GameObject tile1, GameObject tile2,
-        GameObject newTile1, GameObject newTile2)
+    void RpcLieFreeTiles(int wallNum,int restNum)
+
     {
-        tile1.GetComponent<BezierMove>().StartMoveNewFreeTiles(newTile1);
-        tile2.GetComponent<BezierMove>().StartMoveNewFreeTiles(newTile2);
+        freeTiles.Add(tiles[wallNum][restNum].upperTile);
+        freeTiles.Add(tiles[wallNum][restNum].lowerTile);
+
+        freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][restNum-2].upperTile.tile,true);
+        freeTiles[1].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][restNum - 1].upperTile.tile,false);
 
     }
 
