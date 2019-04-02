@@ -77,9 +77,7 @@
     <Compile Include="Assets\Scripts\RoomListItem.cs" />
     <Compile Include="Assets\Scripts\SetupPlayer.cs" />
     <Compile Include="Assets\Scripts\South.cs" />
-    <Compile Include="Assets\Scripts\TestScript.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
-    <Compile Include="Assets\Scripts\TileDistribution.cs" />
     <Compile Include="Assets\Scripts\Wall.cs" />
     <Compile Include="Assets\Scripts\WallPair.cs" />
     <Compile Include="Assets\Scripts\West.cs" />

@@ -14,8 +14,8 @@ public class BezierMove : MonoBehaviour
 
     int num = 1;
 
-    bool moving = false;
-    bool rotating = false;
+    public bool moving = false;
+    public bool rotating = false;
 
 
     float speed = 20f;
@@ -27,6 +27,7 @@ public class BezierMove : MonoBehaviour
         endRotation= Quaternion.Euler(-90, rotation, 0);
         transform.position = new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z);
         rotating = true;
+        
     }
 
     public void Move(Vector3 end,float rotation )
@@ -37,6 +38,7 @@ public class BezierMove : MonoBehaviour
 
         endPoint = pos[1];
         endRotation = Quaternion.Euler(0, rotation, 0);
+        Wall.instance.isMoving = true;
         StartCoroutine(WaitForMoving(rotation));
         
 
@@ -44,12 +46,13 @@ public class BezierMove : MonoBehaviour
 
     IEnumerator WaitForMoving(float rotation)
     {
-        yield return new WaitForSeconds(0.1f);
+        //yield return new WaitForSeconds(0.1f);
         moving = true;
         rotating = true;
         while (moving)
             yield return new WaitForSeconds(0.1f);
         OpenTile(rotation);
+
 
     }
 

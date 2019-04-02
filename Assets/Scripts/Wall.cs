@@ -14,6 +14,8 @@ public class Wall : NetworkBehaviour
     int beginningWall;
     int beginningPair;
 
+    public bool isMoving = false;
+
     private void Awake()
     {
         if (instance == null)
@@ -32,11 +34,11 @@ public class Wall : NetworkBehaviour
 
     public void AssighFreeTiles()
     {
-        int wallNum = Random.Range(0, tiles.Count);
-        int restNum = Random.Range(2, 13);
+       // int wallNum = Random.Range(0, tiles.Count);
+        //int restNum = Random.Range(2, 13);
 
-       // int wallNum = 2;
-       //int  restNum = 10;
+        int wallNum = 0;
+       int  restNum = 12;
 
         beginningWall = wallNum;
         beginningPair = restNum;
@@ -130,12 +132,9 @@ public class Wall : NetworkBehaviour
                     }
 
                     GameManager.instance.winds[windNum].RefreshFreePosition();
-
                 }
             }
         }
-
-
 
     }
 
@@ -197,9 +196,7 @@ public class Wall : NetworkBehaviour
     [ClientRpc]
     void RpcRemovePair(int currentWall, int currentPair)
     {
-        Debug.Log(currentPair + "pair");
-        Debug.Log(currentWall + "wall");
-        Debug.Log(tiles[currentWall].Count + "count");
+
         tiles[currentWall].RemoveAt(currentPair);
     }
 
@@ -219,14 +216,12 @@ public class Wall : NetworkBehaviour
 
     }
 
-    public void Update()
+    private void Update()
     {
         if (!isServer) return;
 
-        if (GameMaster.instance.gameState == "playing"
-            && freeTiles.Count == 0)
-        {
-
-        }
+        
+        
     }
+
 }

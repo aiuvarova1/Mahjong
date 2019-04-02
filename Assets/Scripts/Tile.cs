@@ -5,11 +5,12 @@ using System.Text;
 using UnityEngine;
 using System;
 
-[Serializable]
-public class Tile
+
+public class Tile:IComparable<Tile>
 {
     public string name;
     public GameObject tile;
+    int numOfTile;
     
 
     public Tile(GameObject tile,bool created,Vector2 coords)
@@ -18,8 +19,13 @@ public class Tile
         if(!created)
             CreateFace(coords);
         CreateName(coords);
-        Debug.Log(name);
 
+
+    }
+
+    public int CompareTo(Tile tileToCompare)
+    {
+        return numOfTile.CompareTo(tileToCompare.numOfTile);
     }
 
     public void MakeVisible()
@@ -42,42 +48,54 @@ public class Tile
             case 0:
                 name += 'f';
                 name += (int)coordinates[0];
+                numOfTile = 34 + (int)coordinates[0];
                 break;
             case 2:
                 name += 's';
                 name += (int)coordinates[0];
+                numOfTile=18+ (int)coordinates[0]; 
                 break;
+
             case 3:
                 name += 'b';
                 name += (int)coordinates[0];
+                numOfTile = (int)coordinates[0];
                 break;
             case 4:
                 name += 'd';
                 name += (int)coordinates[0];
+                numOfTile= 9+ (int)coordinates[0]; 
                 break;
             case 1:
                 switch ((int)coordinates[0])
                 {
                     case 0:
                         name = "East";
+                        numOfTile = 28;
                         break;
                     case 1:
                         name = "South";
+                        numOfTile = 29;
                         break;
                     case 2:
                         name = "West";
+                        numOfTile = 30;
                         break;
                     case 3:
                         name = "North";
+                        numOfTile = 31;
                         break;
                     case 4:
                         name = "Red";
+                        numOfTile = 32;
                         break;
                     case 5:
                         name = "Green";
+                        numOfTile = 33;
                         break;
                     case 6:
                         name = "White";
+                        numOfTile = 34;
                         break;
                     default:
                         break;
@@ -91,6 +109,11 @@ public class Tile
     {
         Vector2 coordinates = new Vector2(coords[0] * 1 / 9f, coords[1] * 1 / 5f);
         tile.GetComponent<Renderer>().materials[1].SetTextureOffset("_DetailAlbedoMap", coordinates);
+    }
+
+    public override string ToString()
+    {
+        return name;
     }
 }
 

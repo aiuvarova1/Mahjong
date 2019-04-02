@@ -70,6 +70,7 @@ public class GameManager : NetworkBehaviour
         Wall.instance.AssighFreeTiles();
 
         Wall.instance.DistributeTiles();
+        Invoke("RpcSortTiles", 4f);
     }
 
     [ClientRpc]
@@ -116,6 +117,12 @@ public class GameManager : NetworkBehaviour
                 pair.lowerTile.MakeVisible();
             }
         }
+    }
+
+    [ClientRpc]
+    public void RpcSortTiles()
+    {
+        GameObject.FindWithTag("Player").GetComponent<Player>().SortTiles();
     }
 
 

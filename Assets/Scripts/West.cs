@@ -15,6 +15,7 @@ using UnityEngine;
 
     public West(Player p) : base(p)
     {
+
         rotation = 90;
         freePosition = startPosition;
     }
