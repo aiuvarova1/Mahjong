@@ -70,7 +70,8 @@ public class GameManager : NetworkBehaviour
         Wall.instance.AssighFreeTiles();
 
         Wall.instance.DistributeTiles();
-        Invoke("RpcSortTiles", 4f);
+
+        Invoke("SortTiles", 4f);
     }
 
     [ClientRpc]
@@ -119,9 +120,16 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    void SortTiles()
+    {
+        Debug.Log("sort tiles");
+        RpcSortTiles();
+    }
+
     [ClientRpc]
     public void RpcSortTiles()
     {
+        Debug.Log(GameObject.FindWithTag("Player").GetComponent<Player>().playerTiles.Count + "player tiles!");
         GameObject.FindWithTag("Player").GetComponent<Player>().SortTiles();
     }
 

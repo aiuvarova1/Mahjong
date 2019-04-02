@@ -6,6 +6,9 @@ using UnityEngine.Networking;
 public class Player : NetworkBehaviour
 {
     public List<Tile> playerTiles = new List<Tile>();
+    public List<Tile> openedTiles = new List<Tile>();
+    public List<Tile> flowers = new List<Tile>();
+
     public Vector3 startPosition;
 
     public Camera Camera { get; set; }
@@ -20,6 +23,7 @@ public class Player : NetworkBehaviour
 
         List<Vector3> positions = CreatePositionList();
 
+        Debug.Log(playerTiles.Count + "player tiles");
         playerTiles.Sort();
         Debug.Log("sorted");
 
