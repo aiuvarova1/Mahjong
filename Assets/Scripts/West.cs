@@ -10,25 +10,37 @@ using UnityEngine;
 {
     const int num = 3;
  
-    
-    public static Vector3 startPosition = new Vector3(28, 1f, -11);
+    public Vector3 startPosition = new Vector3(30, 1f, -11);
+
+    public Vector3 startOpenTilePosition = new Vector3(27, 1f, -11);
+    public Vector3 startFlowerPosition = new Vector3(24, 0, -11);
 
     public West(Player p) : base(p)
     {
 
         rotation = 90;
         freePosition = startPosition;
+        freeOpenPosition = startOpenTilePosition;
+        freeFlowerPosition = startFlowerPosition;
+
     }
 
-    public override void RefreshFreePosition()
+    public override void MoveRightFreePosition(ref Vector3 pos)
     {
-        freePosition.z += 2;
+        pos.z += 2;
+    }
+
+    public override void MoveLeftFreePosition(ref Vector3 pos)
+    {
+        pos.z -= 2;
     }
 
     public West()
     {
         rotation = 90;
         freePosition = startPosition;
+        freeOpenPosition = startOpenTilePosition;
+        freeFlowerPosition = startFlowerPosition;
     }
 }
 

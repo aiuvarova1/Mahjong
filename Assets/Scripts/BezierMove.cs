@@ -32,13 +32,14 @@ public class BezierMove : MonoBehaviour
 
     public void Move(Vector3 end,float rotation )
     {
-        FillArray(transform.position,end);
+        speed = 50f;
+        FillArray(transform.position,end,8.4f);
 
         //moving from pos[0] to pos[1]
 
         endPoint = pos[1];
         endRotation = Quaternion.Euler(0, rotation, 0);
-        Wall.instance.isMoving = true;
+        //Wall.instance.isMoving = true;
         StartCoroutine(WaitForMoving(rotation));
         
 
@@ -52,7 +53,23 @@ public class BezierMove : MonoBehaviour
         while (moving)
             yield return new WaitForSeconds(0.1f);
         OpenTile(rotation);
+    }
 
+    public void LieOut(Vector3 endPos,float rotation)
+    {
+
+        transform.position = new Vector3(transform.position.x, 1, transform.position.z);
+
+        FillArray(transform.position, endPos,2.4f);
+
+
+        endPoint = pos[1];
+        endRotation = Quaternion.Euler(-180, rotation, 0);
+
+        speed = 38f;
+        
+        moving = true;
+        rotating = true;
 
     }
 
@@ -65,16 +82,20 @@ public class BezierMove : MonoBehaviour
         //return Mathf.Pow(1f - t, 3f) * p0 + 3f * Mathf.Pow(1f - t, 2f) * t * p1 + 3f * (1f - t) * Mathf.Pow(t, 2f) * p2 + Mathf.Pow(t, 3f) * p3;
     }
 
-    void FillArray(Vector3 x0,Vector3 x3)
+    void FillArray(Vector3 x0,Vector3 x3,float height)
     {
         p0 = x0;
-        p3 = x3;
-        p1 = new Vector3((p0.x+p3.x)/2f, 8.4f, (p0.z + p3.z) / 2f);
 
-        for (float t = 0; t <= 1; t += 0.5f)
-        {
+
+        p3 = x3;
+
+        p1 = new Vector3((p0.x+3*p3.x)/4f, height, (p0.z + 3*p3.z) / 4f);
+
+        for (float t = 0; t <= 1; t += 0.25f)
+        {            
             pos.Add(GetBezierPosition(t));
         }
+
     }
 
     public void StartMoveNewFreeTiles(GameObject tile,bool isFirst)
@@ -102,26 +123,6 @@ public class BezierMove : MonoBehaviour
         moving = true;
     }
 
-    //void Move()
-    //{
-    //    for (int i = 0; i < pos.Count - 1; i++)
-    //    {
-    //        MoveStep(pos[i]);
-    //    }
-    //}
-
-    //void MoveStep(Vector3 end)
-    //{
-    //    while (transform.position != end)
-    //    {
-    //        float step = 1.0f * Time.deltaTime;
-
-    //        // Move our position a step closer to the target.
-    //        transform.position = Vector3.MoveTowards(transform.position, end, step);
-    //    }
-    //}
-
-    
 
     private void Update()
     {
@@ -131,10 +132,14 @@ public class BezierMove : MonoBehaviour
             if (transform.position == endPoint)
             {
                 num++;
+
+                
                 if (num >= pos.Count)
                 {
                     moving = false;
-                    pos.Clear();
+                    
+                    pos = new List<Vector3>();
+                    num = 1;
                     return;
                 }
                 endPoint = pos[num];

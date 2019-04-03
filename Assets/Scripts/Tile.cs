@@ -48,12 +48,12 @@ public class Tile:IComparable<Tile>
             case 0:
                 name += 'f';
                 name += (int)coordinates[0];
-                numOfTile = 34 + (int)coordinates[0];
+                numOfTile = 35 + (int)coordinates[0];
                 break;
             case 2:
                 name += 's';
                 name += (int)coordinates[0];
-                numOfTile=18+ (int)coordinates[0]; 
+                numOfTile=19+ (int)coordinates[0]; 
                 break;
 
             case 3:
@@ -64,7 +64,7 @@ public class Tile:IComparable<Tile>
             case 4:
                 name += 'd';
                 name += (int)coordinates[0];
-                numOfTile= 9+ (int)coordinates[0]; 
+                numOfTile= 10+ (int)coordinates[0]; 
                 break;
             case 1:
                 switch ((int)coordinates[0])

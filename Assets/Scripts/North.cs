@@ -10,23 +10,37 @@ class North:Wind
 {
     const int num = 4;
 
-    public static Vector3 startPosition = new Vector3(11, 1f, 27);
+    public Vector3 startPosition = new Vector3(11, 1f, 30);
+
+    public Vector3 startOpenTilePosition = new Vector3(11, 1f, 27);
+    public Vector3 startFlowerPosition = new Vector3(11, 0, 24);
 
     public North(Player p) : base(p)
     {
         rotation = 0;
         freePosition = startPosition;
+        freeOpenPosition = startOpenTilePosition;
+        freeFlowerPosition = startFlowerPosition;
     }
 
-    public override void RefreshFreePosition()
+
+
+    public override void MoveRightFreePosition(ref Vector3 pos)
     {
-        freePosition.x -= 2f;
+        pos.x -= 2f;
+    }
+
+    public override void MoveLeftFreePosition(ref Vector3 pos)
+    {
+        pos.x += 2f;
     }
 
     public North()
     {
         rotation = 0;
         freePosition = startPosition;
+        freeOpenPosition = startOpenTilePosition;
+        freeFlowerPosition = startFlowerPosition;
     }
 }
 

@@ -18,6 +18,12 @@ public abstract class Wind:IComparable<Wind>
     public Wind() { }
 
     public  Vector3 freePosition;
+    public Vector3 freeOpenPosition;
+    public Vector3 freeFlowerPosition;
+
+    //public static Vector3 startOpenTilePosition;
+    //public static Vector3 startFlowerPosition;
+
     public float rotation;
 
     public int CompareTo(Wind wind)
@@ -36,7 +42,9 @@ public abstract class Wind:IComparable<Wind>
         }
     }
 
-    public abstract void RefreshFreePosition();
+    public abstract void MoveRightFreePosition(ref Vector3 pos);
+    public abstract void MoveLeftFreePosition(ref Vector3 pos);
+
 
 }
 

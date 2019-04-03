@@ -16,23 +16,81 @@ public class Player : NetworkBehaviour
     public string wind;
     public int order;
 
+    public Tile tileToMove;
+    public bool needToCheckMoving = false;
+    bool needFreeTile = false;
+
+    //delegate void 
+
+        void Sort()
+    {
+        RpcSort();
+    }
+
+    [ClientRpc]
+    void RpcSort()
+    {
+        Debug.Log("rpc");
+        SortTiles();
+        
+    }
+
     public void SortTiles()
     {
-        //Tile[] temp = new Tile[playerTiles.Count];
-        //playerTiles.CopyTo(temp);
-
         List<Vector3> positions = CreatePositionList();
 
         Debug.Log(playerTiles.Count + "player tiles");
+        Debug.Log(playerTiles[playerTiles.Count - 1].name);
         playerTiles.Sort();
         Debug.Log("sorted");
 
         //playerTiles[0].tile.transform.position = startPosition;
         for (int i = 0; i < playerTiles.Count; i++)
         {
-            Debug.Log(playerTiles[i]);
+           // Debug.Log(playerTiles[i]);
             playerTiles[i].tile.transform.position = positions[i];
+           // Debug.Log($"{i}, {playerTiles[i].name}");
         }
+    }
+
+    [ClientRpc]
+    public void RpcLieOutTile(int index,Vector3 freePosition,float rotation,string array)
+    {
+        Debug.Log(playerTiles.Count);
+        playerTiles[index].tile.GetComponent<BezierMove>().LieOut(freePosition,rotation);
+
+        tileToMove = playerTiles[index];
+        needToCheckMoving = true;
+        needFreeTile = true;
+
+        switch (array)
+        {
+            case "flowers":
+                flowers.Add(playerTiles[index]);
+                break;
+        }
+
+        playerTiles.RemoveAt(index);
+        CmdRemoveFromArray(index);
+        
+        //CheckTileMoving(playerTiles[index]);
+
+        Debug.Log("lie out");
+
+
+
+    }
+
+    [Command]
+    void CmdRemoveFromArray(int index)
+    {
+        Debug.Log(playerTiles.Count);
+    }
+
+    [ClientRpc]
+    public void RpcRemoveFromArray(int index)
+    {
+        playerTiles.RemoveAt(index);
     }
 
     List<Vector3> CreatePositionList()
@@ -44,6 +102,17 @@ public class Player : NetworkBehaviour
             pos.Add(playerTiles[i].tile.transform.position);
         }
         return pos;
+    }
+
+    public bool CheckForFlowers()
+    {
+
+        foreach (Tile tile in playerTiles)
+        {
+            if (tile.name.Contains("f")) return true;
+        }
+        return false;
+
     }
 
     [Command]
@@ -68,6 +137,83 @@ public class Player : NetworkBehaviour
                 return;
 
         }
+    }
+
+    [Command]
+    public void CmdAddTileToPlayerArray(int currentWall, int currentPair, string tile)
+    {
+        RpcAddTileToPlayerArray(currentWall,currentPair,tile);
+    }
+
+    [ClientRpc]
+    public void RpcAddTileToPlayerArray( int currentWall, int currentPair, string tile)
+    {
+       
+        if (tile == "upper")
+            playerTiles.Add(Wall.instance.tiles[currentWall][currentPair].upperTile);
+        else if (tile == "lower")
+            playerTiles.Add(Wall.instance.tiles[currentWall][currentPair].lowerTile);
+        else if(tile=="")
+        {
+            playerTiles.Add(Wall.instance.tiles[currentWall][currentPair].upperTile);
+            playerTiles.Add(Wall.instance.tiles[currentWall][currentPair].lowerTile);
+        }
+        else if (tile == "free")
+        {
+            playerTiles.Add(Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1]);
+            Debug.Log(Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].name);
+        }
+
+    }
+
+    bool CheckForMoving()
+    {
+        foreach (Tile tile in playerTiles)
+        {
+            if (CheckTileMoving(tile)) return true;
+        }
+        return false;
+    }
+
+    bool CheckTileMoving(Tile tile)
+    {
+        return tile.tile.GetComponent<BezierMove>().moving;
+    }
+
+
+    private void Update()
+    {
+        if (!isServer) Debug.Log("no");
+        
+        if (isServer && needToCheckMoving)
+        {
+            //Debug.Log(tileToMove.name);
+            //Debug.Log(CheckTileMoving(tileToMove));
+            if(!CheckTileMoving(tileToMove))
+            {
+                Debug.Log(needFreeTile);
+                if (needFreeTile)
+                {
+                    if (Wall.instance.freeTiles.Count == 0) return;
+
+                    Wall.instance.GiveFreeTile();
+                    needFreeTile = false;
+                    needToCheckMoving = false;
+                    return;
+                }
+                needToCheckMoving = false;
+                Invoke("Sort", 1.2f);
+                Invoke("GetNextFlower", 1.7f);
+                
+
+            }
+
+        }
+    }
+
+    void GetNextFlower()
+    {
+        GameManager.instance.CheckForFlowers();
     }
 
 }

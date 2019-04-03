@@ -10,24 +10,36 @@ class South:Wind
 {
     const int num = 2;
     
-    public static Vector3 startPosition = new Vector3(-11, 1f, -27);
-
+    public Vector3 startPosition = new Vector3(-11, 1f, -30);
+    public Vector3  startOpenTilePosition = new Vector3(-11, 1f, -27);
+    public Vector3  startFlowerPosition = new Vector3(-11, 0, -24);
 
     public South(Player p) : base(p)
     {
           rotation = 180;
          freePosition = startPosition;
+        freeOpenPosition = startOpenTilePosition;
+        freeFlowerPosition = startFlowerPosition;
     }
 
-    public override void RefreshFreePosition()
+
+
+    public override void MoveRightFreePosition(ref Vector3 pos)
     {
-        freePosition.x += 2;
+        pos.x += 2;
+    }
+
+    public override void MoveLeftFreePosition(ref Vector3 pos)
+    {
+        pos.x -= 2;
     }
 
     public South()
     {
         rotation = 180;
         freePosition = startPosition;
+        freeOpenPosition = startOpenTilePosition;
+        freeFlowerPosition = startFlowerPosition;
     }
 }
 

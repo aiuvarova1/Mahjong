@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    const uint playersToStart = 2;
+    const uint playersToStart = 1;
     
     public static GameMaster instance = null;
 
@@ -182,17 +182,5 @@ public class GameMaster : NetworkBehaviour
                 return;
 
         }
-        //if (playerCount == playersToStart && gameState=="prepare") gameState = "ready";
-        //if (gameState == "ready")
-        //{
-        //    gameState = "waiting";
-        //    GetReady();
-        //}
-        //if (gameState == "waiting" && readyPlayers == playersToStart)
-        //{
-        //    gameState = "start";
-        //    SetReady();
-        //}
-
     }
 }

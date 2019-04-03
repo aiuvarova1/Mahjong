@@ -14,6 +14,9 @@ public class Wall : NetworkBehaviour
     int beginningWall;
     int beginningPair;
 
+    int currentWall;
+    int currentPair;
+
     public bool isMoving = false;
 
     private void Awake()
@@ -54,8 +57,9 @@ public class Wall : NetworkBehaviour
     public void DistributeTiles()
     {
 
-        int currentWall = beginningWall;
-        int currentPair = beginningPair;
+        currentWall = beginningWall;
+        currentPair = beginningPair;
+
         Debug.Log(GameManager.instance.winds.Count + "winds");
 
         for (int i = 0; i < 4; i++)
@@ -66,35 +70,27 @@ public class Wall : NetworkBehaviour
                 {
                     for (int j = 0; j < 2; j++)
                     {
-                        currentPair++;
-                        if (currentPair == 18)
-                        {
-                            currentWall++;
-                            if (currentWall == 4)
-                                currentWall = 0;
-                            currentPair = 0;
-                        }
+                        
+                        CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
 
                         RpcMoveUpper(currentWall, currentPair,
                             GameManager.instance.winds[windNum].freePosition, GameManager.instance.winds[windNum].rotation);
 
-                        GameManager.instance.winds[windNum].RefreshFreePosition();
+                        GameManager.instance.winds[windNum].MoveRightFreePosition(ref GameManager.instance.winds[windNum].freePosition);
 
                         RpcMoveLower(currentWall, currentPair,
                             GameManager.instance.winds[windNum].freePosition, GameManager.instance.winds[windNum].rotation);
 
-                        GameManager.instance.winds[windNum].RefreshFreePosition();
+                        GameManager.instance.winds[windNum].MoveRightFreePosition(ref GameManager.instance.winds[windNum].freePosition);
 
                         if (GameManager.instance.winds[windNum].player != null)
-                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, windNum, currentWall, currentPair,"");
+                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair,"");
 
                         // GameManager.instance.winds[windNum].player.playerTiles.Add(tiles[currentWall][currentPair].upperTile);
 
                         // GameManager.instance.winds[windNum].player.playerTiles.Add(tiles[currentWall][currentPair].lowerTile);
 
                     }
-
-
 
                 }
 
@@ -106,21 +102,14 @@ public class Wall : NetworkBehaviour
 
                     if (windNum % 2 == 0)
                     {
-                        currentPair++;
-                        if (currentPair == 18)
-                        {
-                            currentWall++;
+                        
+                        CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
 
-                            if (currentWall == 4)
-                                currentWall = 0;
-                            
-                            currentPair = 0;
-                        }
                         RpcMoveUpper(currentWall, currentPair,
                                 GameManager.instance.winds[windNum].freePosition, GameManager.instance.winds[windNum].rotation);
 
                         if (GameManager.instance.winds[windNum].player != null)
-                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, windNum, currentWall, currentPair,"upper");
+                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair,"upper");
                     }
                     else
                     {
@@ -128,26 +117,53 @@ public class Wall : NetworkBehaviour
                             GameManager.instance.winds[windNum].freePosition, GameManager.instance.winds[windNum].rotation);
 
                         if (GameManager.instance.winds[windNum].player != null)
-                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, windNum, currentWall, currentPair,"lower");
+                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair,"lower");
                     }
 
-                    GameManager.instance.winds[windNum].RefreshFreePosition();
+                    GameManager.instance.winds[windNum].MoveRightFreePosition(ref GameManager.instance.winds[windNum].freePosition);
                 }
             }
         }
 
+        
+        CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
+        RpcRefreshCurrentPair(currentWall, currentPair);
+
+
+    }
+
+    void CheckForTheEndOfTheWall(ref int currentWall,ref int currentPair)
+    {
+        currentPair++;
+
+        if (currentPair>=tiles[currentWall].Count)
+        {
+            currentWall++;
+            if (currentWall == 4)
+                currentWall = 0;
+            currentPair = 0;
+        }
+    }
+
+    [ClientRpc]
+    void RpcRefreshCurrentPair(int wallNum,int pairNum)
+    {
+        currentWall = wallNum;
+        currentPair = pairNum;
     }
 
 
 
     //don't forget
-    void RemoveFromWallList()
+    public void UpdateWallList()
     {
         int currentWall = beginningWall;
-        int currentPair = beginningPair + 1;
+        int currentPair = beginningPair;
 
-        for (int i = 0; i < 26; i++)
+        for (int i = 0; i < 27; i++)
         {
+            RpcRemovePair(currentWall, currentPair);
+
             Debug.Log(tiles[currentWall].Count + "wallcount");
             if (currentPair >= tiles[currentWall].Count)
             {
@@ -157,23 +173,25 @@ public class Wall : NetworkBehaviour
                 currentPair = 0;
             }
             tiles[currentWall].RemoveAt(currentPair);
-            RpcRemovePair(currentWall, currentPair);
+            
+            
         }
     }
 
     [TargetRpc]
-    void TargetAddTileToPlayerArray(NetworkConnection conn,int windNum,int currentWall,int currentPair,string tile)
+    void TargetAddTileToPlayerArray(NetworkConnection conn,int currentWall,int currentPair,string tile)
     {
         Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
-        if(tile=="upper")
-             player.playerTiles.Add(tiles[currentWall][currentPair].upperTile);
-        else if(tile=="lower")
-             player.playerTiles.Add(tiles[currentWall][currentPair].lowerTile);
-        else
-        {
-            player.playerTiles.Add(tiles[currentWall][currentPair].upperTile);
-            player.playerTiles.Add(tiles[currentWall][currentPair].lowerTile);
-        }
+        player.CmdAddTileToPlayerArray(currentWall,currentPair,tile);
+        //if(tile=="upper")
+        //     player.playerTiles.Add(tiles[currentWall][currentPair].upperTile);
+        //else if(tile=="lower")
+        //     player.playerTiles.Add(tiles[currentWall][currentPair].lowerTile);
+        //else
+        //{
+        //    player.playerTiles.Add(tiles[currentWall][currentPair].upperTile);
+        //    player.playerTiles.Add(tiles[currentWall][currentPair].lowerTile);
+        //}
 
     }
 
@@ -196,7 +214,8 @@ public class Wall : NetworkBehaviour
     [ClientRpc]
     void RpcRemovePair(int currentWall, int currentPair)
     {
-
+        Debug.Log($"cur wall{currentWall},cur pair{currentPair}");
+        Debug.Log(tiles[currentWall].Count);
         tiles[currentWall].RemoveAt(currentPair);
     }
 
@@ -204,9 +223,10 @@ public class Wall : NetworkBehaviour
     void RpcLieFreeTiles(int wallNum, int restNum)
 
     {
-
         beginningWall = wallNum;
         beginningPair = restNum;
+
+        beginningPair--;
 
         freeTiles.Add(tiles[wallNum][restNum].upperTile);
         freeTiles.Add(tiles[wallNum][restNum].lowerTile);
@@ -216,12 +236,59 @@ public class Wall : NetworkBehaviour
 
     }
 
-    private void Update()
+
+
+    //void GiveFreeTile()
+    //{
+    //    Debug.Log("GiveFreeTile");
+    //    TargetAddTileToPlayerArray(GameManager.instance.CurrentWind.player.connectionToClient, 0, 0, "free");
+    //    Debug.Log(GameManager.instance.CurrentWind.player.playerTiles.Count + "ar count");
+
+    //    RpcGiveFreeTile(GameManager.instance.CurrentWind.freePosition, GameManager.instance.CurrentWind.rotation);
+    //    GameManager.instance.CurrentWind.MoveRightFreePosition(ref GameManager.instance.CurrentWind.freePosition);
+       
+    //}
+
+    public void GiveFreeTile()
     {
-        if (!isServer) return;
+        Wind curWind = GameManager.instance.winds[GameManager.instance.CurrentWind];
+
+        TargetAddTileToPlayerArray(curWind.player.connectionToClient, 0, 0, "free");
+
+        curWind.player.tileToMove = freeTiles[freeTiles.Count - 1];
+
+        RpcGiveFreeTile(curWind.freePosition, curWind.rotation);
+        //curWind.player.needToCheckMoving = true;
+
+        curWind.MoveRightFreePosition(ref curWind.freePosition);
+        Debug.Log(curWind.freePosition);
 
         
+
+        Invoke("CheckFreeTiles", 0.6f);
         
+    }
+
+    [ClientRpc]
+    void RpcGiveFreeTile(Vector3 freePosition, float rotation)
+    {
+        freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().Move(freePosition,rotation);
+
+        Invoke("RemoveFromFreeTiles", 0.5f);
+        
+    }
+
+    void RemoveFromFreeTiles()
+    {
+        GameManager.instance.winds[GameManager.instance.CurrentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
+        GameManager.instance.winds[GameManager.instance.CurrentWind].player.needToCheckMoving = true;
+        freeTiles.RemoveAt(freeTiles.Count - 1);
+    }
+
+    void CheckFreeTiles()
+    {
+        if (freeTiles.Count == 0)
+            RpcLieFreeTiles(beginningWall, beginningPair);
     }
 
 }

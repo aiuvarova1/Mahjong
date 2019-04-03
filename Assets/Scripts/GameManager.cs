@@ -16,7 +16,25 @@ public class GameManager : NetworkBehaviour
 
     public bool wallIsBuilt = false;
 
-   public  List<Wind> winds = new List<Wind>();
+    public List<Wind> winds = new List<Wind>();
+
+    float timeToWait = 0;
+
+    int currentWind;
+
+    public int CurrentWind
+    {
+        get
+        {
+            return currentWind;
+        }
+
+        private set
+        {
+            if (value > 3) currentWind = 0;
+            else currentWind = value;
+        }
+    }
 
     private void Awake()
     {
@@ -30,12 +48,14 @@ public class GameManager : NetworkBehaviour
         winds.Add(new South());
         winds.Add(new West());
         winds.Add(new North());
-        
+
+        CurrentWind = 0;
+
     }
 
     public void StartGame()
     {
-        
+
         BuildWall.instance.FillIndexes();
 
         var o = new MemoryStream(); //Create something to hold the data
@@ -48,7 +68,7 @@ public class GameManager : NetworkBehaviour
 
         RpcBuildOnAllClients(data);
         //for server
-        
+
 
         GameMaster.instance.DarkenScreens();
 
@@ -61,8 +81,6 @@ public class GameManager : NetworkBehaviour
         //winds.Sort();
         //winds.Reverse();
 
-
-
     }
 
     public void DistributeTiles()
@@ -71,15 +89,67 @@ public class GameManager : NetworkBehaviour
 
         Wall.instance.DistributeTiles();
 
-        Invoke("SortTiles", 4f);
+        Invoke("SortTiles", 3f);
+
+        Invoke("CheckAllPlayersForFlowers", 3.5f);
+    }
+
+
+
+     void CheckAllPlayersForFlowers()
+    {
+        if (!isServer) return;
+        
+        Debug.Log(currentWind+"cur");
+        //may need fix
+        if (currentWind>=4)
+        {
+            GameMaster.instance.gameState = "playing";
+            return;
+        }
+        if (winds[currentWind].player == null || !winds[currentWind].player.CheckForFlowers())
+        {
+            currentWind++;
+            CheckAllPlayersForFlowers();
+            return;
+        }
+        Debug.Log(currentWind);
+
+        CheckForFlowers();
+
+    }
+
+    public void CheckForFlowers()
+    {
+        Player player = winds[currentWind].player;
+        if (!player.CheckForFlowers())
+        {
+            currentWind++;
+            CheckAllPlayersForFlowers();
+            return;
+        }
+
+        Debug.Log(player.playerTiles.Count);
+        player.RpcLieOutTile(player.playerTiles.Count - 1, winds[currentWind].freeFlowerPosition, winds[currentWind].rotation, "flowers");
+        //player.playerTiles.RemoveAt(player.playerTiles.Count - 1);
+
+        winds[currentWind].MoveRightFreePosition(ref winds[currentWind].freeFlowerPosition);
+        winds[currentWind].MoveLeftFreePosition(ref winds[currentWind].freePosition);
+        Debug.Log(winds[currentWind].freePosition);
+
+        Debug.Log(player.playerTiles.Count);
+    }
+
+
+    void LieFlowers()
+    {
+
+
     }
 
     [ClientRpc]
     void RpcBuildOnAllClients(string data)
     {
-
-       
-
         if (isServer) return;
 
         var ins = new MemoryStream(Convert.FromBase64String(data)); //Create an input stream from the string
@@ -109,7 +179,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     void RpcMakeTilesVisible()
     {
-       // NetworkManager.
+        // NetworkManager.
         foreach (List<WallPair> lst in BuildWall.instance.tiles)
         {
             foreach (WallPair pair in lst)
@@ -120,7 +190,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    void SortTiles()
+    public void SortTiles()
     {
         Debug.Log("sort tiles");
         RpcSortTiles();
@@ -129,17 +199,13 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void RpcSortTiles()
     {
-        Debug.Log(GameObject.FindWithTag("Player").GetComponent<Player>().playerTiles.Count + "player tiles!");
+        //invokes on all(redo)
         GameObject.FindWithTag("Player").GetComponent<Player>().SortTiles();
+
+        //for (int i = 0; i < winds.Count; i++)
+        //{
+        //    Debug.Log($"{winds[i].player == null} {i}");
+        //}
     }
-
-
-
-
-
-
-
-
-
 
 }
