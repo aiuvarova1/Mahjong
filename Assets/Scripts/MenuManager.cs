@@ -8,8 +8,8 @@ public class MenuManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+        Application.targetFrameRate = 60;
+    }
     public void Quit()
     {
         Debug.Log("pressed exit");

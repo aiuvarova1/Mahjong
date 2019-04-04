@@ -193,7 +193,12 @@ public class GameManager : NetworkBehaviour
     public void SortTiles()
     {
         Debug.Log("sort tiles");
-        RpcSortTiles();
+        for (int i = 0; i < winds.Count; i++)
+        {
+            if (winds[i].player != null)
+                winds[i].player.RpcSort();
+        }
+        //RpcSortTiles();
     }
 
     [ClientRpc]

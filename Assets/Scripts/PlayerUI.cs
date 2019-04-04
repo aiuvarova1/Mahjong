@@ -23,6 +23,11 @@ public class PlayerUI : NetworkBehaviour
     [SerializeField]
     GameObject startButton;
 
+    public Text numOfPlayers;
+    public Text playerWind;
+
+    public GameObject QuitButton;
+
 
     [SerializeField]
     public Canvas canvas;
@@ -50,6 +55,21 @@ public class PlayerUI : NetworkBehaviour
     {
         starter = WaitForStart();
         infoPanel.SetActive(false);
+    }
+
+
+    [TargetRpc]
+
+    public void TargetRefreshPlayers(NetworkConnection conn,int num)
+    {
+        numOfPlayers.text = $"Players: {num}/4";
+    }
+
+    [TargetRpc]
+    public void TargetDisableInfoComponents(NetworkConnection conn)
+    {
+        QuitButton.SetActive(false);
+        playerWind.enabled = false;
     }
 
      IEnumerator DarkenTheScreen()

@@ -55,24 +55,25 @@ public class SetupPlayer : NetworkBehaviour
             case 0:
                 player.wind = "East";
 
-                return;
+                break;
             case 1:
                 player.wind = "South";
 
-                return;
+                break;
             case 2:
                 player.wind = "West";
 
-                return;
+                break;
             case 3:
                 player.wind = "North";
 
-                return;
+                break;
             default:
                 Debug.LogError($"Order {player.order} is incorrect");
                 return;
 
         }
+        player.GetComponent<PlayerUI>().playerWind.text = $"Your wind: {player.wind}";
 
     }
 
@@ -87,7 +88,7 @@ public class SetupPlayer : NetworkBehaviour
     {
         GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(),ord,wind);
         Debug.Log($"Camera {ord}, wind {wind}");
-        Debug.Log(GameMaster.instance.playerCount + "players");
+        Debug.Log(GameMaster.instance.PlayerCount + "players");
 
         Debug.Log(GameMaster.instance.availableCameras.Count + "cameras");
         for (int i = 0; i < GameMaster.instance.availableCameras.Count; i++)
@@ -110,7 +111,7 @@ public class SetupPlayer : NetworkBehaviour
     [Command]
     public void CmdUnregisterPlayer(string netID)
     {
-        Debug.Log($"command {GameMaster.instance.playerCount} players");
+        Debug.Log($"command {GameMaster.instance.PlayerCount} players");
         RpcUnregisterPlayer(netID);
         TargetDisconnect(connectionToClient);
     }
@@ -118,9 +119,9 @@ public class SetupPlayer : NetworkBehaviour
     [ClientRpc]
     public void RpcUnregisterPlayer(string netID)
     {
-        Debug.Log($"rpc {GameMaster.instance.playerCount} players");
+        Debug.Log($"rpc {GameMaster.instance.PlayerCount} players");
         GameMaster.instance.UnregisterPlayer(netID);
-        Debug.Log($"rpc {GameMaster.instance.playerCount} players");
+        Debug.Log($"rpc {GameMaster.instance.PlayerCount} players");
         Debug.Log($"{GameMaster.instance.availableCameras.Count} cameras");
     }
 

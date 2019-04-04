@@ -28,7 +28,7 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcSort()
+    public void RpcSort()
     {
         Debug.Log("rpc");
         SortTiles();
@@ -84,6 +84,7 @@ public class Player : NetworkBehaviour
     [Command]
     void CmdRemoveFromArray(int index)
     {
+       // playerTiles.RemoveAt(index);
         Debug.Log(playerTiles.Count);
     }
 
@@ -109,7 +110,12 @@ public class Player : NetworkBehaviour
 
         foreach (Tile tile in playerTiles)
         {
-            if (tile.name.Contains("f")) return true;
+
+            if (tile.name.Contains("f"))
+            {
+                Debug.Log(tile.name);
+                return true;
+            }
         }
         return false;
 
@@ -183,7 +189,7 @@ public class Player : NetworkBehaviour
 
     private void Update()
     {
-        if (!isServer) Debug.Log("no");
+        //if (!isServer) Debug.Log("no");
         
         if (isServer && needToCheckMoving)
         {
@@ -203,7 +209,7 @@ public class Player : NetworkBehaviour
                 }
                 needToCheckMoving = false;
                 Invoke("Sort", 1.2f);
-                Invoke("GetNextFlower", 1.7f);
+                Invoke("GetNextFlower", 1.5f);
                 
 
             }

@@ -258,13 +258,14 @@ public class Wall : NetworkBehaviour
         curWind.player.tileToMove = freeTiles[freeTiles.Count - 1];
 
         RpcGiveFreeTile(curWind.freePosition, curWind.rotation);
+        Invoke("RemoveFromFreeTiles", 0.5f);
         //curWind.player.needToCheckMoving = true;
 
         curWind.MoveRightFreePosition(ref curWind.freePosition);
         Debug.Log(curWind.freePosition);
 
-        
 
+        
         Invoke("CheckFreeTiles", 0.6f);
         
     }
@@ -274,7 +275,7 @@ public class Wall : NetworkBehaviour
     {
         freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().Move(freePosition,rotation);
 
-        Invoke("RemoveFromFreeTiles", 0.5f);
+        
         
     }
 
@@ -282,8 +283,15 @@ public class Wall : NetworkBehaviour
     {
         GameManager.instance.winds[GameManager.instance.CurrentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
         GameManager.instance.winds[GameManager.instance.CurrentWind].player.needToCheckMoving = true;
+        RpcRemoveFromFree();
+    }
+    [ClientRpc]
+    void RpcRemoveFromFree()
+    {
         freeTiles.RemoveAt(freeTiles.Count - 1);
     }
+
+
 
     void CheckFreeTiles()
     {

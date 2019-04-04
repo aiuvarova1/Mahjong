@@ -5,13 +5,26 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    const uint playersToStart = 1;
+    const uint playersToStart = 4;
     
     public static GameMaster instance = null;
 
     public SyncListInt availableCameras = new SyncListInt();
 
-    public int playerCount;
+
+    int playerCount;
+
+    public int PlayerCount
+    {
+        get { return playerCount; }
+        set
+        {
+            playerCount = value;
+            //if(isServer)
+            //    RefreshNumOfPlayers();
+        }
+    }
+
 
     public int readyPlayers;
 
@@ -41,6 +54,15 @@ public class GameMaster : NetworkBehaviour
         if (availableCameras.Count == 0) InitCameras();
     }
 
+    void RefreshNumOfPlayers()
+    {
+        Debug.Log(playerCount);
+        foreach (Player player in players.Values)
+        {
+            player.GetComponent<PlayerUI>().TargetRefreshPlayers(player.connectionToClient,PlayerCount);
+        }
+    }
+
 
     private void InitCameras()
     {
@@ -55,18 +77,19 @@ public class GameMaster : NetworkBehaviour
         availableCameras.Remove(ord);
         GameMaster.instance.players[netID].order = ord;
         instance.players[netID].wind= wind;
+
     }
 
     public void RegisterPlayer(string netID, Player player)
     {
         players.Add(netID, player);
         if(player.Camera!=null) availableCameras.Remove(player.order);
-        playerCount++;
+        PlayerCount++;
     }
 
     public void UnregisterPlayer(string netID)
     {
-        playerCount--;
+        PlayerCount--;
         availableCameras.Add(players[netID].order);
         Debug.Log($"add {players[netID].order} back");
         players.Remove(netID);
@@ -115,6 +138,16 @@ public class GameMaster : NetworkBehaviour
         gameState = "prepare";
     }
 
+     void DisableInfo()
+    {
+
+        foreach (Player player in players.Values)
+        {
+            player.GetComponent<PlayerUI>().TargetDisableInfoComponents(player.connectionToClient);
+        }
+        
+    }
+
 
     void AssignWinds()
     {
@@ -143,14 +176,14 @@ public class GameMaster : NetworkBehaviour
         switch (gameState)
         {
             case "prepare":
-                if (playerCount == playersToStart) gameState = "ready";
+                if (PlayerCount == playersToStart) gameState = "ready";
                 return;
             case "ready":
                 gameState = "waiting";
                 GetReady();
                 return;
             case "waiting":
-                if (playersToStart != playerCount)
+                if (playersToStart != PlayerCount)
                 {
                     gameState = "prepare";
                     SetReady();
@@ -164,6 +197,7 @@ public class GameMaster : NetworkBehaviour
                 return;
             case "start":
                 AssignWinds();
+                DisableInfo();
                 GameManager.instance.StartGame();
 
                 gameState = "starting";
