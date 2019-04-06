@@ -15,8 +15,11 @@ public class GameManager : NetworkBehaviour
     BinaryFormatter bf;
 
     public bool wallIsBuilt = false;
+    public bool tilesAreGiven = false;
 
     public List<Wind> winds = new List<Wind>();
+
+    public Table GameTable { get; set; }
 
     float timeToWait = 0;
 
@@ -29,7 +32,7 @@ public class GameManager : NetworkBehaviour
             return currentWind;
         }
 
-        private set
+       set
         {
             if (value > 3) currentWind = 0;
             else currentWind = value;
@@ -50,6 +53,8 @@ public class GameManager : NetworkBehaviour
         winds.Add(new North());
 
         CurrentWind = 0;
+        GameTable = new Table();
+
 
     }
 
@@ -69,7 +74,6 @@ public class GameManager : NetworkBehaviour
         RpcBuildOnAllClients(data);
         //for server
 
-
         GameMaster.instance.DarkenScreens();
 
         StartCoroutine(Build());
@@ -77,9 +81,6 @@ public class GameManager : NetworkBehaviour
         StartCoroutine(Lighten());
 
         Debug.Log(BuildWall.instance.tiles.Count + "tiles");
-
-        //winds.Sort();
-        //winds.Reverse();
 
     }
 
@@ -124,8 +125,15 @@ public class GameManager : NetworkBehaviour
         Player player = winds[currentWind].player;
         if (!player.CheckForFlowers())
         {
-            currentWind++;
-            CheckAllPlayersForFlowers();
+            Debug.Log(GameMaster.instance.gameState);
+
+            if (GameMaster.instance.gameState == "distributing" || GameMaster.instance.gameState == "starting")
+            {
+                currentWind++;
+                CheckAllPlayersForFlowers();
+            }
+            else
+                BeginPlayerMove();
             return;
         }
 
@@ -135,17 +143,9 @@ public class GameManager : NetworkBehaviour
 
         winds[currentWind].MoveRightFreePosition(ref winds[currentWind].freeFlowerPosition);
         winds[currentWind].MoveLeftFreePosition(ref winds[currentWind].freePosition);
-        Debug.Log(winds[currentWind].freePosition);
-
-        Debug.Log(player.playerTiles.Count);
-    }
-
-
-    void LieFlowers()
-    {
-
 
     }
+
 
     [ClientRpc]
     void RpcBuildOnAllClients(string data)
@@ -201,16 +201,33 @@ public class GameManager : NetworkBehaviour
         //RpcSortTiles();
     }
 
-    [ClientRpc]
-    public void RpcSortTiles()
+    public void InvokeChange()
     {
-        //invokes on all(redo)
-        GameObject.FindWithTag("Player").GetComponent<Player>().SortTiles();
+        Invoke("ChangeTurn", 1.6f);
+    }
 
-        //for (int i = 0; i < winds.Count; i++)
-        //{
-        //    Debug.Log($"{winds[i].player == null} {i}");
-        //}
+    public void ChangeTurn()
+    {
+        Wall.instance.GiveWallTile();
+
+        Invoke("CheckForFlowers", 1.2f);
+    }
+
+
+    void BeginPlayerMove()
+    {
+        Player curPlayer = winds[CurrentWind].player;
+        if (curPlayer == null) return;
+
+        curPlayer.TargetSelectLastTile(curPlayer.connectionToClient);
+        TargetSetTurn(curPlayer.connectionToClient);
+
+    }
+
+    [TargetRpc]
+    void TargetSetTurn(NetworkConnection conn)
+    {
+        GameObject.FindWithTag("Player").GetComponent<Player>().playerTurn = true;
     }
 
 }

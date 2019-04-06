@@ -164,15 +164,9 @@ public class GameMaster : NetworkBehaviour
         GameObject.FindWithTag("Player").GetComponent<Player>().CmdAddWind();
     }
 
-    
-   
-
     private void Update()
     {
         if (!isServer) return;
-
-        //Debug.Log("upd"+gameState);
-
         switch (gameState)
         {
             case "prepare":
@@ -209,8 +203,16 @@ public class GameMaster : NetworkBehaviour
                 {
                     GameManager.instance.DistributeTiles();
                     //Debug.Log("free tiles");
-                    gameState = "tst";
+                    gameState = "distributing";
                 }
+                return;
+            case "distributing":
+                return;
+            case "playing":
+                GameManager.instance.CurrentWind = 0;
+                GameManager.instance.InvokeChange();
+                Debug.Log(gameState);
+                gameState = "in process";
                 return;
             default:
                 return;

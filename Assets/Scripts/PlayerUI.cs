@@ -28,11 +28,14 @@ public class PlayerUI : NetworkBehaviour
 
     public GameObject QuitButton;
 
+    public Text countDown;
+
 
     [SerializeField]
     public Canvas canvas;
 
     IEnumerator starter;
+    public IEnumerator CountDown;
 
     public bool leave = false;
     public bool ready = false;
@@ -44,17 +47,45 @@ public class PlayerUI : NetworkBehaviour
     {
         player = gameObject.GetComponent<Player>();
         networkManager = (NewNetworkManager)NetworkManager.singleton;
-        //if(isLocalPlayer)
-       // blackScreen = GameObject.Find("BlackScreen");
-            
-        
-       // StartCoroutine(starter);
+
     }
 
     private void Awake()
     {
         starter = WaitForStart();
+        CountDown = WaitForMove();
         infoPanel.SetActive(false);
+        countDown.enabled = false;
+    }
+
+    public void LaunchWaitForMove()
+    {
+        StartCoroutine(CountDown);
+    }
+
+    public void StopWaitingForMove()
+    {
+        StopCoroutine(CountDown);
+        countDown.enabled = false;
+    }
+
+    IEnumerator WaitForMove()
+    {
+        Debug.Log("wait");
+        int countdown = 30;
+
+        countDown.text = "30";
+
+        countDown.enabled = true;
+
+        while (countdown > 0)
+        {
+            countDown.text = $"{countdown}";
+            
+            yield return new WaitForSeconds(1);
+            countdown--;
+        }
+
     }
 
 

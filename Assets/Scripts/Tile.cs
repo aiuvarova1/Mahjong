@@ -11,6 +11,8 @@ public class Tile:IComparable<Tile>
     public string name;
     public GameObject tile;
     int numOfTile;
+
+    public bool isOwned=false;
     
 
     public Tile(GameObject tile,bool created,Vector2 coords)
