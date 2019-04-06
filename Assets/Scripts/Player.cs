@@ -23,7 +23,7 @@ public class Player : NetworkBehaviour
     public bool playerTurn = false;
     bool startedCoroutine = false;
 
-    Tile selectedTile;
+    public Tile selectedTile;
 
     Vector3 freeSpacePosition;
     int freeSpaceIndex;
@@ -61,11 +61,11 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void SelectTile()
-    {
-        if (!isLocalPlayer) return;
-        Debug.Log("select");
-    }
+    //public void SelectTile()
+    //{
+    //    if (!isLocalPlayer) return;
+    //    Debug.Log("select");
+    //}
 
     [ClientRpc]
     public void RpcLieOutTile(int index, Vector3 freePosition, float rotation, string array)
@@ -193,7 +193,7 @@ public class Player : NetworkBehaviour
     public void SelectTile(GameObject tile)
     {
         int index = CheckList(tile);
-        if (!playerTurn || index ==-1) return;
+        if (!playerTurn || !startedCoroutine || index ==-1) return;
 
         Tile tileToSelect = playerTiles[index];
         Debug.Log("my tile");
@@ -208,6 +208,7 @@ public class Player : NetworkBehaviour
         else
         {
             CmdLieTileOnTable(index);
+            playerTurn = false;
         }
     }
 
@@ -215,6 +216,7 @@ public class Player : NetworkBehaviour
     public void CmdLieTileOnTable(int index)
     {
         freeSpacePosition = playerTiles[index].tile.transform.position;
+        freeSpacePosition.y -= 0.7f;
         freeSpaceIndex = index;
 
         Table t = GameManager.instance.GameTable;
@@ -223,27 +225,31 @@ public class Player : NetworkBehaviour
 
         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
 
+
         Invoke("InvokeDelete",0.5f);
     }
+
 
     void InvokeDelete()
     {
         Wind wind = GameManager.instance.winds[GameManager.instance.CurrentWind];
 
-        Debug.Log(playerTiles.Count);
+
         for (int i = freeSpaceIndex; i < playerTiles.Count; i++)
         {
-            Debug.Log($"{i},{playerTiles[i].tile == null}");
-            RpcDeleteFreeSpace(wind.freePosition,playerTiles[i].tile);
+            Debug.Log(playerTiles[i].tile == null);
+            RpcDeleteFreeSpace(wind.freePosition,i);
             wind.MoveRightFreePosition(ref wind.freePosition);
         }
+        Invoke("Sort", 0.1f);
         
     }
 
     [ClientRpc]
-    void RpcDeleteFreeSpace(Vector3 position,GameObject tile)
+    void RpcDeleteFreeSpace(Vector3 position,int index)
     {
-        tile.transform.position = position;
+        //Debug.Log(tile==null);
+        playerTiles[index].tile.transform.position = position;
     }
 
     [TargetRpc]
@@ -309,8 +315,11 @@ public class Player : NetworkBehaviour
                     Invoke("Sort", 1.2f);
                     Invoke("GetNextFlower", 1.5f);
                 }
-                else 
-                    Invoke("GetNextFlower", 1.2f);
+                else
+                {
+                    Debug.Log("not moving");
+                    Invoke("GetNextFlower", 0.01f);
+                }
 
 
             }

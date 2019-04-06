@@ -133,7 +133,7 @@ public class GameManager : NetworkBehaviour
                 CheckAllPlayersForFlowers();
             }
             else
-                BeginPlayerMove();
+                Invoke("BeginPlayerMove", 0.2f);
             return;
         }
 
@@ -210,7 +210,7 @@ public class GameManager : NetworkBehaviour
     {
         Wall.instance.GiveWallTile();
 
-        Invoke("CheckForFlowers", 1.2f);
+        //Invoke("CheckForFlowers", 1f);
     }
 
 

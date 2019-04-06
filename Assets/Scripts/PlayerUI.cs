@@ -85,6 +85,8 @@ public class PlayerUI : NetworkBehaviour
             yield return new WaitForSeconds(1);
             countdown--;
         }
+        countDown.enabled = false;
+        player.SelectTile(player.selectedTile.tile);
 
     }
 

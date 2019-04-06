@@ -98,29 +98,32 @@ public class BezierMove : MonoBehaviour
 
     }
 
-    public void StartMoveNewFreeTiles(GameObject tile,bool isFirst)
+    public void StartMoveNewFreeTiles(GameObject tile,bool isFirst,float r)
     {
-        StartCoroutine(MoveNewFreeTiles(tile,isFirst));
+        StartCoroutine(MoveNewFreeTiles(tile,isFirst,r));
     }
 
-    IEnumerator MoveNewFreeTiles(GameObject newTile,bool isFirst)
+    IEnumerator MoveNewFreeTiles(GameObject newTile,bool isFirst,float rotation)
     {
+        Debug.Log(rotating);
         speed = 12f;
         if(!isFirst)
             yield return new WaitForSeconds(0.8f);
-        MoveTile(transform.position.x, thirdRowHeight, transform.position.z);
+        MoveTile(transform.position.x, thirdRowHeight, transform.position.z,rotation);
         yield return new WaitForSeconds(0.8f);
 
-        MoveTile(newTile.transform.position.x, thirdRowHeight, newTile.transform.position.z);
+        MoveTile(newTile.transform.position.x, thirdRowHeight, newTile.transform.position.z,rotation);
         yield return new WaitForSeconds(0.8f);
 
         
     }
 
-    void MoveTile(float x,float y,float z)
+    void MoveTile(float x,float y,float z,float rotation)
     {
         endPoint = new Vector3(x,y,z);
+        endRotation = Quaternion.Euler(0, rotation, rotation);
         moving = true;
+        rotating = true;
     }
 
     public void SelectTile()
@@ -161,6 +164,7 @@ public class BezierMove : MonoBehaviour
         }
         if (rotating)
         {
+            Debug.Log(transform.rotation == endRotation);
             if (transform.rotation == endRotation)
             {
                 rotating = false;
