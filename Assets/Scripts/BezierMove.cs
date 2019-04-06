@@ -123,6 +123,16 @@ public class BezierMove : MonoBehaviour
         moving = true;
     }
 
+    public void SelectTile()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y + 0.7f, transform.position.z);
+    }
+
+    public void DeselectTile()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y - 0.7f, transform.position.z);
+    }
+
 
     private void Update()
     {

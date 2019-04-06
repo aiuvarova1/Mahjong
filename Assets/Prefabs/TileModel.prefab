@@ -15,6 +15,9 @@ GameObject:
   - component: {fileID: 808056113261467561}
   - component: {fileID: 808056113261467562}
   - component: {fileID: 1058236150147873728}
+  - component: {fileID: 4564605410972643488}
+  - component: {fileID: 4102208563531558897}
+  - component: {fileID: 852839122230698036}
   m_Layer: 0
   m_Name: TileModel
   m_TagString: Untagged
@@ -30,13 +33,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 808056113261467558}
-  m_LocalRotation: {x: -0.73250115, y: 0.50339895, z: 0.2595672, w: 0.37769905}
-  m_LocalPosition: {x: 19.288168, y: 1.9150059, z: 16.952103}
+  m_LocalRotation: {x: 0.5946576, y: 0.3825996, z: 0.38259947, w: -0.59465754}
+  m_LocalPosition: {x: 20.025606, y: 1.9150064, z: 16.92968}
   m_LocalScale: {x: 100, y: 20.000013, z: 150.00027}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -125.446, y: 0, z: 68.995995}
+  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 294.486}
 --- !u!33 &808056113261467556
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -155,3 +158,61 @@ MonoBehaviour:
   endPoint: {x: 0, y: 0, z: 0}
   moving: 0
   rotating: 0
+--- !u!114 &4564605410972643488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808056113261467558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6208070113992359634, guid: 609f1611d0a2b5044a76224e52ed2025,
+            type: 3}
+          m_MethodName: SelectTile
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
+--- !u!114 &4102208563531558897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808056113261467558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a169be4dd823674e938d155e9c45cf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!64 &852839122230698036
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808056113261467558}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: 4300000, guid: f6215d11805de9040a3876095a880bcb, type: 3}

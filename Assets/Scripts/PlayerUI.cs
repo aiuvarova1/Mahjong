@@ -69,7 +69,7 @@ public class PlayerUI : NetworkBehaviour
     public void TargetDisableInfoComponents(NetworkConnection conn)
     {
         QuitButton.SetActive(false);
-        playerWind.enabled = false;
+        numOfPlayers.enabled = false;
     }
 
      IEnumerator DarkenTheScreen()

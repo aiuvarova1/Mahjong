@@ -20,9 +20,11 @@ public class Player : NetworkBehaviour
     public bool needToCheckMoving = false;
     bool needFreeTile = false;
 
+    Tile selectedTile;
+
     //delegate void 
 
-        void Sort()
+    void Sort()
     {
         RpcSort();
     }
@@ -51,6 +53,12 @@ public class Player : NetworkBehaviour
             playerTiles[i].tile.transform.position = positions[i];
            // Debug.Log($"{i}, {playerTiles[i].name}");
         }
+    }
+
+    public void SelectTile()
+    {
+        if (!isLocalPlayer) return;
+        Debug.Log("select");
     }
 
     [ClientRpc]
@@ -167,9 +175,37 @@ public class Player : NetworkBehaviour
         else if (tile == "free")
         {
             playerTiles.Add(Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1]);
-            Debug.Log(Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].name);
+            
         }
 
+    }
+
+    public void SelectTile(GameObject tile)
+    {
+        Tile tileToSelect = CheckList(tile);
+        if ( tileToSelect== null) return;
+        Debug.Log("my tile");
+        //if (selectedTile != tileToSelect)
+        // {
+        Debug.Log(selectedTile != tileToSelect);
+            tileToSelect.tile.GetComponent<BezierMove>().SelectTile();
+        if(selectedTile!=null)
+            selectedTile.tile.GetComponent<BezierMove>().DeselectTile();
+        selectedTile = tileToSelect;
+       // }
+       
+
+
+    }
+
+
+    Tile CheckList(GameObject tile)
+    {
+        foreach (Tile playerTile in playerTiles)
+        {
+            if (playerTile.tile == tile) return playerTile;
+        }
+        return null;
     }
 
     bool CheckForMoving()
