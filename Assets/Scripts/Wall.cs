@@ -37,15 +37,15 @@ public class Wall : NetworkBehaviour
 
     public void AssighFreeTiles()
     {
-       //int wallNum = Random.Range(0, tiles.Count);
-       // int restNum = Random.Range(2, 13);
+        int wallNum = Random.Range(0, tiles.Count);
+         int restNum = Random.Range(2, 13);
 
-        int wallNum = 3;
-       int  restNum = 1;
+        //int wallNum = 3;
+        //int restNum = 0;
 
         beginningWall = wallNum;
         beginningPair = restNum;
-       
+
 
         Debug.Log(wallNum);
         Debug.Log(restNum);
@@ -70,7 +70,7 @@ public class Wall : NetworkBehaviour
                 {
                     for (int j = 0; j < 2; j++)
                     {
-                        
+
                         CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
 
                         RpcMoveUpper(currentWall, currentPair,
@@ -84,7 +84,7 @@ public class Wall : NetworkBehaviour
                         GameManager.instance.winds[windNum].MoveRightFreePosition(ref GameManager.instance.winds[windNum].freePosition);
 
                         if (GameManager.instance.winds[windNum].player != null)
-                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair,"");
+                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair, "");
 
                     }
 
@@ -98,14 +98,14 @@ public class Wall : NetworkBehaviour
 
                     if (windNum % 2 == 0)
                     {
-                        
+
                         CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
 
                         RpcMoveUpper(currentWall, currentPair,
                                 GameManager.instance.winds[windNum].freePosition, GameManager.instance.winds[windNum].rotation);
 
                         if (GameManager.instance.winds[windNum].player != null)
-                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair,"upper");
+                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair, "upper");
                     }
                     else
                     {
@@ -113,7 +113,7 @@ public class Wall : NetworkBehaviour
                             GameManager.instance.winds[windNum].freePosition, GameManager.instance.winds[windNum].rotation);
 
                         if (GameManager.instance.winds[windNum].player != null)
-                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair,"lower");
+                            TargetAddTileToPlayerArray(GameManager.instance.winds[windNum].player.connectionToClient, currentWall, currentPair, "lower");
                     }
 
                     GameManager.instance.winds[windNum].MoveRightFreePosition(ref GameManager.instance.winds[windNum].freePosition);
@@ -121,18 +121,18 @@ public class Wall : NetworkBehaviour
             }
         }
 
-        
+
         CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
         RpcRefreshCurrentPair(currentWall, currentPair);
 
 
     }
 
-    void CheckForTheEndOfTheWall(ref int currentWall,ref int currentPair)
+    void CheckForTheEndOfTheWall(ref int currentWall, ref int currentPair)
     {
         currentPair++;
 
-        if (currentPair>=tiles[currentWall].Count)
+        if (currentPair >= tiles[currentWall].Count)
         {
             currentWall++;
             if (currentWall == 4)
@@ -142,52 +142,28 @@ public class Wall : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcRefreshCurrentPair(int wallNum,int pairNum)
+    void RpcRefreshCurrentPair(int wallNum, int pairNum)
     {
         currentWall = wallNum;
         currentPair = pairNum;
     }
 
 
-
-    ////don't forget
-    //public void UpdateWallList()
-    //{
-    //    int currentWall = beginningWall;
-    //    int currentPair = beginningPair;
-
-    //    for (int i = 0; i < 27; i++)
-    //    {
-    //        RpcRemovePair(currentWall, currentPair);
-
-    //        Debug.Log(tiles[currentWall].Count + "wallcount");
-    //        if (currentPair >= tiles[currentWall].Count)
-    //        {
-    //            currentWall++;
-    //            if (currentWall == 4)
-    //                currentWall = 0;
-    //            currentPair = 0;
-    //        }
-    //        tiles[currentWall].RemoveAt(currentPair);
-            
-            
-    //    }
-    //}
-
     [TargetRpc]
-    void TargetAddTileToPlayerArray(NetworkConnection conn,int currentWall,int currentPair,string tile)
+    void TargetAddTileToPlayerArray(NetworkConnection conn, int currentWall, int currentPair, string tile)
     {
         Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
-        player.CmdAddTileToPlayerArray(currentWall,currentPair,tile);
+        player.CmdAddTileToPlayerArray(currentWall, currentPair, tile);
     }
-    
+
     public void GiveWallTile()
     {
         Wind curWind = GameManager.instance.winds[GameManager.instance.CurrentWind];
+        if (curWind.player == null) return;
 
         if (!tiles[currentWall][currentPair].upperTile.isOwned)
         {
-           
+
             curWind.player.tileToMove = tiles[currentWall][currentPair].upperTile;
 
             RpcMoveUpper(currentWall, currentPair, curWind.freePosition, curWind.rotation);
@@ -205,11 +181,12 @@ public class Wall : NetworkBehaviour
 
             RpcMoveLower(currentWall, currentPair, curWind.freePosition, curWind.rotation);
             //!
+            Invoke("SetMoving", 0.3f);
 
             if (curWind.player != null)
                 TargetAddTileToPlayerArray(curWind.player.connectionToClient, currentWall, currentPair, "lower");
 
-            CheckForTheEndOfTheWall(ref currentWall,ref currentPair);
+            CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
         }
 
         curWind.MoveRightFreePosition(ref curWind.freePosition);
@@ -217,7 +194,7 @@ public class Wall : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcMoveUpper(int currentWall,int currentPair,Vector3 freePosition,float rotation)
+    void RpcMoveUpper(int currentWall, int currentPair, Vector3 freePosition, float rotation)
     {
 
         tiles[currentWall][currentPair].upperTile.tile.GetComponent<BezierMove>().
@@ -256,34 +233,42 @@ public class Wall : NetworkBehaviour
 
         freeTiles.Add(tiles[wallNum][restNum].upperTile);
         freeTiles.Add(tiles[wallNum][restNum].lowerTile);
-        tiles[wallNum][restNum].upperTile.tile.transform.Rotate(0, 45, 0);
-        CheckAndFill(wallNum,restNum);
+
+        // tiles[wallNum][restNum].upperTile.tile.transform.Rotate(0, 45, 0);
+        CheckAndFill(wallNum, restNum);
     }
 
-    void CheckAndFill(int wallNum,int num)
+    void CheckAndFill(int wallNum, int num)
     {
-        float newRotation = tiles[wallNum - 1][0].lowerTile.tile.transform.rotation.y;
-        float oldRotation = tiles[wallNum ][0].lowerTile.tile.transform.rotation.y;
-        //Debug.Log(tiles[wallNum][0].lowerTile.tile.transform.rotation.y);
-        if (num>=2)
+        float newRotation = tiles[wallNum - 1][0].lowerTile.tile.transform.eulerAngles.y;
+        float oldRotation = tiles[wallNum][0].lowerTile.tile.transform.eulerAngles.y;
+
+        int prevWall = wallNum - 1;
+        if (prevWall < 0) prevWall = 3;
+
+        
+        Debug.Log(newRotation);
+        if (num >= 2)
         {
-            freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][num - 2].upperTile.tile, true,oldRotation);
-            freeTiles[1].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][num - 1].upperTile.tile, false,newRotation);
-        }else if (num == 1)
+            freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][num - 2].upperTile.tile.transform.position, true, oldRotation);
+            freeTiles[1].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][num - 1].upperTile.tile.transform.position, false, oldRotation);
+
+        }
+        else if (num == 1)
         {
             //Debug.Log(rotation);
             //freeTiles[1].tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
             Debug.Log(freeTiles[1].tile.transform.rotation.y);
-            freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum-1][17].upperTile.tile, true,oldRotation);
+            freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[prevWall][17].upperTile.tile.transform.position, true, newRotation);
 
-            freeTiles[1].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][num - 1].upperTile.tile, false,newRotation);
-            
+            freeTiles[1].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][num - 1].upperTile.tile.transform.position, false, oldRotation);
+
 
         }
         else if (num == 0)
         {
-            freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum-1][16].upperTile.tile, true,newRotation);
-            freeTiles[1].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum-1][17].upperTile.tile, false,newRotation);
+            freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[prevWall][16].upperTile.tile.transform.position, true, newRotation);
+            freeTiles[1].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[prevWall][17].upperTile.tile.transform.position, false, newRotation);
 
 
         }
@@ -308,15 +293,15 @@ public class Wall : NetworkBehaviour
         Debug.Log(curWind.freePosition);
 
 
-        
+
         Invoke("CheckFreeTiles", 0.6f);
-        
+
     }
 
     [ClientRpc]
     void RpcGiveFreeTile(Vector3 freePosition, float rotation)
     {
-        freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().Move(freePosition,rotation);
+        freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().Move(freePosition, rotation);
     }
 
     void RemoveFromFreeTiles()

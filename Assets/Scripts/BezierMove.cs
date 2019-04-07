@@ -98,12 +98,20 @@ public class BezierMove : MonoBehaviour
 
     }
 
-    public void StartMoveNewFreeTiles(GameObject tile,bool isFirst,float r)
+    public void StartMoveNewFreeTiles(Vector3 pos,bool isFirst,float r)
     {
-        StartCoroutine(MoveNewFreeTiles(tile,isFirst,r));
+        //MoveTile(transform.position.x, thirdRowHeight, transform.position.z, r);
+        // MoveTile(tile.transform.position.x, thirdRowHeight, tile.transform.position.z, r);
+        //pos.y = thirdRowHeight;
+        //transform.position = pos;
+        //Debug.Log(r);
+        //Debug.Log(transform.rotation);
+        //transform.rotation = Quaternion.Euler(0, r, 0);
+        //Debug.Log(transform.rotation);
+        StartCoroutine(MoveNewFreeTiles(pos,isFirst,r));
     }
 
-    IEnumerator MoveNewFreeTiles(GameObject newTile,bool isFirst,float rotation)
+    IEnumerator MoveNewFreeTiles(Vector3 newPos,bool isFirst,float rotation)
     {
         Debug.Log(rotating);
         speed = 12f;
@@ -112,7 +120,7 @@ public class BezierMove : MonoBehaviour
         MoveTile(transform.position.x, thirdRowHeight, transform.position.z,rotation);
         yield return new WaitForSeconds(0.8f);
 
-        MoveTile(newTile.transform.position.x, thirdRowHeight, newTile.transform.position.z,rotation);
+        MoveTile(newPos.x, thirdRowHeight, newPos.z,rotation);
         yield return new WaitForSeconds(0.8f);
 
         
@@ -121,7 +129,7 @@ public class BezierMove : MonoBehaviour
     void MoveTile(float x,float y,float z,float rotation)
     {
         endPoint = new Vector3(x,y,z);
-        endRotation = Quaternion.Euler(0, rotation, rotation);
+        endRotation = Quaternion.Euler(0, rotation, 0);
         moving = true;
         rotating = true;
     }
@@ -152,6 +160,7 @@ public class BezierMove : MonoBehaviour
                     moving = false;
                     
                     pos = new List<Vector3>();
+
                     num = 1;
                     return;
                 }
@@ -164,7 +173,7 @@ public class BezierMove : MonoBehaviour
         }
         if (rotating)
         {
-            Debug.Log(transform.rotation == endRotation);
+            
             if (transform.rotation == endRotation)
             {
                 rotating = false;
