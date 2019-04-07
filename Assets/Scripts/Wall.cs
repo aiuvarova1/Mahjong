@@ -37,11 +37,11 @@ public class Wall : NetworkBehaviour
 
     public void AssighFreeTiles()
     {
-        int wallNum = Random.Range(0, tiles.Count);
-         int restNum = Random.Range(2, 13);
+       // int wallNum = Random.Range(0, tiles.Count);
+        // int restNum = Random.Range(2, 13);
 
-        //int wallNum = 3;
-        //int restNum = 0;
+        int wallNum = 0;
+        int restNum = 2;
 
         beginningWall = wallNum;
         beginningPair = restNum;
@@ -240,11 +240,14 @@ public class Wall : NetworkBehaviour
 
     void CheckAndFill(int wallNum, int num)
     {
-        float newRotation = tiles[wallNum - 1][0].lowerTile.tile.transform.eulerAngles.y;
-        float oldRotation = tiles[wallNum][0].lowerTile.tile.transform.eulerAngles.y;
 
         int prevWall = wallNum - 1;
         if (prevWall < 0) prevWall = 3;
+
+        float newRotation = tiles[prevWall][0].lowerTile.tile.transform.eulerAngles.y;
+        float oldRotation = tiles[wallNum][0].lowerTile.tile.transform.eulerAngles.y;
+
+       
 
         
         Debug.Log(newRotation);
