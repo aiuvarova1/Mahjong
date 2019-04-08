@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 4564605410972643488}
   - component: {fileID: 4102208563531558897}
   - component: {fileID: 852839122230698036}
+  - component: {fileID: 3746324701000263500}
+  - component: {fileID: 807802049973548735}
   m_Layer: 0
   m_Name: TileModel
   m_TagString: Untagged
@@ -33,13 +35,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 808056113261467558}
-  m_LocalRotation: {x: 0.5946576, y: 0.3825996, z: 0.38259947, w: -0.59465754}
-  m_LocalPosition: {x: 20.025606, y: 1.9150064, z: 16.92968}
-  m_LocalScale: {x: 100, y: 20.000013, z: 150.00027}
+  m_LocalRotation: {x: 0.6018202, y: -0.37123135, z: -0.37123126, w: -0.60181993}
+  m_LocalPosition: {x: 19.304111, y: 1.9150068, z: 16.915968}
+  m_LocalScale: {x: 100, y: 20.000013, z: 150}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 294.486}
+  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 423.337}
 --- !u!33 &808056113261467556
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -216,3 +218,28 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 4300000, guid: f6215d11805de9040a3876095a880bcb, type: 3}
+--- !u!114 &3746324701000263500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808056113261467558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bca552fd23d14e438e2a95b0eb1a979, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &807802049973548735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 808056113261467558}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0dbfb15826a4d448be979588c2de0e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toolTipText: {fileID: 0}

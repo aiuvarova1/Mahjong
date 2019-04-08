@@ -11,7 +11,7 @@ using UnityEngine;
     const int num = 1;
     public static Vector3 startPosition = new Vector3(-30, 1f, 11);
 
-    public Vector3  startOpenTilePosition = new Vector3(-27, 1f, 11);
+    public Vector3  startOpenTilePosition = new Vector3(-27, 0, 11);
     public Vector3  startFlowerPosition = new Vector3(-24, 0, 11);
 
     public East(Player p) : base(p)

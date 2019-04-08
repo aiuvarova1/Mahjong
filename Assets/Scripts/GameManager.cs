@@ -21,8 +21,6 @@ public class GameManager : NetworkBehaviour
 
     public Table GameTable { get; set; }
 
-    float timeToWait = 0;
-
     int currentWind;
 
     public int CurrentWind

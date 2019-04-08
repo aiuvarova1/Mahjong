@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.43667546, g: 0.48427135, b: 0.5645225, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -112,7 +112,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &66445821
+--- !u!1 &296813122
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -120,43 +120,29 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 66445822}
-  - component: {fileID: 66445823}
+  - component: {fileID: 296813124}
+  - component: {fileID: 296813123}
   m_Layer: 0
-  m_Name: Spot Light
+  m_Name: Directional Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &66445822
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 66445821}
-  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 3.32, z: 0.19}
-  m_LocalScale: {x: 0.14285713, y: 0.1428572, z: 0.1428572}
-  m_Children: []
-  m_Father: {fileID: 1304000730}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!108 &66445823
+--- !u!108 &296813123
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 66445821}
+  m_GameObject: {fileID: 296813122}
   m_Enabled: 1
   serializedVersion: 8
-  m_Type: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Type: 1
+  m_Color: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 1}
   m_Intensity: 1
-  m_Range: 200
-  m_SpotAngle: 136
+  m_Range: 10
+  m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -181,6 +167,20 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!4 &296813124
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296813122}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 100, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &477342764
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,8 +506,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 7, y: 7, z: 7}
-  m_Children:
-  - {fileID: 66445822}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -744,6 +743,30 @@ PrefabInstance:
       propertyPath: gameState
       value: prepare
       objectReference: {fileID: 0}
+    - target: {fileID: 8483064046612087833, guid: 330638cc7bd830043930135b18fb3637,
+        type: 3}
+      propertyPath: allCameras.Array.data[0]
+      value: 
+      objectReference: {fileID: 394602642, guid: 0078cfe65346e63479bdf3dd43949446,
+        type: 3}
+    - target: {fileID: 8483064046612087833, guid: 330638cc7bd830043930135b18fb3637,
+        type: 3}
+      propertyPath: allCameras.Array.data[1]
+      value: 
+      objectReference: {fileID: 5994024375468189842, guid: 34e1240b814f78243989cdccae6e30ca,
+        type: 3}
+    - target: {fileID: 8483064046612087833, guid: 330638cc7bd830043930135b18fb3637,
+        type: 3}
+      propertyPath: allCameras.Array.data[2]
+      value: 
+      objectReference: {fileID: 1951627261747399460, guid: 310322576421a3c49bc691f8f436a4cc,
+        type: 3}
+    - target: {fileID: 8483064046612087833, guid: 330638cc7bd830043930135b18fb3637,
+        type: 3}
+      propertyPath: allCameras.Array.data[3]
+      value: 
+      objectReference: {fileID: 2270992920990514815, guid: 147920c6a5ec8874abcd2a2f36bf4c60,
+        type: 3}
     - target: {fileID: 8483064046612087832, guid: 330638cc7bd830043930135b18fb3637,
         type: 3}
       propertyPath: m_LocalPosition.x

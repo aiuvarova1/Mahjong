@@ -89,6 +89,7 @@ public class Player : NetworkBehaviour
 
                 break;
         }
+        EnableToolTipsForTile(index);
 
         playerTiles.RemoveAt(index);
         CmdRemoveFromArray(index);
@@ -169,6 +170,16 @@ public class Player : NetworkBehaviour
         RpcAddTileToPlayerArray(currentWall, currentPair, tile);
     }
 
+    
+
+    public void EnableToolTipsForTile(int index)
+    {
+        ToolTip tip = playerTiles[index].tile.GetComponent<ToolTip>();
+        tip.enabled = true;
+
+    }
+
+
     [ClientRpc]
     public void RpcAddTileToPlayerArray(int currentWall, int currentPair, string tile)
     {
@@ -180,6 +191,9 @@ public class Player : NetworkBehaviour
         else if (tile == "")
         {
             playerTiles.Add(Wall.instance.tiles[currentWall][currentPair].upperTile);
+            if (isLocalPlayer)
+                EnableToolTipsForTile(playerTiles.Count - 1);
+
             playerTiles.Add(Wall.instance.tiles[currentWall][currentPair].lowerTile);
         }
         else if (tile == "free")
@@ -187,6 +201,9 @@ public class Player : NetworkBehaviour
             playerTiles.Add(Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1]);
 
         }
+
+        if (isLocalPlayer)
+            EnableToolTipsForTile(playerTiles.Count - 1);
 
     }
 
@@ -216,7 +233,7 @@ public class Player : NetworkBehaviour
     public void CmdLieTileOnTable(int index)
     {
         freeSpacePosition = playerTiles[index].tile.transform.position;
-        freeSpacePosition.y -= 0.7f;
+        freeSpacePosition.y = 1.2f;
         freeSpaceIndex = index;
 
         Table t = GameManager.instance.GameTable;

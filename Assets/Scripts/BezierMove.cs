@@ -117,16 +117,16 @@ public class BezierMove : MonoBehaviour
         speed = 12f;
         if(!isFirst)
             yield return new WaitForSeconds(0.8f);
-        MoveTile(transform.position.x, thirdRowHeight, transform.position.z,rotation);
+        MoveFreeTile(transform.position.x, thirdRowHeight, transform.position.z,rotation);
         yield return new WaitForSeconds(0.8f);
 
-        MoveTile(newPos.x, thirdRowHeight, newPos.z,rotation);
+        MoveFreeTile(newPos.x, thirdRowHeight, newPos.z,rotation);
         yield return new WaitForSeconds(0.8f);
 
         
     }
 
-    void MoveTile(float x,float y,float z,float rotation)
+    void MoveFreeTile(float x,float y,float z,float rotation)
     {
         endPoint = new Vector3(x,y,z);
         endRotation = Quaternion.Euler(0, rotation, 0);

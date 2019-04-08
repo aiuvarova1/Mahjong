@@ -154,6 +154,7 @@ public class Wall : NetworkBehaviour
     {
         Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
         player.CmdAddTileToPlayerArray(currentWall, currentPair, tile);
+       // player.InvokeToolTip();
     }
 
     public void GiveWallTile()

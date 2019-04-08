@@ -42,6 +42,9 @@ public class PlayerUI : NetworkBehaviour
 
     public GameObject blackScreen;
 
+    public GameObject toolTipPanel;
+    public Text toolTipText;
+
 
     private void Start()
     {
