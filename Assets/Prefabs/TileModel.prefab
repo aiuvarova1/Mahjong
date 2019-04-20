@@ -160,6 +160,8 @@ MonoBehaviour:
   endPoint: {x: 0, y: 0, z: 0}
   moving: 0
   rotating: 0
+  owner: {fileID: 0}
+  check: 0
 --- !u!114 &4564605410972643488
 MonoBehaviour:
   m_ObjectHideFlags: 0

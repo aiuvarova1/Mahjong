@@ -18,9 +18,12 @@ public class BezierMove : MonoBehaviour
     public bool rotating = false;
 
 
-    float speed = 20f;
+    float speed = 50f;
 
     List<Vector3> pos = new List<Vector3>();
+
+    public Player owner;
+    public bool check = false;
 
     public void OpenTile(float rotation)
     {
@@ -32,7 +35,7 @@ public class BezierMove : MonoBehaviour
 
     public void Move(Vector3 end,float rotation )
     {
-        speed = 50f;
+
         FillArray(transform.position,end,8.4f);
 
         //moving from pos[0] to pos[1]
@@ -50,6 +53,11 @@ public class BezierMove : MonoBehaviour
         //yield return new WaitForSeconds(0.1f);
         moving = true;
         rotating = true;
+
+        //!!!!!
+        if (check && owner!=null)
+            owner.needToCheckMoving = true;
+
         while (moving)
             yield return new WaitForSeconds(0.1f);
         OpenTile(rotation);
@@ -66,11 +74,14 @@ public class BezierMove : MonoBehaviour
         endPoint = pos[1];
         endRotation = Quaternion.Euler(-180, rotation, 0);
 
-        speed = 38f;
-        
+       
+
         moving = true;
         rotating = true;
 
+        //!!!!!
+        if (check && owner != null)
+            owner.needToCheckMoving = true;
     }
 
 
@@ -114,7 +125,7 @@ public class BezierMove : MonoBehaviour
     IEnumerator MoveNewFreeTiles(Vector3 newPos,bool isFirst,float rotation)
     {
         Debug.Log(rotating);
-        speed = 12f;
+        //speed = 40f;
         if(!isFirst)
             yield return new WaitForSeconds(0.8f);
         MoveFreeTile(transform.position.x, thirdRowHeight, transform.position.z,rotation);
@@ -130,8 +141,15 @@ public class BezierMove : MonoBehaviour
     {
         endPoint = new Vector3(x,y,z);
         endRotation = Quaternion.Euler(0, rotation, 0);
+
+       
         moving = true;
         rotating = true;
+
+        //!!!!!
+        //if (check && owner != null)
+        //    owner.needToCheckMoving = true;
+
     }
 
     public void SelectTile()
@@ -144,8 +162,13 @@ public class BezierMove : MonoBehaviour
         transform.position = new Vector3(transform.position.x, transform.position.y - 0.7f, transform.position.z);
     }
 
+    public void CloseTile(float rotation)
+    {
+        transform.rotation=(Quaternion.Euler(0, rotation, 0));
+    }
 
-    private void Update()
+
+    private void FixedUpdate()
     {
         if (moving)
         {
@@ -162,12 +185,22 @@ public class BezierMove : MonoBehaviour
                     pos = new List<Vector3>();
 
                     num = 1;
+
+                    if (check)
+                        check = false;
+
+                    if (Wall.instance.freeTileIsMoving &&
+                        gameObject == Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile)
+                        Wall.instance.freeTileIsMoving = false;
+
+
                     return;
                 }
                 endPoint = pos[num];
             }
             float step = speed * Time.deltaTime;
 
+            //transform.position = Vector3.Lerp(transform.position, endPoint, 0.5f*Time.deltaTime);
             // Move our position a step closer to the target.
             transform.position = Vector3.MoveTowards(transform.position, endPoint, step);
         }

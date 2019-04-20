@@ -16,12 +16,19 @@ public class GameManager : NetworkBehaviour
 
     public bool wallIsBuilt = false;
     public bool tilesAreGiven = false;
+    bool waitForCombinations = false;
 
     public List<Wind> winds = new List<Wind>();
 
     public Table GameTable { get; set; }
 
     int currentWind;
+
+    public int numOfAnsweredPlayers;
+    public Player chowDeclarator;
+    public Player pungDeclarator;
+    public Player kongDeclarator;
+    public Player mahJongDeclarator;
 
     public int CurrentWind
     {
@@ -89,8 +96,18 @@ public class GameManager : NetworkBehaviour
         Wall.instance.DistributeTiles();
 
         Invoke("SortTiles", 3f);
+        Invoke("FixTilesPositions",3.2f);
 
         Invoke("CheckAllPlayersForFlowers", 3.5f);
+    }
+
+    void FixTilesPositions()
+    {
+        for(int i = 0; i < winds.Count; i++)
+        {
+            if (winds[i].player != null)
+                winds[i].player.RpcFix();
+        }
     }
 
 
@@ -131,7 +148,7 @@ public class GameManager : NetworkBehaviour
                 CheckAllPlayersForFlowers();
             }
             else
-                Invoke("BeginPlayerMove", 0.2f);
+                Invoke("BeginPlayerMove", 0.3f);
             return;
         }
 
@@ -212,7 +229,7 @@ public class GameManager : NetworkBehaviour
     }
 
 
-    void BeginPlayerMove()
+    public void BeginPlayerMove()
     {
         Player curPlayer = winds[CurrentWind].player;
         if (curPlayer == null) return;
@@ -228,4 +245,70 @@ public class GameManager : NetworkBehaviour
         GameObject.FindWithTag("Player").GetComponent<Player>().playerTurn = true;
     }
 
+    [Command]
+    public void CmdPrepareForCombinations()
+    {
+        Invoke("Prepare", 2);
+
+    }
+
+    void Prepare()
+    {
+        numOfAnsweredPlayers = 0;
+        chowDeclarator = null;
+        pungDeclarator = null;
+        kongDeclarator = null;
+        mahJongDeclarator = null;
+
+        waitForCombinations = true;
+    }
+
+    int DefineWind(Player player)
+    {
+        for (int i = 0; i < winds.Count; i++)
+        {
+            if (winds[i].player == player)
+                return i;
+        }
+        return -1;
+    }
+
+    private void Update()
+    {
+        if (!isServer) return;
+
+
+        //set turns!
+        if (waitForCombinations && GameMaster.playersToStart - 1 == numOfAnsweredPlayers)
+        {
+            Debug.Log("here");
+            if (mahJongDeclarator != null)
+            {
+                mahJongDeclarator.DeclareMahJong();
+
+
+            }
+            else if (kongDeclarator != null)
+            {
+                kongDeclarator.DeclareKong(DefineWind(kongDeclarator));
+            }
+            else if (pungDeclarator != null)
+            {
+                pungDeclarator.DeclarePung(DefineWind(pungDeclarator));
+            }
+            else if (chowDeclarator != null)
+            {
+                chowDeclarator.DeclareChow(DefineWind(chowDeclarator));
+            }
+            else
+            {
+                CurrentWind++;
+                ChangeTurn();
+            }
+
+            waitForCombinations = false;
+        }
+        //if(waitForCombinations)
+        //    Debug.Log("server");
+    }
 }

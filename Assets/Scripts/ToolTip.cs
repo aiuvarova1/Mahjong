@@ -17,7 +17,7 @@ public class ToolTip : MonoBehaviour
     private void OnMouseEnter()
     {
         if (!needTip) return;
-        Debug.Log(gameObject.GetComponent<TileName>().Name);
+        //Debug.Log(gameObject.GetComponent<TileName>().Name);
         toolTipText.text = gameObject.GetComponent<TileName>().Name;
         //toolTipPanel.SetActive(true);
         //Debug.Log(toolTipPanel.active);
@@ -47,7 +47,7 @@ public class ToolTip : MonoBehaviour
        // Debug.Log("panel" + toolTipPanel == null);
        // toolTipText =toolTipPanel.transform.GetChild(0).gameObject.GetComponent<Text>();
        toolTipText = GameObject.FindWithTag("Player").GetComponent<PlayerUI>().toolTipText;
-         Debug.Log("panel" + toolTipText == null);
+         
         toolTipText.enabled = toolTipText.enabled;
         needTip = true;
         //toolTipPanel.SetActive(false);

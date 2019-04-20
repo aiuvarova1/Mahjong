@@ -8,8 +8,9 @@ using UnityEngine;
 
 public class Table
 {
-    public List<Tile> tableTiles { get; set; }
+    // public List<Tile> tableTiles { get; set; }
 
+    public Tile lastTile;
     private Vector3 startPosition;
     private Vector3 currentPosition;
 
@@ -29,7 +30,7 @@ public class Table
 
     public Table()
     {
-        tableTiles = new List<Tile>();
+        //tableTiles = new List<Tile>();
         startPosition = new Vector3(10, East.startPosition.y, East.startPosition.z);
         rotation = -90;
         CurrentPosition = startPosition;

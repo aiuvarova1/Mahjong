@@ -13,6 +13,7 @@ public class Tile:IComparable<Tile>
     int numOfTile;
 
     public bool isOwned=false;
+
     
 
     public Tile(GameObject tile,bool created,Vector2 coords)
@@ -49,7 +50,7 @@ public class Tile:IComparable<Tile>
         {
             case 0:
                 name += 'f';
-                name += (int)coordinates[0];
+                name += (int)coordinates[0]+1;
                 if((int)coordinates[0]%4==0)
                     tile.GetComponent<TileName>().Name = $"Season {(int)coordinates[0] + 1}";
                 else
@@ -59,20 +60,20 @@ public class Tile:IComparable<Tile>
                 break;
             case 2:
                 name += 's';
-                name += (int)coordinates[0];
+                name += (int)coordinates[0]+1;
                 tile.GetComponent<TileName>().Name = $"Symbols {(int)coordinates[0] + 1}";
                 numOfTile =19+ (int)coordinates[0]; 
                 break;
 
             case 3:
                 name += 'b';
-                name += (int)coordinates[0];
+                name += (int)coordinates[0]+1;
                 tile.GetComponent<TileName>().Name = $"Bamboo {(int)coordinates[0] + 1}";
                 numOfTile = (int)coordinates[0];
                 break;
             case 4:
                 name += 'd';
-                name += (int)coordinates[0];
+                name += (int)coordinates[0]+1;
                 tile.GetComponent<TileName>().Name = $"Dots {(int)coordinates[0] + 1}";
                 numOfTile = 10+ (int)coordinates[0]; 
                 break;

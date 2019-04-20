@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    const uint playersToStart = 1;
+    public const uint playersToStart = 4;
     
     public static GameMaster instance = null;
 
@@ -45,6 +45,8 @@ public class GameMaster : NetworkBehaviour
             instance = this;
         }
         else if (instance != this) Destroy(gameObject);
+
+        Application.runInBackground = true;
 
 
     }
@@ -97,6 +99,7 @@ public class GameMaster : NetworkBehaviour
 
     void GetReady()
     {
+        Debug.Log(players.Count + " get ready");
         foreach (Player player in players.Values)
         {
             player.GetComponent<PlayerUI>().TargetStartWaiting(player.connectionToClient);
@@ -105,6 +108,7 @@ public class GameMaster : NetworkBehaviour
 
     void SetReady()
     {
+        Debug.Log(players.Count + " set ready");
         foreach (Player player in players.Values)
         {
             player.GetComponent<PlayerUI>().TargetStopWaiting(player.connectionToClient);

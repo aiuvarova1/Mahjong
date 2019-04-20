@@ -26,14 +26,17 @@ public class SetupPlayer : NetworkBehaviour
 
         int order=0;
 
+        //!!!
         try
         {
             order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count)];
+            //order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count-2)];
         }
         catch (ArgumentOutOfRangeException)
         {
             GetComponent<PlayerUI>().DropConnection();
         }
+        
 
 
         player.order = order;
@@ -124,6 +127,7 @@ public class SetupPlayer : NetworkBehaviour
         Debug.Log($"rpc {GameMaster.instance.PlayerCount} players");
         Debug.Log($"{GameMaster.instance.availableCameras.Count} cameras");
     }
+
 
     [TargetRpc]
     private void TargetDisconnect(NetworkConnection target)

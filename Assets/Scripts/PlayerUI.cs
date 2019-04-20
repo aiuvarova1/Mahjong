@@ -36,6 +36,7 @@ public class PlayerUI : NetworkBehaviour
 
     IEnumerator starter;
     public IEnumerator CountDown;
+    public IEnumerator CombinationEnum;
 
     public bool leave = false;
     public bool ready = false;
@@ -44,6 +45,16 @@ public class PlayerUI : NetworkBehaviour
 
     public GameObject toolTipPanel;
     public Text toolTipText;
+
+    public GameObject chowPanel;
+
+    public Button thirdButton;
+    public Button firstButton;
+    public Button secondButton;
+
+    Combination firstChow;
+    Combination secondChow;
+    Combination thirdChow;
 
 
     private void Start()
@@ -57,8 +68,15 @@ public class PlayerUI : NetworkBehaviour
     {
         starter = WaitForStart();
         CountDown = WaitForMove();
+        CombinationEnum = WaitForCombination();
+
         infoPanel.SetActive(false);
         countDown.enabled = false;
+
+        thirdButton.enabled = false;
+        chowPanel.SetActive(false);
+        
+
     }
 
     public void LaunchWaitForMove()
@@ -91,6 +109,56 @@ public class PlayerUI : NetworkBehaviour
         countDown.enabled = false;
         player.SelectTile(player.selectedTile.tile);
 
+    }
+
+    public void LaunchWaitForCombination()
+    {
+
+        StartCoroutine(CombinationEnum);
+    }
+
+
+    [TargetRpc]
+    public void TargetStopWaitingForCombination(NetworkConnection conn)
+    {
+        
+        StopWaitingForCombination();
+    }
+    
+    public void StopWaitingForCombination()
+    {
+        StopCoroutine(CombinationEnum);
+        countDown.enabled = false;
+        player.turnForCombination = false;
+    }
+
+
+    IEnumerator WaitForCombination()
+    {
+        yield return new WaitForSeconds(2);
+
+        int countdown = 15;
+
+        countDown.text = "15";
+
+        countDown.enabled = true;
+
+        while (countdown > 0)
+        {
+            countDown.text = $"{countdown}";
+
+            yield return new WaitForSeconds(1);
+            countdown--;
+        }
+        countDown.enabled = false;
+
+        if(chowPanel.activeSelf)
+            chowPanel.SetActive(false);
+        if (thirdButton.enabled)
+            thirdButton.enabled = false;
+
+        GameManager.instance.numOfAnsweredPlayers++;
+        player.playerTurn = false;
     }
 
 
@@ -250,6 +318,92 @@ public class PlayerUI : NetworkBehaviour
         StopCoroutine(starter);
         infoPanel.SetActive(false);
         infoText.text = " ";
+    }
+
+
+
+    public void MakeChowChoice(Combination first,Combination second,Combination third)
+    {
+        //RefreshChows();
+        string firstText = "";
+        string secondText = "";
+        string thirdText = "";
+
+        firstChow = first;
+        secondChow = second;
+        thirdChow = third;
+
+        GetChowSequence(first, ref firstText);
+        GetChowSequence(second, ref secondText);
+        GetChowSequence(third, ref thirdText);
+
+        TargetGiveChowChoice(player.connectionToClient, firstText, secondText, thirdText);
+
+    }
+
+    void GetChowSequence(Combination comb,ref string text)
+    {
+        if (comb == null)
+        {
+            Debug.Log("comb is null");
+            return;
+        }
+        for (int i = 0; i < comb.tileList.Count; i++)
+        {
+            text += $"{comb.tileList[i].name[comb.tileList[i].name.Length - 1]}";
+            if (i != 2) text += "-";
+        }
+    }
+
+    [TargetRpc]
+    void TargetGiveChowChoice(NetworkConnection conn, string text1,string text2,string text3)
+    {
+        if (text3 != "") thirdButton.enabled = true;
+
+        firstButton.GetComponentInChildren<Text>().text = text1;
+        secondButton.GetComponentInChildren<Text>().text = text2;
+        thirdButton.GetComponentInChildren<Text>().text = text3;
+
+        chowPanel.SetActive(true);
+    }
+
+    public void SelectFirstChow()
+    {
+        if (isServer) 
+            player.waitingCombination = firstChow;
+        
+        StopWaitForChow();
+    }
+
+    public void SelectSecondChow()
+    {
+       // if (!isServer) return;
+       if(isServer)
+            player.waitingCombination = secondChow;
+        
+        StopWaitForChow();
+    }
+
+    public void SelectThirdChow()
+    {
+        if (isServer) 
+            player.waitingCombination = thirdChow;
+        
+        StopWaitForChow();
+    }
+
+    void StopWaitForChow()
+    {
+        GameManager.instance.chowDeclarator = player;
+        GameManager.instance.numOfAnsweredPlayers++;
+
+        if (!isLocalPlayer) return;
+
+        StopWaitingForCombination();
+        chowPanel.SetActive(false);
+
+        if (thirdButton.enabled)
+            thirdButton.enabled = false;
     }
     
 
