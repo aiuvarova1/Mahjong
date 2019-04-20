@@ -11,8 +11,8 @@ public class Wall : NetworkBehaviour
     public static Wall instance = null;
     public List<Tile> tilesOnTheTable;
 
-    int beginningWall;
-    int beginningPair;
+    public int beginningWall;
+    public int beginningPair;
 
     int currentWall;
     int currentPair;
@@ -20,6 +20,9 @@ public class Wall : NetworkBehaviour
     public bool isMoving = false;
 
     public bool freeTileIsMoving = false;
+
+    //to avoid wrong current wind
+    int currentWind;
 
     private void Awake()
     {
@@ -232,6 +235,8 @@ public class Wall : NetworkBehaviour
     void RpcLieFreeTiles(int wallNum, int restNum)
 
     {
+        freeTileIsMoving = true;
+        Debug.Log("free tile is moving in rpc" + freeTileIsMoving);
         beginningWall = wallNum;
         beginningPair = restNum;
 
@@ -295,6 +300,7 @@ public class Wall : NetworkBehaviour
     public void GiveFreeTile()
     {
         Wind curWind = GameManager.instance.winds[GameManager.instance.CurrentWind];
+        currentWind = GameManager.instance.CurrentWind;
 
         TargetAddTileToPlayerArray(curWind.player.connectionToClient, 0, 0, "free");
 
@@ -325,7 +331,11 @@ public class Wall : NetworkBehaviour
 
     void RemoveFromFreeTiles()
     {
-        GameManager.instance.winds[GameManager.instance.CurrentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
+        Debug.Log(freeTiles.Count + "free tile");
+
+
+        //GameManager.instance.winds[GameManager.instance.CurrentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
+        GameManager.instance.winds[currentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
         //SetMoving();
         RpcRemoveFromFree();
     }

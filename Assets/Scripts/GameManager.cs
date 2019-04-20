@@ -120,6 +120,7 @@ public class GameManager : NetworkBehaviour
         //may need fix
         if (currentWind>=4)
         {
+            currentWind = 0;
             GameMaster.instance.gameState = "playing";
             return;
         }

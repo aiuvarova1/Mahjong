@@ -352,19 +352,30 @@ public class Player : NetworkBehaviour
             //Debug.Log(CheckTileMoving(tileToMove));
             if (!CheckTileMoving(tileToMove))
             {
-                
+
                 if (needFreeTile)
                 {
                     if (Wall.instance.freeTiles.Count == 0) return;
 
                     //Debug.Log(CheckTileMoving(Wall.instance.freeTiles[Wall.instance.freeTiles.Count-1]));
-                    
-                    
+
+                    Debug.Log(Wall.instance.freeTileIsMoving + "free move");
                     if (Wall.instance.freeTileIsMoving)
                     {
                         Debug.Log("moving");
                         return;
 
+                    }
+
+                    if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count-1].tile.transform.position
+                        != new Vector3(Wall.instance.tiles
+                        [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.x, 3.4f,
+                        Wall.instance.tiles
+                        [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.z))
+                    {
+                        Debug.Log("Tile is moving!");
+                        Debug.Log(Wall.instance.freeTiles.Count);
+                        return;
                     }
                     Wall.instance.GiveFreeTile();
                     needFreeTile = false;
@@ -505,14 +516,14 @@ public class Player : NetworkBehaviour
             if (firstInd != -1 && secondInd != -1)
             {
                 if (firstCombination == null)
-                    firstCombination = new Chow(tileInDemand,playerTiles[firstInd], playerTiles[secondInd], firstInd);
+                    firstCombination = new Chow(tileInDemand, playerTiles[firstInd], playerTiles[secondInd], firstInd);
                 //firstCombination = $"{tileNum}-{tileNum+1}-{tileNum + 2}";
                 else if (secondCombination == null)
                     //secondCombination = $"{tileNum}-{tileNum + 1}-{tileNum + 2}";
-                   secondCombination= new Chow(tileInDemand, playerTiles[firstInd], playerTiles[secondInd], firstInd);
+                    secondCombination = new Chow(tileInDemand, playerTiles[firstInd], playerTiles[secondInd], firstInd);
                 else
                     //thirdCombination = $"{tileNum}-{tileNum + 1}-{tileNum + 2}";
-                    thirdCombination= new Chow(tileInDemand, playerTiles[firstInd], playerTiles[secondInd], firstInd);
+                    thirdCombination = new Chow(tileInDemand, playerTiles[firstInd], playerTiles[secondInd], firstInd);
 
             }
         }
@@ -544,13 +555,13 @@ public class Player : NetworkBehaviour
 
         int firstIndex = -1;
 
-        if (FindNumOfSimilarTiles(GameManager.instance.GameTable.lastTile.name,ref firstIndex) < 2)
+        if (FindNumOfSimilarTiles(GameManager.instance.GameTable.lastTile.name, ref firstIndex) < 2)
         {
             GameManager.instance.numOfAnsweredPlayers++;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
             return;
         }
-        waitingCombination = new Pung(playerTiles[firstIndex],playerTiles[firstIndex+1],GameManager.instance.GameTable.lastTile,firstIndex);
+        waitingCombination = new Pung(playerTiles[firstIndex], playerTiles[firstIndex + 1], GameManager.instance.GameTable.lastTile, firstIndex);
         GameManager.instance.pungDeclarator = this;
         GameManager.instance.numOfAnsweredPlayers++;
         gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
@@ -581,7 +592,7 @@ public class Player : NetworkBehaviour
             {
                 int firstIndex = -1;
 
-                if(FindNumOfSimilarTiles(tile.name,ref firstIndex) == 4)
+                if (FindNumOfSimilarTiles(tile.name, ref firstIndex) == 4)
                 {
                     DeclareClosedKong(firstIndex);
                     return;
@@ -607,9 +618,9 @@ public class Player : NetworkBehaviour
     }
     #endregion
 
-    int FindNumOfSimilarTiles(string name,ref int firstIndex)
+    int FindNumOfSimilarTiles(string name, ref int firstIndex)
     {
-        int num=0;
+        int num = 0;
         for (int i = 0; i < playerTiles.Count; i++)
         {
             if (playerTiles[i].name == name)
@@ -648,14 +659,14 @@ public class Player : NetworkBehaviour
         if (GameManager.instance.GameTable.lastTile == playerTiles[firstIndex])
             firstIndex++;
 
-        for (int i = firstIndex; i < firstIndex+3; i++)
+        for (int i = firstIndex; i < firstIndex + 3; i++)
         {
             RpcLieOutTile(i, GameManager.instance.winds[windPos].freeOpenPosition, GameManager.instance.winds[windPos].rotation, "combination");
             GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
         }
 
         Pung pung = (Pung)waitingCombination;
-       pung.additionalPosition = GameManager.instance.winds[windPos].freeOpenPosition;
+        pung.additionalPosition = GameManager.instance.winds[windPos].freeOpenPosition;
 
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
@@ -671,15 +682,15 @@ public class Player : NetworkBehaviour
 
         Invoke("InvokeDelete", 0.5f);
 
-        
+
 
         RpcAddCombination();
 
         Invoke("AskForMove", 0.6f);
-        
+
     }
 
-   
+
 
     public void DeclareChow(int windPos)
     {
@@ -688,11 +699,11 @@ public class Player : NetworkBehaviour
 
         RpcAddTableTileToList();
 
-        int firstIndex=0;
+        int firstIndex = 0;
 
         for (int i = 0; i < 3; i++)
         {
-            if(GameManager.instance.GameTable.lastTile!=playerTiles[i])
+            if (GameManager.instance.GameTable.lastTile != playerTiles[i])
             {
                 firstIndex = playerTiles.FindIndex((x) => (x.name == waitingCombination.tileList[i].name));
                 break;
@@ -705,7 +716,7 @@ public class Player : NetworkBehaviour
             GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
         }
 
-      
+
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
         GameManager.instance.CurrentWind = windPos;
 
@@ -745,7 +756,7 @@ public class Player : NetworkBehaviour
             RpcLieOutTile(i, GameManager.instance.winds[windPos].freeOpenPosition, GameManager.instance.winds[windPos].rotation, "combination");
             GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
 
-             
+
         }
 
 
@@ -768,7 +779,7 @@ public class Player : NetworkBehaviour
         Invoke("AskForFreeTile", 0.6f);
 
         //Invoke("AskForMove", 0.6f);
-       
+
     }
 
     public void DeclareMahJong()
