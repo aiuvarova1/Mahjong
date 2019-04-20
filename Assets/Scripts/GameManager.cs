@@ -44,6 +44,26 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    #region Coroutines
+    IEnumerator Lighten()
+    {
+        yield return new WaitForSeconds(1.9f);
+        GameMaster.instance.LightenScreens();
+    }
+
+
+    IEnumerator Build()
+    {
+
+        yield return new WaitForSeconds(1.8f);
+
+        RpcMakeTilesVisible();
+
+    }
+    #endregion
+
+    #region Game Start
+
     private void Awake()
     {
         if (instance == null)
@@ -110,9 +130,49 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    void RpcBuildOnAllClients(string data)
+    {
+        if (isServer) return;
+
+        var ins = new MemoryStream(Convert.FromBase64String(data)); //Create an input stream from the string
+                                                                    //Read back the data
+        bf = new BinaryFormatter();
+        List<int> indexes = (List<int>)bf.Deserialize(ins);
+        BuildWall.instance.Build(indexes);
+    }
 
 
-     void CheckAllPlayersForFlowers()
+
+
+    [ClientRpc]
+    void RpcMakeTilesVisible()
+    {
+        // NetworkManager.
+        foreach (List<WallPair> lst in BuildWall.instance.tiles)
+        {
+            foreach (WallPair pair in lst)
+            {
+                pair.upperTile.MakeVisible();
+                pair.lowerTile.MakeVisible();
+            }
+        }
+    }
+
+    public void SortTiles()
+    {
+        Debug.Log("sort tiles");
+        for (int i = 0; i < winds.Count; i++)
+        {
+            if (winds[i].player != null)
+                winds[i].player.RpcSort();
+        }
+        //RpcSortTiles();
+    }
+    #endregion
+
+    #region CheckFlowers
+    void CheckAllPlayersForFlowers()
     {
         if (!isServer) return;
         
@@ -161,62 +221,9 @@ public class GameManager : NetworkBehaviour
         winds[currentWind].MoveLeftFreePosition(ref winds[currentWind].freePosition);
 
     }
+    #endregion
 
-
-    [ClientRpc]
-    void RpcBuildOnAllClients(string data)
-    {
-        if (isServer) return;
-
-        var ins = new MemoryStream(Convert.FromBase64String(data)); //Create an input stream from the string
-                                                                    //Read back the data
-        bf = new BinaryFormatter();
-        List<int> indexes = (List<int>)bf.Deserialize(ins);
-        BuildWall.instance.Build(indexes);
-    }
-
-
-    IEnumerator Lighten()
-    {
-        yield return new WaitForSeconds(1.9f);
-        GameMaster.instance.LightenScreens();
-    }
-
-
-    IEnumerator Build()
-    {
-
-        yield return new WaitForSeconds(1.8f);
-
-        RpcMakeTilesVisible();
-
-    }
-
-    [ClientRpc]
-    void RpcMakeTilesVisible()
-    {
-        // NetworkManager.
-        foreach (List<WallPair> lst in BuildWall.instance.tiles)
-        {
-            foreach (WallPair pair in lst)
-            {
-                pair.upperTile.MakeVisible();
-                pair.lowerTile.MakeVisible();
-            }
-        }
-    }
-
-    public void SortTiles()
-    {
-        Debug.Log("sort tiles");
-        for (int i = 0; i < winds.Count; i++)
-        {
-            if (winds[i].player != null)
-                winds[i].player.RpcSort();
-        }
-        //RpcSortTiles();
-    }
-
+    #region Combinations and turns
     public void InvokeChange()
     {
         Invoke("ChangeTurn", 1.6f);
@@ -314,4 +321,5 @@ public class GameManager : NetworkBehaviour
         //if(waitForCombinations)
         //    Debug.Log("server");
     }
+    #endregion
 }
