@@ -12,8 +12,8 @@ class North:Wind
 
     public Vector3 startPosition = new Vector3(11, 1f, 30);
 
-    public Vector3 startOpenTilePosition = new Vector3(11, 1f, 27);
-    public Vector3 startFlowerPosition = new Vector3(11, 0, 24);
+    public Vector3 startOpenTilePosition = new Vector3(11, 0f, 27);
+    public Vector3 startFlowerPosition = new Vector3(11, 0, 23);
 
     public North(Player p) : base(p)
     {

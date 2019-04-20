@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System;
 
 public class Player : NetworkBehaviour
 {
@@ -120,6 +121,7 @@ public class Player : NetworkBehaviour
                 }
                 else
                 {
+                    Debug.Log("Launch wait");
                     GameObject.FindWithTag("Player").gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
                     //gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
                    
@@ -308,10 +310,17 @@ public class Player : NetworkBehaviour
     //!!!!!
     public void Pass()
     {
+        if (!isLocalPlayer) return;
+
         gameObject.GetComponent<PlayerUI>().StopWaitingForCombination();
-        GameManager.instance.numOfAnsweredPlayers++;
+        CmdAnswerToServer();
     }
 
+    [Command]
+    void CmdAnswerToServer()
+    {
+        GameManager.instance.numOfAnsweredPlayers++;
+    }
     #region checkCombinations
 
     int FindNumOfSimilarTiles(string name, ref int firstIndex)
@@ -489,6 +498,8 @@ public class Player : NetworkBehaviour
         }
 
         int firstIndex = -1;
+        Debug.Log(GameManager.instance.GameTable.lastTile.name+"last tile");
+        Debug.Log(FindNumOfSimilarTiles(GameManager.instance.GameTable.lastTile.name, ref firstIndex));
 
         if (FindNumOfSimilarTiles(GameManager.instance.GameTable.lastTile.name, ref firstIndex) < 2)
         {
@@ -572,6 +583,7 @@ public class Player : NetworkBehaviour
     void LieCombinationTiles(int windPos)
     {
         int firstIndex = -1;
+        GameManager.instance.GameTable.MoveLeftStartPosition();
 
         for (int i = 0; i < waitingCombination.tileList.Count; i++)
         {
@@ -836,14 +848,22 @@ public class Player : NetworkBehaviour
 
                     }
 
-                    if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile.transform.position
-                        != new Vector3(Wall.instance.tiles
-                        [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.x, 3.4f,
-                        Wall.instance.tiles
-                        [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.z))
+                    try
                     {
-                        Debug.Log("Tile is moving!");
-                        Debug.Log(Wall.instance.freeTiles.Count);
+                        if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile.transform.position
+                            != new Vector3(Wall.instance.tiles
+                            [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.x, 3.4f,
+                            Wall.instance.tiles
+                            [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.z))
+                        {
+                            Debug.Log("Tile is moving!");
+                            Debug.Log(Wall.instance.freeTiles.Count);
+                            return;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        Debug.Log("argument out of range");
                         return;
                     }
                     //Wall.instance.GiveFreeTile();
@@ -855,13 +875,13 @@ public class Player : NetworkBehaviour
                 needToCheckMoving = false;
                 if (GameMaster.instance.gameState == "starting" || GameMaster.instance.gameState == "distributing")
                 {
-                    Invoke("Sort", 0.1f);
-                    Invoke("GetNextFlower", 0.2f);
+                    Invoke("Sort", 0.6f);
+                    Invoke("GetNextFlower", 0.7f);
                 }
                 else
                 {
                     Debug.Log("not moving");
-                    Invoke("GetNextFlower", 0.01f);
+                    Invoke("GetNextFlower", 0.6f);
                 }
 
 
