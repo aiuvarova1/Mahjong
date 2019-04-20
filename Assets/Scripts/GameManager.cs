@@ -246,8 +246,8 @@ public class GameManager : NetworkBehaviour
         GameObject.FindWithTag("Player").GetComponent<Player>().playerTurn = true;
     }
 
-    [Command]
-    public void CmdPrepareForCombinations()
+
+    public void PrepareForCombinations()
     {
         Invoke("Prepare", 2);
 
@@ -255,6 +255,8 @@ public class GameManager : NetworkBehaviour
 
     void Prepare()
     {
+        Debug.Log("prepare for comb");
+
         numOfAnsweredPlayers = 0;
         chowDeclarator = null;
         pungDeclarator = null;

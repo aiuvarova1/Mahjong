@@ -74,6 +74,7 @@ public class PlayerUI : NetworkBehaviour
         countDown.enabled = false;
 
         thirdButton.enabled = false;
+        thirdButton.gameObject.SetActive(false);
         chowPanel.SetActive(false);
         
 
@@ -136,7 +137,8 @@ public class PlayerUI : NetworkBehaviour
     IEnumerator WaitForCombination()
     {
         yield return new WaitForSeconds(2);
-
+        //player.turnForCombination = true;
+        CmdSetCombinationTurn(true);
         int countdown = 15;
 
         countDown.text = "15";
@@ -158,7 +160,15 @@ public class PlayerUI : NetworkBehaviour
             thirdButton.enabled = false;
 
         GameManager.instance.numOfAnsweredPlayers++;
-        player.playerTurn = false;
+        //player.turnForCombination = false;
+        CmdSetCombinationTurn(false);
+        //player.playerTurn = false;
+    }
+
+    [Command]
+    void CmdSetCombinationTurn(bool turn)
+    {
+        player.turnForCombination = turn;
     }
 
 
@@ -346,6 +356,7 @@ public class PlayerUI : NetworkBehaviour
         if (comb == null)
         {
             Debug.Log("comb is null");
+            text = "";
             return;
         }
         for (int i = 0; i < comb.tileList.Count; i++)
@@ -358,7 +369,7 @@ public class PlayerUI : NetworkBehaviour
     [TargetRpc]
     void TargetGiveChowChoice(NetworkConnection conn, string text1,string text2,string text3)
     {
-        if (text3 != "") thirdButton.enabled = true;
+        if (text3 != "") thirdButton.gameObject.SetActive(true);
 
         firstButton.GetComponentInChildren<Text>().text = text1;
         secondButton.GetComponentInChildren<Text>().text = text2;
