@@ -223,6 +223,7 @@ public class GameManager : NetworkBehaviour
     }
     #endregion
 
+        
     #region Combinations and turns
     public void InvokeChange()
     {
@@ -243,14 +244,15 @@ public class GameManager : NetworkBehaviour
         if (curPlayer == null) return;
 
         curPlayer.TargetSelectLastTile(curPlayer.connectionToClient);
-        TargetSetTurn(curPlayer.connectionToClient);
+        curPlayer.playerTurn = true;
+        TargetSetTurn(curPlayer.connectionToClient,true);
 
     }
 
     [TargetRpc]
-    void TargetSetTurn(NetworkConnection conn)
+    public void TargetSetTurn(NetworkConnection conn, bool turn)
     {
-        GameObject.FindWithTag("Player").GetComponent<Player>().playerTurn = true;
+        GameObject.FindWithTag("Player").GetComponent<Player>().playerTurn = turn;
     }
 
 
@@ -292,11 +294,10 @@ public class GameManager : NetworkBehaviour
         if (waitForCombinations && GameMaster.playersToStart - 1 == numOfAnsweredPlayers)
         {
             Debug.Log("here");
+
             if (mahJongDeclarator != null)
             {
-                mahJongDeclarator.DeclareMahJong();
-
-
+                mahJongDeclarator.DeclareMahJong(DefineWind(mahJongDeclarator));
             }
             else if (kongDeclarator != null)
             {
@@ -322,4 +323,14 @@ public class GameManager : NetworkBehaviour
         //    Debug.Log("server");
     }
     #endregion
+
+    public void DeclareCombination(string combination)
+    {
+        string wind = winds[CurrentWind].Name;
+        foreach (Wind playerWind in winds)
+        {
+            if (playerWind.player != null && playerWind.Name != wind)
+                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient,wind, combination);
+        }
+    }
 }

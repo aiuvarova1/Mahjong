@@ -72,9 +72,11 @@
     <Compile Include="Assets\Scripts\JoinGame.cs" />
     <Compile Include="Assets\Scripts\Kong.cs" />
     <Compile Include="Assets\Scripts\Loader.cs" />
+    <Compile Include="Assets\Scripts\MahJong.cs" />
     <Compile Include="Assets\Scripts\MenuManager.cs" />
     <Compile Include="Assets\Scripts\NewNetworkManager.cs" />
     <Compile Include="Assets\Scripts\North.cs" />
+    <Compile Include="Assets\Scripts\Pair.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\PlayerUI.cs" />
     <Compile Include="Assets\Scripts\Pung.cs" />

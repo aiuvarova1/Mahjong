@@ -10,6 +10,8 @@ public abstract class Wind:IComparable<Wind>
 {
     public Player player { get;  set; }
 
+    public string Name { get; protected set; }
+
     public Wind(Player p)
     {
         this.player = p;

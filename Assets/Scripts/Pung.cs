@@ -10,6 +10,9 @@ public class Pung : Combination
 {
     public Vector3 additionalPosition;
 
-    public Pung(Tile t1, Tile t2, Tile t3, int ind) : base(t1, t2, t3, ind) { }
+    public Pung(Tile t1, Tile t2, Tile t3) : base(t1, t2, t3)
+    {
+        Name = "Pung";
+    }
 }
 

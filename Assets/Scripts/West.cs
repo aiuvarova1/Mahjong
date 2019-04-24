@@ -22,6 +22,7 @@ using UnityEngine;
         freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;
         freeFlowerPosition = startFlowerPosition;
+        Name = "West";
 
     }
 
@@ -41,6 +42,7 @@ using UnityEngine;
         freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;
         freeFlowerPosition = startFlowerPosition;
+        Name = "West";
     }
 }
 

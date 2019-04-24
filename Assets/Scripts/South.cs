@@ -20,6 +20,7 @@ class South:Wind
          freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;
         freeFlowerPosition = startFlowerPosition;
+        Name = "South";
     }
 
 
@@ -40,6 +41,7 @@ class South:Wind
         freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;
         freeFlowerPosition = startFlowerPosition;
+        Name = "South";
     }
 }
 

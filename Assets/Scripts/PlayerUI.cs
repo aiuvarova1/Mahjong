@@ -29,6 +29,8 @@ public class PlayerUI : NetworkBehaviour
     public GameObject QuitButton;
 
     public Text countDown;
+    public Text declaration;
+    public Text combinationInfo;
 
 
     [SerializeField]
@@ -43,7 +45,6 @@ public class PlayerUI : NetworkBehaviour
 
     public GameObject blackScreen;
 
-    public GameObject toolTipPanel;
     public Text toolTipText;
 
     public GameObject chowPanel;
@@ -75,11 +76,65 @@ public class PlayerUI : NetworkBehaviour
 
         thirdButton.gameObject.SetActive(false);
         chowPanel.SetActive(false);
+        declaration.enabled = false;
+        combinationInfo.enabled = false;
         
 
     }
 
     #region Coroutines
+
+    [TargetRpc]
+    public void TargetShowInfo(NetworkConnection conn ,string info)
+    {
+        combinationInfo.text = info;
+        StartCoroutine(HideInfo());
+    }
+    IEnumerator HideInfo()
+    {
+        combinationInfo.enabled = true;
+        yield return new WaitForSeconds(4f);
+
+        while (combinationInfo.color.a > 0)
+        {
+            Color col = combinationInfo.color;
+            col.a -= 0.1f;
+            combinationInfo.color = col;
+            yield return new WaitForSeconds(0.3f);
+        }
+        combinationInfo.enabled = false;
+        Color fullCol = combinationInfo.color;
+        fullCol.a = 1f;
+        combinationInfo.color = fullCol;
+
+    }
+
+    IEnumerator DeclareCombination(string wind,string combination)
+    {
+        declaration.text = $"{wind} declares {combination}!";
+        declaration.enabled = true;
+        yield return new WaitForSeconds(2f);
+        while (declaration.color.a > 0)
+        {
+            Color col = declaration.color;
+            col.a -= 0.1f;
+            declaration.color = col;
+            yield return new WaitForSeconds(0.3f);
+        }
+        declaration.enabled = false;
+        Color fullCol = declaration.color;
+        fullCol.a = 1f;
+        declaration.color = fullCol;
+    }
+
+    [TargetRpc]
+    public void TargetShowDeclaredCombination(NetworkConnection conn,string wind, string combination)
+    {
+        StartCoroutine(DeclareCombination(wind,combination));
+    }
+
+
+
     IEnumerator WaitForStart()
     {
 
@@ -100,14 +155,21 @@ public class PlayerUI : NetworkBehaviour
             Debug.Log(countdown);
             countdown--;
         }
-        infoPanel.SetActive(false);
+        //infoPanel.SetActive(false);
+        
         CmdFailToStart();
+        StopWaiting();
     }
 
     [TargetRpc]
     public void TargetStopWaiting(NetworkConnection conn)
     {
+        StopWaiting();
+    }
+    public void StopWaiting()
+    {
         StopCoroutine(starter);
+        starter = WaitForStart();
         infoPanel.SetActive(false);
         infoText.text = " ";
     }
@@ -135,21 +197,42 @@ public class PlayerUI : NetworkBehaviour
             yield return new WaitForSeconds(1);
             countdown--;
         }
-        countDown.enabled = false;
+        //countDown.enabled = false;
+        
         player.SelectTile(player.selectedTile.tile);
+        player.startedCoroutine = false;
+        StopWaitingForMove();
+        //CmdStopCoroutine();
 
     }
+    //[Command]
+    //void CmdStopCoroutine()
+    //{
+    //    player.startedCoroutine = false;
+    //}
 
     public void LaunchWaitForMove()
     {
-        if(isClient)
+        if (isClient)
+        {
+            
             StartCoroutine(CountDown);
+        }
     }
+
+    [TargetRpc]
+    public void TargetStopWaitingForMove(NetworkConnection conn)
+    {
+        StopWaitingForMove();
+    }
+
 
     public void StopWaitingForMove()
     {
         StopCoroutine(CountDown);
+        CountDown = WaitForMove();
         countDown.enabled = false;
+        player.startedCoroutine = false;
     }
 
     IEnumerator WaitForCombination()
@@ -170,17 +253,20 @@ public class PlayerUI : NetworkBehaviour
             yield return new WaitForSeconds(1);
             countdown--;
         }
-        countDown.enabled = false;
+        //countDown.enabled = false;
+        
 
         if (chowPanel.activeSelf)
             chowPanel.SetActive(false);
         if (thirdButton.enabled)
             thirdButton.enabled = false;
 
-        GameManager.instance.numOfAnsweredPlayers++;
+        player.CmdAnswerToServer();
+        //GameManager.instance.numOfAnsweredPlayers++;
         //player.turnForCombination = false;
         CmdSetCombinationTurn(false);
         //player.playerTurn = false;
+        StopWaitingForCombination();
     }
 
 
@@ -194,13 +280,15 @@ public class PlayerUI : NetworkBehaviour
     [TargetRpc]
     public void TargetStopWaitingForCombination(NetworkConnection conn)
     {
-        
+
         StopWaitingForCombination();
+
     }
-    
+
     public void StopWaitingForCombination()
     {
         StopCoroutine(CombinationEnum);
+        CombinationEnum = WaitForCombination();
         countDown.enabled = false;
         player.turnForCombination = false;
     }

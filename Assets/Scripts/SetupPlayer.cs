@@ -29,8 +29,8 @@ public class SetupPlayer : NetworkBehaviour
         //!!!
         try
         {
-            //order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count)];
-            order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count-2)];
+            order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count)];
+            //order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count-2)];
         }
         catch (ArgumentOutOfRangeException)
         {

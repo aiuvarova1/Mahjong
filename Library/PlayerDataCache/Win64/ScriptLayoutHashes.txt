@@ -86,8 +86,8 @@ fc108ce7d98c40ac0907e8ca7f500c76 UnityEngine.UI.dll:UnityEngine.UI.Text
 0fd6822f6177297bd0eb4d83cc7a9030 UnityEngine.UI.dll:UnityEngine.UI.ToggleGroup
 abf1930d8126d0b2e00e9449129a0190 UnityEngine.UI.dll:UnityEngine.EventSystems.TouchInputModule
 64e54c0cbb0177c5ea26f340efb9ff85 UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
-4f1b40cf90eb2c499787a1f52fa1883d Assembly-CSharp.dll:.PlayerUI
-f4f9cac393c224e4a7d5186ddb01c7f4 Assembly-CSharp.dll:.Player
+fdd060e34cc1e6a8c3bbf92fa0a40b68 Assembly-CSharp.dll:.PlayerUI
+6cb4b150650710791efb36a4a57a2e74 Assembly-CSharp.dll:.Player
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 06f0fef534ca4c1d6064fd77a26bf722 UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack
 780e8f682b3221346c034a6712a0fd25 UnityEngine.Timeline.dll:UnityEngine.Timeline.AnimationPlayableAsset

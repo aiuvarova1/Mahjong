@@ -21,6 +21,7 @@ class North:Wind
         freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;
         freeFlowerPosition = startFlowerPosition;
+        Name = "North";
     }
 
 
@@ -41,6 +42,7 @@ class North:Wind
         freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;
         freeFlowerPosition = startFlowerPosition;
+        Name = "North";
     }
 }
 
