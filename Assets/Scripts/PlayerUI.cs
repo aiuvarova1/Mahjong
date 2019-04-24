@@ -145,7 +145,7 @@ public class PlayerUI : NetworkBehaviour
 
         while (countdown > 0)
         {
-            if (ready == true)
+            if (ready)
             {
                 prefix = "Waiting for other \n   players...";
                 startButton.SetActive(false);
@@ -177,7 +177,6 @@ public class PlayerUI : NetworkBehaviour
     [TargetRpc]
     public void TargetStartWaiting(NetworkConnection conn)
     {
-        Debug.Log(starter == null);
         StartCoroutine(starter);
     }
 
@@ -390,6 +389,7 @@ public class PlayerUI : NetworkBehaviour
 
     public void MarkReady()
     {
+        if (ready) return;
         if (isLocalPlayer) CmdMarkReady();
     }
 

@@ -341,6 +341,11 @@ public class Player : NetworkBehaviour
     //!!!!!
     public void Pass()
     {
+        if (!turnForCombination)
+        {
+            gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "It's not your turn");
+            return;
+        }
         turnForCombination = false;
         if (!isLocalPlayer) return;
 
@@ -1133,6 +1138,7 @@ public class Player : NetworkBehaviour
 
     void GetNextFlower()
     {
+        Debug.Log("get next");
         GameManager.instance.CheckForFlowers();
     }
 
@@ -1209,7 +1215,10 @@ public class Player : NetworkBehaviour
 
                 if (needFreeTile)
                 {
-                    if (Wall.instance.freeTiles.Count == 0) return;
+                    if (Wall.instance.freeTiles.Count == 0)
+                    {
+                        Debug.Log("count 0");
+                    }
 
                     //Debug.Log(CheckTileMoving(Wall.instance.freeTiles[Wall.instance.freeTiles.Count-1]));
 
@@ -1223,7 +1232,7 @@ public class Player : NetworkBehaviour
 
                     try
                     {
-                        if (Wall.instance.freeTiles.Count - 1 < 0) return;
+                        //if (Wall.instance.freeTiles.Count - 1 < 0) return;
 
                         if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile.transform.position
                             != new Vector3(Wall.instance.tiles
@@ -1236,9 +1245,10 @@ public class Player : NetworkBehaviour
                             return;
                         }
                     }
-                    catch (ArgumentOutOfRangeException)
+                    catch (ArgumentOutOfRangeException ex)
                     {
-                        Debug.Log("argument out of range");
+                        Debug.Log("argument out of range" + (Wall.instance.freeTiles.Count - 1));
+                        Debug.Log(ex.Message);
                         return;
                     }
                     catch (Exception)
