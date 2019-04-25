@@ -24,7 +24,16 @@ public class GameManager : NetworkBehaviour
 
     int currentWind;
 
-    public int numOfAnsweredPlayers;
+    int numOfAnsweredPlayers;
+
+    public int NumOfAnsweredPlayers
+    {
+        get { return numOfAnsweredPlayers; }
+        set { numOfAnsweredPlayers = value;
+            Debug.Log(numOfAnsweredPlayers + " num answered");
+        }
+    }
+
     public Player chowDeclarator;
     public Player pungDeclarator;
     public Player kongDeclarator;
@@ -41,6 +50,7 @@ public class GameManager : NetworkBehaviour
         {
             if (value > 3) currentWind = 0;
             else currentWind = value;
+            Debug.Log("current wind" + currentWind);
         }
     }
 
@@ -266,7 +276,7 @@ public class GameManager : NetworkBehaviour
     {
         Debug.Log("prepare for comb");
 
-        numOfAnsweredPlayers = 0;
+        NumOfAnsweredPlayers = 0;
         chowDeclarator = null;
         pungDeclarator = null;
         kongDeclarator = null;
@@ -291,7 +301,7 @@ public class GameManager : NetworkBehaviour
 
 
         //set turns!
-        if (waitForCombinations && GameMaster.playersToStart - 1 == numOfAnsweredPlayers)
+        if (waitForCombinations && GameMaster.playersToStart - 1 == NumOfAnsweredPlayers)
         {
             Debug.Log("here");
 

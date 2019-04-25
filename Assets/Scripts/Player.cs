@@ -24,6 +24,7 @@ public class Player : NetworkBehaviour
     bool needFreeTile = false;
 
     public bool playerTurn = false;
+
     public bool startedCoroutine = false;
     public bool turnForCombination = false;
 
@@ -341,23 +342,30 @@ public class Player : NetworkBehaviour
     //!!!!!
     public void Pass()
     {
+        if (!isLocalPlayer) return;
+        CmdPass();
+        gameObject.GetComponent<PlayerUI>().StopWaitingForCombination();
+        //CmdAnswerToServer();
+    }
+
+    [Command]
+    public void CmdPass()
+    {
+
         if (!turnForCombination)
         {
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "It's not your turn");
             return;
         }
         turnForCombination = false;
-        if (!isLocalPlayer) return;
-
-        gameObject.GetComponent<PlayerUI>().StopWaitingForCombination();
-        CmdAnswerToServer();
+        GameManager.instance.NumOfAnsweredPlayers++;
     }
 
-    [Command]
-    public void CmdAnswerToServer()
-    {
-        GameManager.instance.numOfAnsweredPlayers++;
-    }
+    //[Command]
+    //public void CmdAnswerToServer()
+    //{
+    //    GameManager.instance.NumOfAnsweredPlayers++;
+    //}
 
     int FindNumOfSimilarTiles(string name, ref int firstIndex)
     {
@@ -400,7 +408,7 @@ public class Player : NetworkBehaviour
         if (GameManager.instance.winds[nextWind].player != this)
         {
             Debug.Log("not next player");
-            GameManager.instance.numOfAnsweredPlayers++;
+            GameManager.instance.NumOfAnsweredPlayers++;
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "You are not the next player");
@@ -422,7 +430,7 @@ public class Player : NetworkBehaviour
         int tileNum = 0;
         if (!int.TryParse(tileName[tileName.Length - 1].ToString(), out tileNum))
         {
-            GameManager.instance.numOfAnsweredPlayers++;
+            GameManager.instance.NumOfAnsweredPlayers++;
             Debug.Log("not suit");
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
@@ -501,7 +509,7 @@ public class Player : NetworkBehaviour
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
             Debug.Log("no chow");
-            GameManager.instance.numOfAnsweredPlayers++;
+            GameManager.instance.NumOfAnsweredPlayers++;
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "No tiles for chow");
             return;
         }
@@ -514,7 +522,7 @@ public class Player : NetworkBehaviour
         {
             GameManager.instance.chowDeclarator = this;
             waitingCombination = firstCombination;
-            GameManager.instance.numOfAnsweredPlayers++;
+            GameManager.instance.NumOfAnsweredPlayers++;
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
         }
@@ -548,7 +556,7 @@ public class Player : NetworkBehaviour
 
         if (FindNumOfSimilarTiles(GameManager.instance.GameTable.lastTile.name, ref firstIndex) < 2)
         {
-            GameManager.instance.numOfAnsweredPlayers++;
+            GameManager.instance.NumOfAnsweredPlayers++;
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "No tiles for Pung");
@@ -556,7 +564,7 @@ public class Player : NetworkBehaviour
         }
         waitingCombination = new Pung(playerTiles[firstIndex], playerTiles[firstIndex + 1], GameManager.instance.GameTable.lastTile);
         GameManager.instance.pungDeclarator = this;
-        GameManager.instance.numOfAnsweredPlayers++;
+        GameManager.instance.NumOfAnsweredPlayers++;
         turnForCombination = false;
         gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
     }
@@ -584,7 +592,7 @@ public class Player : NetworkBehaviour
 
             if (FindNumOfSimilarTiles(GameManager.instance.GameTable.lastTile.name, ref firstIndex) < 3)
             {
-                GameManager.instance.numOfAnsweredPlayers++;
+                GameManager.instance.NumOfAnsweredPlayers++;
                 turnForCombination = false;
                 gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
                 gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "No tiles for Kong");
@@ -592,7 +600,7 @@ public class Player : NetworkBehaviour
             }
             waitingCombination = new Kong(playerTiles[firstIndex], playerTiles[firstIndex + 1], playerTiles[firstIndex + 2], GameManager.instance.GameTable.lastTile, true);
             GameManager.instance.kongDeclarator = this;
-            GameManager.instance.numOfAnsweredPlayers++;
+            GameManager.instance.NumOfAnsweredPlayers++;
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
         }
@@ -634,10 +642,10 @@ public class Player : NetworkBehaviour
     [Command]
     void CmdCheckMahJong()
     {
-        if (!playerTurn || !turnForCombination)
+        if (!playerTurn && !turnForCombination)
         {
             Debug.Log("not your turn");
-            gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "No tiles for MahJong");
+            gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "Not your turn");
             return;
         }
 
@@ -656,6 +664,12 @@ public class Player : NetworkBehaviour
 
         //0-bamboos,1-dots,2-symbols,3-winds,4-dragons
         List<List<Tile>> suitSets = new List<List<Tile>>();
+
+        for (int i = 0; i < 5; i++)
+        {
+            suitSets.Add(new List<Tile>());
+        }
+
         List<List<Combination>> closedCombinations = new List<List<Combination>>();
 
         int pairSetNum = -1;
@@ -728,7 +742,7 @@ public class Player : NetworkBehaviour
         waitingCombination = new MahJong(closedCombinations);
 
         GameManager.instance.mahJongDeclarator = this;
-        GameManager.instance.numOfAnsweredPlayers++;
+        GameManager.instance.NumOfAnsweredPlayers++;
         turnForCombination = false;
         gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
         //here create new waiting comb mahjong
@@ -840,7 +854,7 @@ public class Player : NetworkBehaviour
     {
         if (turnForCombination)
         {
-            GameManager.instance.numOfAnsweredPlayers++;
+            GameManager.instance.NumOfAnsweredPlayers++;
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
 

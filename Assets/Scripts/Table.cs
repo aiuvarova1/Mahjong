@@ -38,12 +38,16 @@ public class Table
 
     public void MoveRightStartPosition()
     {
-        currentPosition.z -= 2f;
+        Vector3 curPos = CurrentPosition;
+        curPos.z -= 2f;
+        CurrentPosition = curPos;
     }
 
     public void MoveLeftStartPosition()
     {
-        currentPosition.z += 2f;
+        Vector3 curPos = CurrentPosition;
+        curPos.z += 2f;
+        CurrentPosition = curPos;
     }
 
 

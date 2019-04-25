@@ -239,9 +239,9 @@ public class PlayerUI : NetworkBehaviour
         yield return new WaitForSeconds(2);
         //player.turnForCombination = true;
         CmdSetCombinationTurn(true);
-        int countdown = 15;
+        int countdown = 20;
 
-        countDown.text = "15";
+        countDown.text = "20";
 
         countDown.enabled = true;
 
@@ -260,8 +260,8 @@ public class PlayerUI : NetworkBehaviour
         if (thirdButton.enabled)
             thirdButton.enabled = false;
 
-        player.CmdAnswerToServer();
-        //GameManager.instance.numOfAnsweredPlayers++;
+       // player.CmdAnswerToServer();
+        //GameManager.instance.NumOfAnsweredPlayers++;
         //player.turnForCombination = false;
         CmdSetCombinationTurn(false);
         //player.playerTurn = false;
@@ -293,13 +293,13 @@ public class PlayerUI : NetworkBehaviour
     }
 
 
-    
+
     [Command]
     void CmdSetCombinationTurn(bool turn)
     {
         player.turnForCombination = turn;
         if (!turn)
-            GameManager.instance.numOfAnsweredPlayers++;
+            GameManager.instance.NumOfAnsweredPlayers++;
     }
 
     IEnumerator DarkenTheScreen()
@@ -530,7 +530,7 @@ public class PlayerUI : NetworkBehaviour
     void StopWaitForChow()
     {
         GameManager.instance.chowDeclarator = player;
-        GameManager.instance.numOfAnsweredPlayers++;
+        GameManager.instance.NumOfAnsweredPlayers++;
 
         
     }
