@@ -21,7 +21,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 950, y: 474}
+  m_MinSize: {x: 950, y: 548}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -45,7 +45,7 @@ MonoBehaviour:
     y: 0
     width: 1280
     height: 637
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 548}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &3
 MonoBehaviour:
@@ -111,10 +111,10 @@ MonoBehaviour:
     y: 30
     width: 1280
     height: 587
-  m_MinSize: {x: 681, y: 424}
-  m_MaxSize: {x: 12006, y: 8048}
+  m_MinSize: {x: 707, y: 498}
+  m_MaxSize: {x: 18002, y: 14048}
   vertical: 0
-  controlID: 73
+  controlID: 8379
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -136,10 +136,10 @@ MonoBehaviour:
     y: 0
     width: 906
     height: 587
-  m_MinSize: {x: 406, y: 424}
-  m_MaxSize: {x: 8006, y: 8048}
+  m_MinSize: {x: 432, y: 498}
+  m_MaxSize: {x: 14002, y: 14048}
   vertical: 1
-  controlID: 74
+  controlID: 8380
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -164,7 +164,7 @@ MonoBehaviour:
   m_MinSize: {x: 406, y: 224}
   m_MaxSize: {x: 8006, y: 4024}
   vertical: 0
-  controlID: 75
+  controlID: 8381
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -239,10 +239,10 @@ MonoBehaviour:
     y: 263
     width: 906
     height: 324
-  m_MinSize: {x: 302, y: 200}
-  m_MaxSize: {x: 8002, y: 4024}
+  m_MinSize: {x: 432, y: 274}
+  m_MaxSize: {x: 14002, y: 10024}
   vertical: 0
-  controlID: 122
+  controlID: 8459
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -262,14 +262,14 @@ MonoBehaviour:
     y: 0
     width: 312
     height: 324
-  m_MinSize: {x: 100, y: 100}
-  m_MaxSize: {x: 4000, y: 4000}
-  m_ActualView: {fileID: 19}
+  m_MinSize: {x: 232, y: 274}
+  m_MaxSize: {x: 10002, y: 10024}
+  m_ActualView: {fileID: 18}
   m_Panes:
   - {fileID: 18}
   - {fileID: 19}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -289,8 +289,8 @@ MonoBehaviour:
     y: 0
     width: 594
     height: 324
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 204, y: 224}
+  m_MaxSize: {x: 4004, y: 4024}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -315,8 +315,8 @@ MonoBehaviour:
     y: 0
     width: 374
     height: 587
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 277, y: 74}
+  m_MaxSize: {x: 4002, y: 4024}
   m_ActualView: {fileID: 20}
   m_Panes:
   - {fileID: 20}
@@ -434,7 +434,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: f4afffff18b0ffff44b1ffff74b1ffff90b1ffff46c8ffff6ac8ffff96c9ffffc6c9ffffeec9ffff46e1ffff6ae1ffff96e2ffffc6e2ffffe2e2ffff94f9ffffbcf9ffffecfaffff1cfbffff38fbffffd4fbffff
+      m_ExpandedIDs: 6ed3feff8c8fffff5091ffff7491ffff9e92ffffce92ffffea92ffff22abffffe6acffff0aadffff34aeffff64aeffff80aeffffdccbffff00ccffff2ccdffff5ccdffff78cdffff00f9ffff28f9ffff64faffffa0faffffc0faffffd4fbffff92400000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -489,9 +489,9 @@ MonoBehaviour:
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 28.05555, y: 5.851475, z: -6.05468}
+    m_Target: {x: 5.908058, y: -28.360859, z: 14.602587}
     speed: 2
-    m_Value: {x: 28.05555, y: 5.851475, z: -6.05468}
+    m_Value: {x: 5.908058, y: -28.360859, z: 14.602587}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -519,13 +519,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: -0.3263664, y: 0.28670588, z: -0.10459262, w: -0.8946201}
+    m_Target: {x: 0.48273823, y: 0.45219898, z: -0.3223596, w: 0.6771737}
     speed: 2
-    m_Value: {x: -0.3263664, y: 0.28670588, z: -0.10459262, w: -0.8946201}
+    m_Value: {x: 0.48273823, y: 0.45219898, z: -0.3223596, w: 0.6771737}
   m_Size:
-    m_Target: 40.010372
+    m_Target: 61.00426
     speed: 2
-    m_Value: 40.010372
+    m_Value: 61.00426
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -558,10 +558,10 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 272
+    x: 273.33334
     y: 72.66667
-    width: 631
-    height: 216
+    width: 629
+    height: 243
   m_PersistentViewDataDictionary: {fileID: 0}
 --- !u!114 &18
 MonoBehaviour:
@@ -601,20 +601,20 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Prefabs
+    - Assets/Textures
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Prefabs
+  - Assets/Textures
   m_LastFoldersGridSize: 64
   m_LastProjectPath: D:\Project\Mahjong
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 40290000
-    m_LastClickedID: 10560
-    m_ExpandedIDs: 00000000742600009a270000aa270000402c0000422c0000442c000000ca9a3b
+    scrollPos: {x: 0, y: 37}
+    m_SelectedIDs: c6280000
+    m_LastClickedID: 10438
+    m_ExpandedIDs: 00000000742600009a270000aa270000402c0000422c0000442c0000a0420000b242000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -642,7 +642,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000742600009a270000aa270000402c0000422c0000442c0000
+    m_ExpandedIDs: 00000000742600009a270000aa270000402c0000422c0000442c0000a0420000b242000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -669,7 +669,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c6230000542d000000000000322a0000502f00009427000052e9ffffe0d9fbff5677ffff102a0000b8260000482900000a270000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -694,7 +694,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 591}
+    m_ScrollPosition: {x: 0, y: 597}
     m_GridSize: 64
   m_DirectoriesAreaWidth: 110
 --- !u!114 &19

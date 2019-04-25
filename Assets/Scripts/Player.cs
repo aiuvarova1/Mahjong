@@ -1263,13 +1263,11 @@ public class Player : NetworkBehaviour
                     {
                         Debug.Log("argument out of range" + (Wall.instance.freeTiles.Count - 1));
                         Debug.Log(ex.Message);
+                        needToCheckMoving = false;
+                        Invoke("EnableCheck", 0.8f);
                         return;
                     }
-                    catch (Exception)
-                    {
-                        Debug.Log("argument out of range");
-                        return;
-                    }
+
                     //Wall.instance.GiveFreeTile();
                     Invoke("InvokeGiveFreeTile", 0.1f);
                     needFreeTile = false;
@@ -1302,4 +1300,8 @@ public class Player : NetworkBehaviour
     }
     #endregion
 
+    void EnableCheck()
+    {
+        needToCheckMoving = true;
+    }
 }
