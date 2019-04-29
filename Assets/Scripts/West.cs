@@ -12,8 +12,8 @@ using UnityEngine;
  
     public Vector3 startPosition = new Vector3(30, 1f, -11);
 
-    public Vector3 startOpenTilePosition = new Vector3(27, 0f, -11);
-    public Vector3 startFlowerPosition = new Vector3(23, 0, -11);
+    public Vector3 startOpenTilePosition = new Vector3(27, 0f, -15);
+    public Vector3 startFlowerPosition = new Vector3(23, 0, -15);
 
     public West(Player p) : base(p)
     {

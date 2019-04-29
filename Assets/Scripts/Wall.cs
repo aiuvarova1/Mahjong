@@ -246,6 +246,8 @@ public class Wall : NetworkBehaviour
         {
             beginningPair = 17;
             beginningWall--;
+            if (beginningWall < 0)
+                beginningWall = 3;
         }
 
         Debug.Log($"wallNum {wallNum}, restNum {restNum}");

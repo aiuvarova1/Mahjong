@@ -768,6 +768,9 @@ public class Player : NetworkBehaviour
         GameManager.instance.NumOfAnsweredPlayers++;
         turnForCombination = false;
         gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
+
+        if (playerTurn)
+            DeclareMahJong(GameManager.instance.CurrentWind);
         //here create new waiting comb mahjong
         //open table tile combination
         //stop game and calculate points
@@ -793,7 +796,8 @@ public class Player : NetworkBehaviour
                         Debug.Log("pung");
                         for (int m = 0; m < 3; m++)
                         {
-                            newList.Remove(suitSet[i]);
+                            //!!!!!!!!!!!!!!!!!!!
+                            newList.RemoveAt(i);
                         }
                         if (newList.Count == 0)
                         {
@@ -817,7 +821,7 @@ public class Player : NetworkBehaviour
                     {
                         for (int m = 0; m < 3; m++)
                         {
-                            newList.Remove(suitSet[i]);
+                            newList.RemoveAt(i);
                         }
                         if (newList.Count == 0)
                         {

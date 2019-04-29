@@ -24,6 +24,7 @@ public class Table
             currentPosition = value;
             if (currentPosition.z < -12)
                 currentPosition = new Vector3(currentPosition.x - 3, currentPosition.y, startPosition.z);
+
         }
     }
 
@@ -47,6 +48,8 @@ public class Table
     {
         Vector3 curPos = CurrentPosition;
         curPos.z += 2f;
+        if (curPos.z > startPosition.z)
+            curPos.z = startPosition.z;
         CurrentPosition = curPos;
     }
 
