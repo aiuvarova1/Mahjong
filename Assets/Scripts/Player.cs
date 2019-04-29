@@ -674,13 +674,15 @@ public class Player : NetworkBehaviour
 
         //0-bamboos,1-dots,2-symbols,3-winds,4-dragons
         List<List<Tile>> suitSets = new List<List<Tile>>();
+        List<List<Combination>> closedCombinations = new List<List<Combination>>();
 
         for (int i = 0; i < 5; i++)
         {
             suitSets.Add(new List<Tile>());
+            closedCombinations.Add(new List<Combination>());
         }
 
-        List<List<Combination>> closedCombinations = new List<List<Combination>>();
+        
 
         int pairSetNum = -1;
         List<Tile> setWithPair = new List<Tile>();
@@ -775,15 +777,20 @@ public class Player : NetworkBehaviour
 
     bool FillOneSuitCombinations(List<Tile> suitSet, ref List<Combination> combinationList)
     {
+        Debug.Log("fill" + suitSet.Count);
         for (int i = 0; i < suitSet.Count - 2; i++)
         {
+            Debug.Log(suitSet[i].name);
             for (int j = i + 1; j < suitSet.Count - 1; j++)
             {
+                Debug.Log(suitSet[j].name);
                 for (int k = j + 1; k < suitSet.Count; k++)
                 {
+                    Debug.Log(suitSet[k].name);
                     List<Tile> newList = new List<Tile>(suitSet);
                     if (suitSet[i].name == suitSet[j].name && suitSet[j].name == suitSet[k].name)
                     {
+                        Debug.Log("pung");
                         for (int m = 0; m < 3; m++)
                         {
                             newList.Remove(suitSet[i]);
@@ -802,7 +809,9 @@ public class Player : NetworkBehaviour
                             }
                         }
                     }
-                    else if (char.IsLower(suitSet[i].name[0])
+
+                    Debug.Log($"{char.IsLower(suitSet[i].name[0])},i {int.Parse(suitSet[i].name[1].ToString())}, j {int.Parse(suitSet[j].name[1].ToString())},k {int.Parse(suitSet[k].name[1].ToString())}"); 
+                     if (char.IsLower(suitSet[i].name[0])
                        && int.Parse(suitSet[i].name[1].ToString()) + 1 == int.Parse(suitSet[j].name[1].ToString())
                        && int.Parse(suitSet[j].name[1].ToString()) + 1 == int.Parse(suitSet[k].name[1].ToString()))
                     {
@@ -945,14 +954,16 @@ public class Player : NetworkBehaviour
         freeSpacePosition.y = 1.2f;
         freeSpaceIndex = firstIndex;
 
+        string name = playerTiles[firstIndex].name;
+
 
         for (int i = firstIndex; i < firstIndex + 4; i++)
         {
-
-            RpcLieOutTile(i, GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation, "comb");
+            RpcLieOutCombinationTile(GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation, name);
+            //RpcLieOutTile(i, GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation, "comb");
             GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
             if (i == firstIndex || i == firstIndex + 3)
-                playerTiles[i].tile.GetComponent<BezierMove>().CloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
+                playerTiles[i].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
 
         }
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
@@ -984,7 +995,7 @@ public class Player : NetworkBehaviour
 
         RpcLieOutTile(index, pung.additionalPosition, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation, "comb");
 
-        kong.tileList[3].tile.GetComponent<BezierMove>().CloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
+        kong.tileList[3].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
         GameManager.instance.DeclareCombination("Kong");
 
 
@@ -1077,11 +1088,17 @@ public class Player : NetworkBehaviour
 
     }
 
+    [ClientRpc]
+    void RpcCloseTile(int index)
+    {
+
+    }
+
     public void DeclareKong(int windPos)
     {
         LieCombinationTiles(windPos);
 
-        waitingCombination.tileList[3].tile.GetComponent<BezierMove>().CloseTile(GameManager.instance.winds[windPos].rotation);
+        waitingCombination.tileList[3].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[windPos].rotation);
 
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
         GameManager.instance.CurrentWind = windPos;

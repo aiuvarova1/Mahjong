@@ -236,7 +236,7 @@ public class PlayerUI : NetworkBehaviour
 
     IEnumerator WaitForCombination()
     {
-        yield return new WaitForSeconds(2);
+
         //player.turnForCombination = true;
         CmdSetCombinationTurn(true);
         int countdown = 20;

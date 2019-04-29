@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class BezierMove : MonoBehaviour
+public class BezierMove : NetworkBehaviour
 {
     float thirdRowHeight = 3.4f;
 
@@ -162,7 +163,8 @@ public class BezierMove : MonoBehaviour
         transform.position = new Vector3(transform.position.x, transform.position.y - 0.7f, transform.position.z);
     }
 
-    public void CloseTile(float rotation)
+    [ClientRpc]
+    public void RpcCloseTile(float rotation)
     {
         transform.rotation=(Quaternion.Euler(0, rotation, 0));
     }
