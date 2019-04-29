@@ -189,9 +189,9 @@ public class BezierMove : MonoBehaviour
                     if (check)
                         check = false;
 
-                    if (Wall.instance.freeTileIsMoving &&
-                        gameObject == Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile)
-                        Wall.instance.freeTileIsMoving = false;
+                    //if (Wall.instance.freeTileIsMoving &&
+                    //    gameObject == Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile)
+                    //    Wall.instance.freeTileIsMoving = false;
 
 
                     return;

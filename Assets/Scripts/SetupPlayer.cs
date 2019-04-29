@@ -13,20 +13,25 @@ public class SetupPlayer : NetworkBehaviour
 
     private void Start()
     {
+        
+
+        if (isServer)
+        {
+            SetOrder();
+        }
+
 
         if (!isLocalPlayer)
         {
             gameObject.GetComponent<PlayerUI>().canvas.enabled = false;
             return;
         }
+        
+    } 
 
-        player = gameObject.GetComponent<Player>();
-
-        Debug.Log(GameMaster.instance.availableCameras.Count);
-
-        int order=0;
-
-        //!!!
+    void SetOrder()
+    {
+        int order = 0;
         try
         {
             order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count)];
@@ -36,8 +41,15 @@ public class SetupPlayer : NetworkBehaviour
         {
             GetComponent<PlayerUI>().DropConnection();
         }
-        
+        player = gameObject.GetComponent<Player>();
 
+        TargetSetOrder(player.connectionToClient, order);
+    }
+
+    [TargetRpc]
+    void TargetSetOrder(NetworkConnection conn,int order)
+    {
+        player = gameObject.GetComponent<Player>();
 
         player.order = order;
 
@@ -46,10 +58,8 @@ public class SetupPlayer : NetworkBehaviour
         player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);
         AssignWind();
 
-        CmdAddPlayer(player.order,player.wind);
-
-        
-    } 
+        CmdAddPlayer(player.order, player.wind);
+    }
 
     void AssignWind()
     {

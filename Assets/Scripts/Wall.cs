@@ -23,6 +23,7 @@ public class Wall : NetworkBehaviour
 
     //to avoid wrong current wind
     int currentWind;
+    int freeTilesCount = 2;
 
     private void Awake()
     {
@@ -235,8 +236,8 @@ public class Wall : NetworkBehaviour
     void RpcLieFreeTiles(int wallNum, int restNum)
 
     {
-        freeTileIsMoving = true;
-        Debug.Log("free tile is moving in rpc" + freeTileIsMoving);
+
+       // Debug.Log("free tile is moving in rpc" + freeTileIsMoving);
         beginningWall = wallNum;
         beginningPair = restNum;
 
@@ -246,11 +247,13 @@ public class Wall : NetworkBehaviour
             beginningPair = 17;
             beginningWall--;
         }
-        freeTileIsMoving = true;
 
+        Debug.Log($"wallNum {wallNum}, restNum {restNum}");
         freeTiles.Add(tiles[wallNum][restNum].upperTile);
         freeTiles.Add(tiles[wallNum][restNum].lowerTile);
 
+
+        freeTileIsMoving = false;
         // tiles[wallNum][restNum].upperTile.tile.transform.Rotate(0, 45, 0);
         CheckAndFill(wallNum, restNum);
     }
@@ -265,9 +268,6 @@ public class Wall : NetworkBehaviour
         float oldRotation = tiles[wallNum][0].lowerTile.tile.transform.eulerAngles.y;
 
        
-
-        
-        Debug.Log(newRotation);
         if (num >= 2)
         {
             freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][num - 2].upperTile.tile.transform.position, true, oldRotation);
@@ -299,6 +299,7 @@ public class Wall : NetworkBehaviour
 
     public void GiveFreeTile()
     {
+        freeTilesCount--;
         Wind curWind = GameManager.instance.winds[GameManager.instance.CurrentWind];
         currentWind = GameManager.instance.CurrentWind;
 
@@ -307,17 +308,21 @@ public class Wall : NetworkBehaviour
         curWind.player.tileToMove = freeTiles[freeTiles.Count - 1];
 
         freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().check = true;
-        freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().owner = GameManager.instance.winds[GameManager.instance.CurrentWind].player; 
+        freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().owner = GameManager.instance.winds[GameManager.instance.CurrentWind].player;
 
+        GameManager.instance.winds[currentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
+
+
+       // Invoke("GiveFreeTiles", 0.01f);
         RpcGiveFreeTile(curWind.freePosition, curWind.rotation);
-        Invoke("RemoveFromFreeTiles", 0.5f);
+        //Invoke("RemoveFromFreeTiles", 0.5f);
         //curWind.player.needToCheckMoving = true;
 
         curWind.MoveRightFreePosition(ref curWind.freePosition);
-        Debug.Log(curWind.freePosition);
+       // Debug.Log(curWind.freePosition);
 
 
-
+        //was 0.6
         Invoke("CheckFreeTiles", 0.6f);
 
     }
@@ -329,15 +334,17 @@ public class Wall : NetworkBehaviour
         freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().Move(freePosition, rotation);
     }
 
-    void RemoveFromFreeTiles()
+    void GiveFreeTiles()
     {
-        Debug.Log(freeTiles.Count + "free tile");
-
+        Wind curWind = GameManager.instance.winds[GameManager.instance.CurrentWind];
+        // Debug.Log(freeTiles.Count + "free tile");
+        RpcGiveFreeTile(curWind.freePosition, curWind.rotation);
+        curWind.MoveRightFreePosition(ref curWind.freePosition);
 
         //GameManager.instance.winds[GameManager.instance.CurrentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
-        GameManager.instance.winds[currentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
-        //SetMoving();
-        RpcRemoveFromFree();
+        //GameManager.instance.winds[currentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
+        ////SetMoving();
+        //RpcRemoveFromFree();
     }
 
     void SetMoving()
@@ -354,10 +361,14 @@ public class Wall : NetworkBehaviour
 
     void CheckFreeTiles()
     {
-        if (freeTiles.Count == 0)
+        Debug.Log(freeTiles.Count + "check");
+        Debug.Log(freeTilesCount);
+        if (freeTilesCount==0)
         {
+            freeTilesCount = 2;
             freeTileIsMoving = true;
             RpcLieFreeTiles(beginningWall, beginningPair);
+
         }
     }
 

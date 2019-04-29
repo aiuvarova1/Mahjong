@@ -19,6 +19,22 @@ public class HostGame : MonoBehaviour
         if(networkManager.matchMaker==null)
             networkManager.StartMatchMaker();
         if (networkManager == null) Debug.Log("((");
+
+        networkManager = (NewNetworkManager)NewNetworkManager.singleton;
+        ConnectionConfig myConfig = networkManager.connectionConfig;
+
+        myConfig.NetworkDropThreshold = 95;
+        myConfig.OverflowDropThreshold = 30;
+        myConfig.InitialBandwidth = 0;
+        myConfig.MinUpdateTimeout = 10;
+        myConfig.ConnectTimeout = 2000;
+        myConfig.PingTimeout = 1500;
+        myConfig.DisconnectTimeout = 6000;
+        myConfig.PacketSize = 1470; myConfig.SendDelay = 2;
+        myConfig.FragmentSize = 1300;
+        myConfig.AcksType = ConnectionAcksType.Acks128;
+        myConfig.MaxSentMessageQueueSize = 256;
+        myConfig.AckDelay = 1;
     }
 
     public void CreateRoom()

@@ -18,6 +18,7 @@ public class NewNetworkManager : NetworkManager
     //    conn.playerControllers[0].gameObject.GetComponent<PlayerUI>().LeaveRoom();
     //    base.OnClientDisconnect(conn);
     //}
+   
 
     void ShowErrorMessage(string message)
     {

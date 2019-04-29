@@ -304,7 +304,7 @@ public class PlayerUI : NetworkBehaviour
 
     IEnumerator DarkenTheScreen()
     {
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.325f);
         for (float f = 0; f < 1.1; f += 0.1f)
         {
 
@@ -312,7 +312,7 @@ public class PlayerUI : NetworkBehaviour
             color.a = f;
             blackScreen.GetComponent<Image>().color = color;
 
-            yield return new WaitForSeconds(0.005f);
+            yield return new WaitForSeconds(0.0025f);
         }
 
     }

@@ -125,13 +125,13 @@ public class Player : NetworkBehaviour
                     //!
                     
                 }
-                else
-                {
-                    Debug.Log("Launch wait");
-                    GameObject.FindWithTag("Player").gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
-                    //gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
+                //else
+                //{
+                //    Debug.Log("Launch wait");
+                //    GameObject.FindWithTag("Player").gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
+                //    //gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
 
-                }
+                //}
 
                 break;
 
@@ -154,11 +154,17 @@ public class Player : NetworkBehaviour
 
     }
 
-    [Command]
-    void CmdSetLastTile(int index)
+    [TargetRpc]
+    public void TargetSetCombinationTurn(NetworkConnection conn)
     {
-        GameManager.instance.GameTable.lastTile = playerTiles[index];
+        GameObject.FindWithTag("Player").gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
     }
+
+    //[Command]
+    //void CmdSetLastTile(int index)
+    //{
+    //    GameManager.instance.GameTable.lastTile = playerTiles[index];
+    //}
 
     [ClientRpc]
     void RpcTakeTableTile(Vector3 freePosition, float rotation)
@@ -215,7 +221,9 @@ public class Player : NetworkBehaviour
         }
         else if (tile == "free")
         {
+            Debug.Log(Wall.instance.freeTiles.Count - 1);
             playerTiles.Add(Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1]);
+            Wall.instance.freeTiles.RemoveAt(Wall.instance.freeTiles.Count - 1);
 
         }
 
@@ -344,7 +352,7 @@ public class Player : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         CmdPass();
-        gameObject.GetComponent<PlayerUI>().StopWaitingForCombination();
+        
         //CmdAnswerToServer();
     }
 
@@ -359,6 +367,7 @@ public class Player : NetworkBehaviour
         }
         turnForCombination = false;
         GameManager.instance.NumOfAnsweredPlayers++;
+        gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
     }
 
     //[Command]
@@ -661,6 +670,7 @@ public class Player : NetworkBehaviour
             closedTiles.Add(GameManager.instance.GameTable.lastTile);
         }
         closedTiles.Sort();
+        Debug.Log("closed tiles" + closedTiles.Count);
 
         //0-bamboos,1-dots,2-symbols,3-winds,4-dragons
         List<List<Tile>> suitSets = new List<List<Tile>>();
@@ -690,10 +700,12 @@ public class Player : NetworkBehaviour
             }
             else if (set.Count % 3 != 0)
             {
+                Debug.Log("wrong %3");
                 AbortMahJong();
                 return;
             }
         }
+        Debug.Log("set with pair" + setWithPair.Count);
 
         //set is sorted
         //try to find pair set combinations
@@ -701,10 +713,17 @@ public class Player : NetworkBehaviour
         {
             if (setWithPair[i].name == setWithPair[i + 1].name)
             {
+                Debug.Log(setWithPair[i].name + "equal");
                 List<Combination> combinations = new List<Combination>();
 
-                if (FillOneSuitCombinations(suitSets[pairSetNum], ref combinations))
+                List<Tile> setWithoutPair = new List<Tile>(suitSets[pairSetNum]);
+
+                setWithoutPair.RemoveAt(i);
+                setWithoutPair.RemoveAt(i);
+
+                if (setWithoutPair.Count==0 || FillOneSuitCombinations(setWithoutPair, ref combinations))
                 {
+                    Debug.Log("fill true"+ combinations.Count);
                     closedCombinations[pairSetNum] = combinations;
                     closedCombinations[pairSetNum].Add(new Pair(setWithPair[i], setWithPair[i + 1]));
                     break;
@@ -712,6 +731,7 @@ public class Player : NetworkBehaviour
             }
             if (i == setWithPair.Count - 2)
             {
+                Debug.Log("no fillonesuit variants in pair");
                 AbortMahJong();
                 return;
             }
@@ -725,7 +745,7 @@ public class Player : NetworkBehaviour
             {
                 List<Combination> combinations = new List<Combination>();
 
-                if (FillOneSuitCombinations(suitSets[i], ref combinations))
+                if (suitSets[i].Count==0||FillOneSuitCombinations(suitSets[i], ref combinations))
                 {
                     closedCombinations[i] = combinations;
                     
@@ -733,6 +753,7 @@ public class Player : NetworkBehaviour
                 }
                 else
                 {
+                    Debug.Log("no fillonesuit variants");
                     AbortMahJong();
                     return;
                 }
@@ -1232,41 +1253,49 @@ public class Player : NetworkBehaviour
                     if (Wall.instance.freeTiles.Count == 0)
                     {
                         Debug.Log("count 0");
+                        return;
                     }
 
                     //Debug.Log(CheckTileMoving(Wall.instance.freeTiles[Wall.instance.freeTiles.Count-1]));
 
-                    Debug.Log(Wall.instance.freeTileIsMoving + "free move");
-                    if (Wall.instance.freeTileIsMoving)
-                    {
-                        Debug.Log("moving");
-                        return;
+                    //Debug.Log(Wall.instance.freeTileIsMoving + "free move");
+                    //if (Wall.instance.freeTileIsMoving)
+                    //{
+                    //    Debug.Log("moving");
+                    //    return;
 
+                    //}
+
+                    //try
+                    //{
+                    if (Wall.instance.freeTileIsMoving || Wall.instance.freeTiles.Count - 1 < 0)
+                    {
+                        Debug.Log(Wall.instance.freeTileIsMoving);
+                        return;
                     }
 
-                    try
-                    {
-                        //if (Wall.instance.freeTiles.Count - 1 < 0) return;
 
-                        if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile.transform.position
-                            != new Vector3(Wall.instance.tiles
-                            [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.x, 3.4f,
-                            Wall.instance.tiles
-                            [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.z))
-                        {
+                    //if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile.transform.position
+                    //    != new Vector3(Wall.instance.tiles
+                    //    [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.x, 3.4f,
+                    //    Wall.instance.tiles
+                    //    [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.z))
+
+                    if(Wall.instance.freeTileIsMoving)
+                    {
                             Debug.Log("Tile is moving!");
                             Debug.Log(Wall.instance.freeTiles.Count);
                             return;
                         }
-                    }
-                    catch (ArgumentOutOfRangeException ex)
-                    {
-                        Debug.Log("argument out of range" + (Wall.instance.freeTiles.Count - 1));
-                        Debug.Log(ex.Message);
-                        needToCheckMoving = false;
-                        Invoke("EnableCheck", 0.8f);
-                        return;
-                    }
+                    //}
+                    //catch (ArgumentOutOfRangeException ex)
+                    //{
+                    //    Debug.Log("argument out of range" + (Wall.instance.freeTiles.Count - 1));
+                    //    Debug.Log(ex.Message);
+                    //    needToCheckMoving = false;
+                    //    Invoke("EnableCheck", 0.8f);
+                    //    return;
+                    //}
 
                     //Wall.instance.GiveFreeTile();
                     Invoke("InvokeGiveFreeTile", 0.1f);
@@ -1283,6 +1312,7 @@ public class Player : NetworkBehaviour
                 else
                 {
                     Debug.Log("not moving");
+                  //  Invoke("Sort", 0.5f);
                     Invoke("GetNextFlower", 0.6f);
                 }
 

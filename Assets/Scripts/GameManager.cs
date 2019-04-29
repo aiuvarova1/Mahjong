@@ -283,6 +283,20 @@ public class GameManager : NetworkBehaviour
         mahJongDeclarator = null;
 
         waitForCombinations = true;
+
+
+        for (int i = 0; i < winds.Count; i++)
+        {
+            if(winds[i].player!=null && i!=CurrentWind)
+                winds[i].player.TargetSetCombinationTurn(winds[i].player.connectionToClient);
+        }
+        //foreach (Wind wind in winds)
+        //{
+        //    if (wind.player != null && )
+        //    {
+        //        wind.player.TargetSetCombinationTurn(wind.player.connectionToClient);
+        //    }
+        //}
     }
 
     int DefineWind(Player player)
@@ -339,6 +353,7 @@ public class GameManager : NetworkBehaviour
         string wind = winds[CurrentWind].Name;
         foreach (Wind playerWind in winds)
         {
+            
             if (playerWind.player != null && playerWind.Name != wind)
                 playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient,wind, combination);
         }
