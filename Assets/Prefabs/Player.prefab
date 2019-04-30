@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 5809417166843520892}
   - component: {fileID: 7143512757247185361}
   - component: {fileID: 1267687255817263070}
+  - component: {fileID: 7177991912823868683}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -337,6 +338,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Chow
+--- !u!114 &7177991912823868683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1034435418754434859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d843e048b71f2a6468f3095d217ede33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
 --- !u!1 &1230977389513691583
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,6 +646,7 @@ GameObject:
   - component: {fileID: 1980600163926063092}
   - component: {fileID: 1881555556769972685}
   - component: {fileID: 2731131407389996500}
+  - component: {fileID: 246280370953210984}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -700,6 +715,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Pung
+--- !u!114 &246280370953210984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2193004740407705984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d843e048b71f2a6468f3095d217ede33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
 --- !u!1 &2307568552614316860
 GameObject:
   m_ObjectHideFlags: 0
@@ -1206,6 +1234,7 @@ GameObject:
   - component: {fileID: 6440512921388857750}
   - component: {fileID: 636166227718530179}
   - component: {fileID: 1626399833014126538}
+  - component: {fileID: 460371726933577481}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1274,6 +1303,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Start
+--- !u!114 &460371726933577481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3614445147452734187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d843e048b71f2a6468f3095d217ede33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
 --- !u!1 &3794248904845811145
 GameObject:
   m_ObjectHideFlags: 0
@@ -1752,6 +1794,7 @@ GameObject:
   - component: {fileID: 5830749850246540257}
   - component: {fileID: 7399820660232971280}
   - component: {fileID: 4126799114182878535}
+  - component: {fileID: 7321871550528877333}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1820,6 +1863,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Kong
+--- !u!114 &7321871550528877333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4289796666034725057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d843e048b71f2a6468f3095d217ede33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
 --- !u!1 &4856177940312553731
 GameObject:
   m_ObjectHideFlags: 0
@@ -2110,6 +2166,7 @@ GameObject:
   - component: {fileID: 7295926081560534307}
   - component: {fileID: 6035290730003230212}
   - component: {fileID: 2962147436918930467}
+  - component: {fileID: 5945154829944027275}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -2178,6 +2235,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Mahjong
+--- !u!114 &5945154829944027275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5733168128845681681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d843e048b71f2a6468f3095d217ede33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
 --- !u!1 &6228523402068623212
 GameObject:
   m_ObjectHideFlags: 0
@@ -2814,6 +2884,7 @@ GameObject:
   - component: {fileID: 8299302904302506128}
   - component: {fileID: 2099388530650770678}
   - component: {fileID: 4981436428088922925}
+  - component: {fileID: 1849145677422672033}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -2882,6 +2953,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Quit
+--- !u!114 &1849145677422672033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7646035232481273747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d843e048b71f2a6468f3095d217ede33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
 --- !u!1 &7654514605656789331
 GameObject:
   m_ObjectHideFlags: 0
@@ -3022,6 +3106,7 @@ GameObject:
   - component: {fileID: 7924682650933182562}
   - component: {fileID: 2741583257227750512}
   - component: {fileID: 6194187285587519368}
+  - component: {fileID: 2370324077447213372}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -3090,6 +3175,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Pass
+--- !u!114 &2370324077447213372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8210381942213710672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d843e048b71f2a6468f3095d217ede33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
 --- !u!1 &8738837233097297525
 GameObject:
   m_ObjectHideFlags: 0
@@ -3180,6 +3278,7 @@ GameObject:
   - component: {fileID: 7078679847265571260}
   - component: {fileID: 3136514445349689194}
   - component: {fileID: 2695136957079985961}
+  - component: {fileID: 5772354562058987187}
   m_Layer: 5
   m_Name: YourWind
   m_TagString: Untagged
@@ -3250,6 +3349,19 @@ MonoBehaviour:
   m_Text: 'Your wind:
 
 '
+--- !u!114 &5772354562058987187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9010306803947592978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d843e048b71f2a6468f3095d217ede33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  key: 
 --- !u!1 &9109948628383924476
 GameObject:
   m_ObjectHideFlags: 0

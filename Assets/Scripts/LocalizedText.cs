@@ -28,7 +28,8 @@ public class LocalizedText : MonoBehaviour
 
     private void OnDestroy()
     {
-        LocalizationManager.instance.ChangeEvent -= ChangeText;
+        if(LocalizationManager.instance!=null)
+            LocalizationManager.instance.ChangeEvent -= ChangeText;
     }
 
     void ChangeText()
@@ -41,8 +42,11 @@ public class LocalizedText : MonoBehaviour
         {
             text.text = LocalizationManager.instance.GetLocalizedValue(key);
             ChangeLanguage();
+            LocalizationManager.instance.ChangeFont(ref text);
         }
     }
+
+   
 
     // Update is called once per frame
     void Update()

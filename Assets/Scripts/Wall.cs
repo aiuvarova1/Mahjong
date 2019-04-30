@@ -168,6 +168,12 @@ public class Wall : NetworkBehaviour
         Wind curWind = GameManager.instance.winds[GameManager.instance.CurrentWind];
         if (curWind.player == null) return;
 
+       if( CheckDraw(currentWall, currentPair))
+        {
+            GameManager.instance.DeclareDraw();
+            return;
+        }
+
         if (!tiles[currentWall][currentPair].upperTile.isOwned)
         {
 
@@ -200,9 +206,33 @@ public class Wall : NetworkBehaviour
                 TargetAddTileToPlayerArray(curWind.player.connectionToClient, currentWall, currentPair, "lower");
 
             CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
+            
         }
 
         curWind.MoveRightFreePosition(ref curWind.freePosition);
+
+    }
+
+    bool CheckDraw( int wall,int pair)
+    {
+        int curWall = beginningWall;
+        int curPair = beginningPair;
+
+        for (int i = 0; i < 6; i++)
+        {
+            curPair--;
+            if(curPair<0)
+            {
+                curPair = 17;
+                curWall--;
+                if (curWall < 0)
+                    curWall = 3;
+            }
+        }
+
+        if (wall == curWall && pair == curPair)
+            return true;
+        return false;
 
     }
 

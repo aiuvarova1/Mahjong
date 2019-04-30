@@ -654,7 +654,7 @@ public class Player : NetworkBehaviour
         if (!playerTurn && !turnForCombination)
         {
             Debug.Log("not your turn");
-            gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "Not your turn");
+            gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "It's not your turn");
             return;
         }
 
@@ -1147,7 +1147,7 @@ public class Player : NetworkBehaviour
         //if table tile is taken
         if (combToOpen != null)
         {
-            mahjong.openedCombinations[combinationNum].Remove(combToOpen);
+            mahjong.closedCombinations[combinationNum].Remove(combToOpen);
             waitingCombination = combToOpen;
 
             LieCombinationTiles(windPos);
@@ -1296,30 +1296,37 @@ public class Player : NetworkBehaviour
                     }
 
 
-                    //if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile.transform.position
-                    //    != new Vector3(Wall.instance.tiles
-                    //    [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.x, 3.4f,
-                    //    Wall.instance.tiles
-                    //    [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.z))
+                    
 
                     if(Wall.instance.freeTileIsMoving)
                     {
-                            Debug.Log("Tile is moving!");
-                            Debug.Log(Wall.instance.freeTiles.Count);
+                        Debug.Log("free move");
                             return;
                         }
-                    //}
-                    //catch (ArgumentOutOfRangeException ex)
-                    //{
-                    //    Debug.Log("argument out of range" + (Wall.instance.freeTiles.Count - 1));
-                    //    Debug.Log(ex.Message);
-                    //    needToCheckMoving = false;
-                    //    Invoke("EnableCheck", 0.8f);
-                    //    return;
-                    //}
 
-                    //Wall.instance.GiveFreeTile();
-                    Invoke("InvokeGiveFreeTile", 0.1f);
+                    if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile.transform.position
+                        != new Vector3(Wall.instance.tiles
+                        [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.x, 3.4f,
+                        Wall.instance.tiles
+                        [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.z))
+                    {
+                        Debug.Log("Tile is moving!");
+                        Debug.Log(Wall.instance.freeTiles.Count);
+                        return;
+                    }
+
+                        //}
+                        //catch (ArgumentOutOfRangeException ex)
+                        //{
+                        //    Debug.Log("argument out of range" + (Wall.instance.freeTiles.Count - 1));
+                        //    Debug.Log(ex.Message);
+                        //    needToCheckMoving = false;
+                        //    Invoke("EnableCheck", 0.8f);
+                        //    return;
+                        //}
+
+                        //Wall.instance.GiveFreeTile();
+                        Invoke("InvokeGiveFreeTile", 0.1f);
                     needFreeTile = false;
                     needToCheckMoving = false;
                     return;

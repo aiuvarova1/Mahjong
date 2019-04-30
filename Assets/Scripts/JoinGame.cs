@@ -28,10 +28,13 @@ public class JoinGame : MonoBehaviour
         if (networkManager.matchMaker == null)
             networkManager.StartMatchMaker();
 
-        if (LocalizationManager.instance!=null&& LocalizationManager.instance.language == "Eng")
+        if (LocalizationManager.instance==null|| LocalizationManager.instance.language == "Eng")
             status.text = "Loading...";
         else
             status.text = "Загрузка...";
+
+        if (LocalizationManager.instance != null)
+            LocalizationManager.instance.ChangeFont(ref status);
         RefreshRoomList();
         StartCoroutine(refresher);
         
@@ -49,10 +52,13 @@ public class JoinGame : MonoBehaviour
         ClearRoomList();
         if (matches == null || matches.Count == 0 || !success)
         {
-            if (LocalizationManager.instance!=null && LocalizationManager.instance.language == "Eng")
+            if (LocalizationManager.instance==null || LocalizationManager.instance.language == "Eng")
                 status.text = "No rooms found";
             else
                 status.text = "Нет доступных комнат";
+
+            if (LocalizationManager.instance != null)
+                LocalizationManager.instance.ChangeFont(ref status);
             return;
         }
         
@@ -106,10 +112,13 @@ public class JoinGame : MonoBehaviour
         int countdown = 10;
         while (countdown > 0)
         {
-            if (LocalizationManager.instance != null && LocalizationManager.instance.language == "Eng")
+            if (LocalizationManager.instance == null || LocalizationManager.instance.language == "Eng")
                 status.text = "Joining... (" + countdown + ")";
             else
                 status.text = "Соединение... (" + countdown + ")";
+
+            if (LocalizationManager.instance != null)
+                LocalizationManager.instance.ChangeFont(ref status);
 
             yield return new WaitForSeconds(1);
 
@@ -118,10 +127,13 @@ public class JoinGame : MonoBehaviour
 
         // Failed to connect
 
-        if (LocalizationManager.instance != null && LocalizationManager.instance.language == "Eng")
+        if (LocalizationManager.instance == null || LocalizationManager.instance.language == "Eng")
             status.text = "Failed to connect";
         else
             status.text = "Ошибка подключения";
+
+        if (LocalizationManager.instance != null)
+            LocalizationManager.instance.ChangeFont(ref status);
 
         yield return new WaitForSeconds(1);
 

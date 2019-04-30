@@ -309,6 +309,14 @@ public class GameManager : NetworkBehaviour
         return -1;
     }
 
+
+    //!!!!!!!!!
+    public void DeclareDraw()
+    {
+        Debug.Log("Draw");
+
+    }
+
     private void Update()
     {
         if (!isServer) return;
@@ -318,6 +326,8 @@ public class GameManager : NetworkBehaviour
         if (waitForCombinations && GameMaster.playersToStart - 1 == NumOfAnsweredPlayers)
         {
             Debug.Log("here");
+
+            
 
             if (mahJongDeclarator != null)
             {

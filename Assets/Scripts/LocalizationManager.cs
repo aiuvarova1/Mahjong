@@ -20,6 +20,9 @@ public class LocalizationManager: MonoBehaviour
     public GameObject settingsPanel;
     Dropdown dropDown;
 
+    public Font RuFont;
+    public Font EngFont;
+
     public void SetReferences()
     {
         if (GameObject.FindGameObjectWithTag("SettingsPanel") == null) return;
@@ -38,6 +41,14 @@ public class LocalizationManager: MonoBehaviour
         dropDown.onValueChanged.AddListener(delegate { OnLanguageChanged(); });
 
         settingsPanel.SetActive(false);
+    }
+
+    public void ChangeFont(ref Text text)
+    {
+        if (language == "Eng")
+            text.font = EngFont;
+        else
+            text.font = RuFont;
     }
 
     private void Awake()
@@ -77,6 +88,19 @@ public class LocalizationManager: MonoBehaviour
             {"North","Север" },
             {"Quit","Выйти" },
             {"Players","Игроки" },
+            {"Music","Музыка" },
+            {"Sounds","Звуки" },
+            {"Name","Имя" },
+            {"Start","Начать" },
+            {"You are not the next player","Вы не следующий игрок" },
+            {"Chow can not be declared of winds or dragons","Чоу не может быть из ветров или драконов" },
+            {"No tiles for chow","Нет костей для Чоу" },
+            {"It's not your turn","Не Ваша очередь" },
+            {"No tiles for Pung","Нет костей для Панга" },
+            {"No tiles for Kong","Нет костей для Конга" },
+            {"No MahJong","Нет костей для Маджонга" },
+
+
         };
 
         //    var res = dict

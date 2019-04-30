@@ -87,7 +87,14 @@ public class PlayerUI : NetworkBehaviour
     [TargetRpc]
     public void TargetShowInfo(NetworkConnection conn ,string info)
     {
-        combinationInfo.text = info;
+        if (LocalizationManager.instance==null|| LocalizationManager.instance.language == "Eng")
+            combinationInfo.text = info;
+        else
+            combinationInfo.text = LocalizationManager.instance.GetLocalizedValue(info);
+
+        if (LocalizationManager.instance != null)
+            LocalizationManager.instance.ChangeFont(ref combinationInfo);
+
         StartCoroutine(HideInfo());
     }
     IEnumerator HideInfo()
@@ -112,9 +119,18 @@ public class PlayerUI : NetworkBehaviour
     IEnumerator DeclareCombination(string wind,string combination)
     {
         //!!!
-        declaration.text = $"{wind} declares {combination}!";
+        if(LocalizationManager.instance == null || LocalizationManager.instance.language=="Eng")
+            declaration.text = $"{wind} declares {combination}!";
+        else
+            declaration.text = $"{LocalizationManager.instance.GetLocalizedValue(wind)} объявляет {LocalizationManager.instance.GetLocalizedValue(combination)}!";
+
+        if (LocalizationManager.instance != null)
+            LocalizationManager.instance.ChangeFont(ref declaration);
+
+
         declaration.enabled = true;
         yield return new WaitForSeconds(2f);
+
         while (declaration.color.a > 0)
         {
             Color col = declaration.color;
@@ -143,10 +159,13 @@ public class PlayerUI : NetworkBehaviour
 
         string prefix;
 
-        if (LocalizationManager.instance.language == "Eng")
+        if (LocalizationManager.instance == null || LocalizationManager.instance.language == "Eng")
             prefix = "Ready to start? ";
         else
             prefix = "Готовы начать?";
+
+        if (LocalizationManager.instance != null)
+            LocalizationManager.instance.ChangeFont(ref infoText);
 
         infoPanel.SetActive(true);
 
@@ -154,7 +173,7 @@ public class PlayerUI : NetworkBehaviour
         {
             if (ready)
             {
-                if (LocalizationManager.instance.language == "Eng")
+                if (LocalizationManager.instance != null && LocalizationManager.instance.language == "Eng")
                     prefix = "Waiting for other \n   players...";
                 else
                     prefix = "Ожидаем других игроков...";
