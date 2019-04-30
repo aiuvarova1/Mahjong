@@ -18,7 +18,10 @@ public class ToolTip : MonoBehaviour
     {
         if (!needTip) return;
         //Debug.Log(gameObject.GetComponent<TileName>().Name);
-        toolTipText.text = gameObject.GetComponent<TileName>().Name;
+        if(LocalizationManager.instance.language=="Eng")
+            toolTipText.text = gameObject.GetComponent<TileName>().Name;
+        else
+            toolTipText.text = gameObject.GetComponent<TileName>().RuName;
         //toolTipPanel.SetActive(true);
         //Debug.Log(toolTipPanel.active);
         toolTipText.enabled = true;

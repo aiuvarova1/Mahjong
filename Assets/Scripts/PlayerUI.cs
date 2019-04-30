@@ -111,6 +111,7 @@ public class PlayerUI : NetworkBehaviour
 
     IEnumerator DeclareCombination(string wind,string combination)
     {
+        //!!!
         declaration.text = $"{wind} declares {combination}!";
         declaration.enabled = true;
         yield return new WaitForSeconds(2f);
@@ -140,14 +141,23 @@ public class PlayerUI : NetworkBehaviour
 
         int countdown = 20;
 
-        string prefix = "Ready to start? ";
+        string prefix;
+
+        if (LocalizationManager.instance.language == "Eng")
+            prefix = "Ready to start? ";
+        else
+            prefix = "Готовы начать?";
+
         infoPanel.SetActive(true);
 
         while (countdown > 0)
         {
             if (ready)
             {
-                prefix = "Waiting for other \n   players...";
+                if (LocalizationManager.instance.language == "Eng")
+                    prefix = "Waiting for other \n   players...";
+                else
+                    prefix = "Ожидаем других игроков...";
                 startButton.SetActive(false);
             }
             infoText.text = prefix + $"({countdown})";

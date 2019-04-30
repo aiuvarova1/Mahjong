@@ -5,4 +5,5 @@ using UnityEngine;
 public class TileName : MonoBehaviour
 {
     public string Name { get; set; }
+    public string RuName { get; set; }
 }

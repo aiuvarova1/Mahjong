@@ -10,6 +10,8 @@ TagManager:
   - North
   - ToolTip
   - ToolTipText
+  - Label
+  - SettingsPanel
   layers:
   - Default
   - TransparentFX

@@ -51,10 +51,16 @@ public class Tile:IComparable<Tile>
             case 0:
                 name += 'f';
                 name += (int)coordinates[0]+1;
-                if((int)coordinates[0]%4==0)
+                if ((int)coordinates[0] % 4 == 0)
+                {
                     tile.GetComponent<TileName>().Name = $"Season {(int)coordinates[0] + 1}";
+                    tile.GetComponent<TileName>().RuName = $"Сезон {(int)coordinates[0] + 1}";
+                }
                 else
-                    tile.GetComponent<TileName>().Name = $"Flower {(int)coordinates[0]%4 + 1}";
+                {
+                    tile.GetComponent<TileName>().Name = $"Flower {(int)coordinates[0] % 4 + 1}";
+                    tile.GetComponent<TileName>().RuName = $"Цветок {(int)coordinates[0] % 4 + 1}";
+                }
 
                 numOfTile = 35 + (int)coordinates[0];
                 break;
@@ -62,6 +68,7 @@ public class Tile:IComparable<Tile>
                 name += 's';
                 name += (int)coordinates[0]+1;
                 tile.GetComponent<TileName>().Name = $"Symbols {(int)coordinates[0] + 1}";
+                tile.GetComponent<TileName>().RuName = $"Символы {(int)coordinates[0] + 1}";
                 numOfTile =19+ (int)coordinates[0]; 
                 break;
 
@@ -69,12 +76,14 @@ public class Tile:IComparable<Tile>
                 name += 'b';
                 name += (int)coordinates[0]+1;
                 tile.GetComponent<TileName>().Name = $"Bamboo {(int)coordinates[0] + 1}";
+                tile.GetComponent<TileName>().RuName = $"Бамбук {(int)coordinates[0] + 1}";
                 numOfTile = (int)coordinates[0];
                 break;
             case 4:
                 name += 'd';
                 name += (int)coordinates[0]+1;
                 tile.GetComponent<TileName>().Name = $"Dots {(int)coordinates[0] + 1}";
+                tile.GetComponent<TileName>().RuName = $"Доты {(int)coordinates[0] + 1}";
                 numOfTile = 10+ (int)coordinates[0]; 
                 break;
             case 1:
@@ -84,36 +93,43 @@ public class Tile:IComparable<Tile>
                         name = "East";
                         numOfTile = 28;
                         tile.GetComponent<TileName>().Name = name;
+                        tile.GetComponent<TileName>().RuName = "Восток";
                         break;
                     case 1:
                         name = "South";
                         numOfTile = 29;
                         tile.GetComponent<TileName>().Name = name;
+                        tile.GetComponent<TileName>().RuName = "Юг";
                         break;
                     case 2:
                         name = "West";
                         numOfTile = 30;
                         tile.GetComponent<TileName>().Name = name;
+                        tile.GetComponent<TileName>().RuName = "Запад";
                         break;
                     case 3:
                         name = "North";
                         numOfTile = 31;
                         tile.GetComponent<TileName>().Name = name;
+                        tile.GetComponent<TileName>().RuName = "Север";
                         break;
                     case 4:
                         name = "Red";
                         numOfTile = 32;
                         tile.GetComponent<TileName>().Name = name;
+                        tile.GetComponent<TileName>().RuName = "Красный дракон";
                         break;
                     case 5:
                         name = "Green";
                         numOfTile = 33;
                         tile.GetComponent<TileName>().Name = name;
+                        tile.GetComponent<TileName>().RuName = "Зелёный дракон";
                         break;
                     case 6:
                         name = "White";
                         numOfTile = 34;
                         tile.GetComponent<TileName>().Name = name;
+                        tile.GetComponent<TileName>().RuName = "Белый дракон";
                         break;
                     default:
                         break;

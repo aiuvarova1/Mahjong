@@ -9,6 +9,27 @@ public class MenuManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Application.targetFrameRate = 60;
+       
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene,LoadSceneMode mode)
+    {
+        Debug.Log("onsceneloaded");
+        Debug.Log(scene.name);
+        if (scene.name == "Menu" && LocalizationManager.instance != null)
+        {
+            LocalizationManager.instance.SetReferences();
+        }
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
     public void Quit()
     {

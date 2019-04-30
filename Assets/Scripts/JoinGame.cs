@@ -28,7 +28,10 @@ public class JoinGame : MonoBehaviour
         if (networkManager.matchMaker == null)
             networkManager.StartMatchMaker();
 
-        status.text = "Loading...";
+        if (LocalizationManager.instance!=null&& LocalizationManager.instance.language == "Eng")
+            status.text = "Loading...";
+        else
+            status.text = "Загрузка...";
         RefreshRoomList();
         StartCoroutine(refresher);
         
@@ -46,7 +49,10 @@ public class JoinGame : MonoBehaviour
         ClearRoomList();
         if (matches == null || matches.Count == 0 || !success)
         {
-            status.text = "No rooms found";
+            if (LocalizationManager.instance!=null && LocalizationManager.instance.language == "Eng")
+                status.text = "No rooms found";
+            else
+                status.text = "Нет доступных комнат";
             return;
         }
         
@@ -100,7 +106,10 @@ public class JoinGame : MonoBehaviour
         int countdown = 10;
         while (countdown > 0)
         {
-            status.text = "Joining... (" + countdown + ")";
+            if (LocalizationManager.instance != null && LocalizationManager.instance.language == "Eng")
+                status.text = "Joining... (" + countdown + ")";
+            else
+                status.text = "Соединение... (" + countdown + ")";
 
             yield return new WaitForSeconds(1);
 
@@ -108,8 +117,12 @@ public class JoinGame : MonoBehaviour
         }
 
         // Failed to connect
-       
-        status.text = "Failed to connect";
+
+        if (LocalizationManager.instance != null && LocalizationManager.instance.language == "Eng")
+            status.text = "Failed to connect";
+        else
+            status.text = "Ошибка подключения";
+
         yield return new WaitForSeconds(1);
 
         MatchInfo matchInfo = networkManager.matchInfo;

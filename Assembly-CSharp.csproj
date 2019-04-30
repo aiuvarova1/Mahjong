@@ -72,6 +72,8 @@
     <Compile Include="Assets\Scripts\JoinGame.cs" />
     <Compile Include="Assets\Scripts\Kong.cs" />
     <Compile Include="Assets\Scripts\Loader.cs" />
+    <Compile Include="Assets\Scripts\LocalizationManager.cs" />
+    <Compile Include="Assets\Scripts\LocalizedText.cs" />
     <Compile Include="Assets\Scripts\MahJong.cs" />
     <Compile Include="Assets\Scripts\MenuManager.cs" />
     <Compile Include="Assets\Scripts\NewNetworkManager.cs" />
