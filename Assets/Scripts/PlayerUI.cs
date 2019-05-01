@@ -58,12 +58,16 @@ public class PlayerUI : NetworkBehaviour
     Combination secondChow;
     Combination thirdChow;
 
+    Camera mainCam;
+
 
     private void Start()
     {
         player = gameObject.GetComponent<Player>();
         networkManager = (NewNetworkManager)NetworkManager.singleton;
+        mainCam = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 
+       
     }
 
     private void Awake()
@@ -82,14 +86,30 @@ public class PlayerUI : NetworkBehaviour
 
 
         //!!!
-        GameObject names = GameObject.FindGameObjectWithTag("Names");
-        Button[] objects=names.GetComponentsInChildren<Button>();
+        //GameObject names = GameObject.FindGameObjectWithTag("Names");
+        //Button[] objects=names.GetComponentsInChildren<Button>();
 
-        objects[1].GetComponentInChildren<Text>().text = "Pobeda";
+        //objects[1].GetComponentInChildren<Text>().text = "Pobeda";
 
-       // scorePanel.SetActive(false);
+        scorePanel.SetActive(false);
         
 
+    }
+
+    public void ChangeCamera()
+    {
+        
+        if(player.Camera.enabled)
+        {
+            player.Camera.enabled = false;
+           
+            mainCam.enabled = true;
+        }
+        else
+        {
+            player.Camera.enabled = true;
+            mainCam.enabled = false;
+        }
     }
 
     #region Coroutines

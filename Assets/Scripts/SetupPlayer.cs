@@ -56,6 +56,9 @@ public class SetupPlayer : NetworkBehaviour
         gameObject.tag = "Player";
 
         player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);
+
+        float newRotation = player.Camera.transform.eulerAngles.y;
+        Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
         AssignWind();
 
         CmdAddPlayer(player.order, player.wind);
