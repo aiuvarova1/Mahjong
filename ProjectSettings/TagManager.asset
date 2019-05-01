@@ -12,6 +12,15 @@ TagManager:
   - ToolTipText
   - Label
   - SettingsPanel
+  - Names
+  - OldScore
+  - Points
+  - Points0
+  - Points1
+  - Points2
+  - Points3
+  - Total
+  - NewScore
   layers:
   - Default
   - TransparentFX

@@ -80,7 +80,14 @@ public class PlayerUI : NetworkBehaviour
         declaration.enabled = false;
         combinationInfo.enabled = false;
 
-        scorePanel.SetActive(false);
+
+        //!!!
+        GameObject names = GameObject.FindGameObjectWithTag("Names");
+        Button[] objects=names.GetComponentsInChildren<Button>();
+
+        objects[1].GetComponentInChildren<Text>().text = "Pobeda";
+
+       // scorePanel.SetActive(false);
         
 
     }
@@ -88,10 +95,194 @@ public class PlayerUI : NetworkBehaviour
     #region Coroutines
 
     [TargetRpc]
-    public void TargetShowScores(NetworkConnection conn,int[] scores)
+    public void TargetShowScores(NetworkConnection conn,int[] scores,int[] oldScores,string[] names,string winner)
     {
         scorePanel.SetActive(true);
 
+        QuitButton.SetActive(true);
+
+        GameObject tableNames = GameObject.FindGameObjectWithTag("Names");
+        Button[] objects = tableNames.GetComponentsInChildren<Button>();
+
+        for (int i = 1; i < names.Length; i++)
+        {
+            objects[i].GetComponentInChildren<Text>().text = names[i - 1];
+        }
+
+        tableNames= GameObject.FindGameObjectWithTag("OldScore");
+        objects= tableNames.GetComponentsInChildren<Button>();
+
+
+        for (int i = 1; i < names.Length; i++)
+        {
+            objects[i].GetComponentInChildren<Text>().text = (oldScores[i - 1]).ToString();
+        }
+
+        tableNames = GameObject.FindGameObjectWithTag("Points");
+        objects = tableNames.GetComponentsInChildren<Button>();
+
+
+        for (int i = 1; i < names.Length; i++)
+        {
+            objects[i].GetComponentInChildren<Text>().text = (scores[i - 1]).ToString();
+        }
+
+        tableNames = GameObject.FindGameObjectWithTag("Points0");
+        Button[] points0 = tableNames.GetComponentsInChildren<Button>();
+
+        tableNames = GameObject.FindGameObjectWithTag("Points1");
+        Button[] points1 = tableNames.GetComponentsInChildren<Button>();
+
+
+        tableNames = GameObject.FindGameObjectWithTag("Points2");
+        Button[] points2 = tableNames.GetComponentsInChildren<Button>();
+
+        tableNames = GameObject.FindGameObjectWithTag("Points3");
+        Button[] points3 = tableNames.GetComponentsInChildren<Button>();
+
+        List<Button[]> buttons = new List<Button[]>() { points0, points1, points2, points3 };
+
+        int[,] matrix = new int[4, 4];
+
+        FillMatrix(ref matrix, scores, winner);
+
+        //set column names
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            buttons[i][0].GetComponentInChildren<Text>().text = (names[i]).ToString();
+            for (int j = 1; j < buttons[i].Length; j++)
+            {
+                buttons[i][j].GetComponentInChildren<Text>().text = matrix[i, j - 1].ToString();
+            }
+            
+        }
+
+
+        tableNames = GameObject.FindGameObjectWithTag("Total");
+        objects = tableNames.GetComponentsInChildren<Button>();
+
+        List<int> total = new List<int>();
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                total[i] += matrix[j, i];
+            }
+           
+        }
+
+        for (int i = 1; i < names.Length; i++)
+        {
+            objects[i].GetComponentInChildren<Text>().text = (total[i-1]).ToString();
+        }
+
+        tableNames = GameObject.FindGameObjectWithTag("NewScore");
+        objects = tableNames.GetComponentsInChildren<Button>();
+
+        for (int i = 1; i < names.Length; i++)
+        {
+            objects[i].GetComponentInChildren<Text>().text = (oldScores[i-1]+total[i - 1]).ToString();
+        }
+
+    }
+
+    void FillMatrix(ref int[,]matrix,int[] scores,string winner)
+    {
+        int winNum=-1;
+
+        switch (winner)
+        {
+            case "East":
+                winNum = 0;
+                break;
+            case "South":
+                winNum = 1;
+                break;
+            case "West":
+                winNum = 2;
+                break;
+            case "North":
+                winNum = 3;
+                break;
+            default:
+                Debug.Log("invalid winner wind");
+                return;
+
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                //winner's column
+                if (i == winNum)
+                {
+                    //if east wins
+                    if (winNum == 0)
+                    {
+                        if (j != i)
+                            matrix[j, i] = scores[i] * 2;
+                        else
+                            matrix[j, i] = 0;
+                    }
+                    else
+                    {
+                        if (i != j)
+                        {
+                            matrix[j, i] = scores[i];
+                            if (j == 0) matrix[j, i] *= 2;
+                        }
+                        else
+                            matrix[j, i] = 0;
+                    }
+                }
+                //other players
+                else
+                {
+                    //if east wins
+                    if (winNum == 0)
+                    {
+                        if (j != i)
+                        {
+                            //east row
+                            if(j==0)
+                                matrix[j, i] = -scores[0] * 2;
+                            else
+                                matrix[j, i] = scores[i]-scores[j];
+                        }
+                            
+                        else
+                            matrix[j, i] = 0;
+                    }
+                    else
+                    {
+                        if (i != j)
+                        {
+                            //east column
+                            if (i == 0)
+                            {
+                                //winner row
+                                if (j == winNum)
+                                    matrix[j, i] = -scores[j] * 2;
+                                else
+                                    matrix[j, i] = (scores[i] - scores[j]) * 2;
+
+                            }
+                            else
+                            {
+                                if(j == winNum)
+                                    matrix[j, i] = -scores[j];
+                                else
+                                    matrix[j, i] = (scores[i] - scores[j]);
+                            }
+                        }
+                        else
+                            matrix[j, i] = 0;
+                    }
+                }
+            }
+            
+        }
     }
 
     [TargetRpc]

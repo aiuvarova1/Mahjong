@@ -16,11 +16,12 @@ public class Player : NetworkBehaviour
     public Vector3 startPosition;
 
     public Camera Camera { get; set; }
-    string name;
+    string name="";
     public string wind;
     public int order;
 
     public int score;
+    public int oldScore = 2000;
 
     public Tile tileToMove;
     public bool needToCheckMoving = false;

@@ -393,15 +393,19 @@ public class GameManager : NetworkBehaviour
         }
 
         int[] scores = new int[winds.Count];
+        string[] names = new string[winds.Count];
+        int[] oldScores = new int[winds.Count];
 
         for (int i = 0; i < winds.Count; i++)
         {
             scores[i]=winds[i].player.score;
+            names[i] = winds[i].player.name;
+            oldScores[i] = winds[i].player.oldScore;
         }
 
         for (int i = 0; i < winds.Count; i++)
         {
-            winds[i].player.GetComponent<PlayerUI>().TargetShowScores(winds[i].player.connectionToClient,scores);
+            winds[i].player.GetComponent<PlayerUI>().TargetShowScores(winds[i].player.connectionToClient,scores,oldScores,names,winner.wind);
         }
 
 
