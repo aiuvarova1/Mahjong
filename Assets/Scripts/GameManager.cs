@@ -23,6 +23,8 @@ public class GameManager : NetworkBehaviour
     public Table GameTable { get; set; }
 
     int currentWind;
+    public string majorWind ="East";
+
 
     int numOfAnsweredPlayers;
 
@@ -283,6 +285,9 @@ public class GameManager : NetworkBehaviour
         mahJongDeclarator = null;
 
         waitForCombinations = true;
+
+        if(winds[CurrentWind].player!=null)
+            winds[CurrentWind].player.isFreeTile = false;
 
 
         for (int i = 0; i < winds.Count; i++)

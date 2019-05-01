@@ -11,5 +11,10 @@ public class Chow : Combination
     {
         Name = "Chow";
     }
+
+    public override int CalculatePoints(string wind)
+    {
+        return 0;
+    }
 }
 

@@ -9,6 +9,10 @@ using UnityEngine;
 public abstract class Combination
 {
     public int points;
+    public int doubling=1;
+
+    public bool opened = true;
+
     public string type;
    // public int firstIndex;
 
@@ -29,5 +33,9 @@ public abstract class Combination
     {
 
     }
+
+    public abstract int CalculatePoints(string wind);
+
+
 }
 

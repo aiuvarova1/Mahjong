@@ -334,6 +334,7 @@ public class Wall : NetworkBehaviour
         freeTilesCount--;
         Wind curWind = GameManager.instance.winds[GameManager.instance.CurrentWind];
         currentWind = GameManager.instance.CurrentWind;
+        curWind.player.isFreeTile = true;
 
         TargetAddTileToPlayerArray(curWind.player.connectionToClient, 0, 0, "free");
 

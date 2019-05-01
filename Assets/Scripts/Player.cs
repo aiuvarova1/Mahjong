@@ -19,6 +19,8 @@ public class Player : NetworkBehaviour
     public string wind;
     public int order;
 
+    public int score;
+
     public Tile tileToMove;
     public bool needToCheckMoving = false;
     bool needFreeTile = false;
@@ -34,6 +36,7 @@ public class Player : NetworkBehaviour
     int freeSpaceIndex;
 
     public Combination waitingCombination;
+    public bool isFreeTile = false;
 
     //void 
 
@@ -1163,7 +1166,7 @@ public class Player : NetworkBehaviour
 
         //!!!change
         GameManager.instance.DeclareCombination("MahJong");
-        mahjong.openedCombinations.Add(openedTiles);
+        mahjong.openedCombinations=openedTiles;
 
     }
 
