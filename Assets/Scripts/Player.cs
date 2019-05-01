@@ -9,6 +9,7 @@ public class Player : NetworkBehaviour
     public List<Tile> playerTiles = new List<Tile>();
 
     public List<Combination> openedTiles = new List<Combination>();
+    public List<Combination> closedCombinations = new List<Combination>();
 
     public List<Tile> flowers = new List<Tile>();
 
@@ -1125,6 +1126,10 @@ public class Player : NetworkBehaviour
 
     public void DeclareMahJong(int windPos)
     {
+        if (playerTurn)
+        {
+            gameObject.GetComponent<PlayerUI>().StopWaitingForMove();
+        }
         MahJong mahjong = (MahJong)waitingCombination;
 
         Combination combToOpen=null;
@@ -1167,6 +1172,9 @@ public class Player : NetworkBehaviour
         //!!!change
         GameManager.instance.DeclareCombination("MahJong");
         mahjong.openedCombinations=openedTiles;
+        mahjong.flowers = flowers;
+
+        GameManager.instance.FinishGame(mahjong);
 
     }
 
@@ -1190,6 +1198,14 @@ public class Player : NetworkBehaviour
 
     #region extras
 
+    [ClientRpc]
+    public void RpcOpenTiles(float rotation)
+    {
+        for (int i = 0; i < playerTiles.Count; i++)
+        {
+            playerTiles[i].tile.GetComponent<BezierMove>().OpenTile(rotation);
+        }
+    }
     void InvokeGiveFreeTile()
     {
         Wall.instance.GiveFreeTile();

@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-class MahJong : Combination
+public class MahJong : Combination
 {
     public List<List<Combination>> closedCombinations = new List<List<Combination>>();
     public List<Combination> openedCombinations = new List<Combination>();
+    public List<Tile> flowers;
 
     public MahJong(List<List<Combination>> comb)
     {
         closedCombinations = comb;
     }
 
-    public void CalculateMahJongPoints(string wind,bool playerTurn,bool isFreeTile)
+    public int CalculateMahJongPoints(string wind,bool playerTurn,bool isFreeTile,int order)
     {
         int score = 20;
         int twice = 1;
@@ -79,6 +80,37 @@ class MahJong : Combination
         //flowers!!
 
 
+        score += GetFlowerPoints(flowers, order);
+
+        return score;
+
+    }
+
+    static int GetFlowerPoints(List<Tile> flowers,int order)
+    {
+        int flowerPoints = 0;
+
+        flowers.Sort();
+
+        List<Tile> seasons = new List<Tile>();
+        List<Tile> flows = new List<Tile>();
+
+        for (int i = 0; i < flowers.Count; i++)
+        {
+            if (flowers[i].name[1].ToString() == (order + 1).ToString())
+                flowerPoints += 4;
+            else
+                flowerPoints += 2;
+            if (int.Parse(flowers[i].name[1].ToString()) < 5)
+                seasons.Add(flowers[i]);
+            else flows.Add(flowers[i]);
+
+        }
+        if (seasons.Count == 4)
+            flowerPoints *= 2;
+        if (flows.Count == 4)
+            flowerPoints *= 2;
+        return flowerPoints;
     }
 
     int CountRestOfWinnerDoubles()
@@ -264,7 +296,8 @@ class MahJong : Combination
         return twice;
     }
 
-    public static int CountNotWinnerScore(ref List<Combination> closedComb,List<Combination> opened, List<Tile> closed,string wind)
+    public static int CountNotWinnerScore(ref List<Combination> closedComb,List<Combination> opened,
+        List<Tile> closed,List<Tile> flowers,string wind,int order)
     {
         int twice = 1;
 
@@ -309,6 +342,7 @@ class MahJong : Combination
         Debug.Log(score + "twice score");
 
         //flowers!!!
+        score += GetFlowerPoints(flowers, order);
 
         return score;
     }

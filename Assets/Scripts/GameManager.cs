@@ -315,12 +315,7 @@ public class GameManager : NetworkBehaviour
     }
 
 
-    //!!!!!!!!!
-    public void DeclareDraw()
-    {
-        Debug.Log("Draw");
-
-    }
+    
 
     private void Update()
     {
@@ -360,6 +355,57 @@ public class GameManager : NetworkBehaviour
         }
         //if(waitForCombinations)
         //    Debug.Log("server");
+    }
+    #endregion
+
+    #region End of the game
+    //!!!!!!!!!
+    public void DeclareDraw()
+    {
+        Debug.Log("Draw");
+
+    }
+
+    void OpenAllTiles()
+    {
+        for (int i = 0; i < winds.Count; i++)
+        {
+            winds[i].player.RpcOpenTiles(winds[i].rotation);
+        }
+    }
+
+    public void FinishGame(MahJong mahjong)
+    {
+        Invoke("OpenAllTiles", 2f);
+
+        Player winner = winds[CurrentWind].player;
+
+        int score = mahjong.CalculateMahJongPoints(winner.wind,winner.playerTurn,winner.isFreeTile,winner.order);
+        winner.score = score;
+
+        for (int i = 0; i < winds.Count; i++)
+        {
+            if(winds[i].player!=winner && winds[i].player != null)
+            {
+                winds[i].player.score = MahJong.CountNotWinnerScore(ref winds[i].player.closedCombinations,
+                    winds[i].player.openedTiles, winds[i].player.playerTiles, winds[i].player.flowers, winds[i].player.wind, i);
+            }
+        }
+
+        int[] scores = new int[winds.Count];
+
+        for (int i = 0; i < winds.Count; i++)
+        {
+            scores[i]=winds[i].player.score;
+        }
+
+        for (int i = 0; i < winds.Count; i++)
+        {
+            winds[i].player.GetComponent<PlayerUI>().TargetShowScores(winds[i].player.connectionToClient,scores);
+        }
+
+
+
     }
     #endregion
 

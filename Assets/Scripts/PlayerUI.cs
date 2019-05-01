@@ -48,6 +48,7 @@ public class PlayerUI : NetworkBehaviour
     public Text toolTipText;
 
     public GameObject chowPanel;
+    public GameObject scorePanel;
 
     public Button thirdButton;
     public Button firstButton;
@@ -78,11 +79,20 @@ public class PlayerUI : NetworkBehaviour
         chowPanel.SetActive(false);
         declaration.enabled = false;
         combinationInfo.enabled = false;
+
+        scorePanel.SetActive(false);
         
 
     }
 
     #region Coroutines
+
+    [TargetRpc]
+    public void TargetShowScores(NetworkConnection conn,int[] scores)
+    {
+        scorePanel.SetActive(true);
+
+    }
 
     [TargetRpc]
     public void TargetShowInfo(NetworkConnection conn ,string info)
