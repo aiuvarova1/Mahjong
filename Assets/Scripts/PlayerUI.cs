@@ -39,6 +39,7 @@ public class PlayerUI : NetworkBehaviour
     IEnumerator starter;
     public IEnumerator CountDown;
     public IEnumerator CombinationEnum;
+    IEnumerator hider;
 
     public bool leave = false;
     public bool ready = false;
@@ -75,6 +76,7 @@ public class PlayerUI : NetworkBehaviour
         starter = WaitForStart();
         CountDown = WaitForMove();
         CombinationEnum = WaitForCombination();
+        hider = HideInfo();
 
         infoPanel.SetActive(false);
         countDown.enabled = false;
@@ -315,13 +317,14 @@ public class PlayerUI : NetworkBehaviour
 
         if (LocalizationManager.instance != null)
             LocalizationManager.instance.ChangeFont(ref combinationInfo);
-
-        StartCoroutine(HideInfo());
+        StopCoroutine(hider);
+        StopHideInfo();
+        StartCoroutine(hider);
     }
     IEnumerator HideInfo()
     {
         combinationInfo.enabled = true;
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(2f);
 
         while (combinationInfo.color.a > 0)
         {
@@ -331,10 +334,16 @@ public class PlayerUI : NetworkBehaviour
             yield return new WaitForSeconds(0.3f);
         }
         combinationInfo.enabled = false;
+        StopHideInfo();
+    }
+
+    void StopHideInfo()
+    {
+        
         Color fullCol = combinationInfo.color;
         fullCol.a = 1f;
         combinationInfo.color = fullCol;
-
+        hider = HideInfo();
     }
 
     IEnumerator DeclareCombination(string wind,string combination)
