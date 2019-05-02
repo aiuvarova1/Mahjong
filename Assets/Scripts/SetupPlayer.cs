@@ -59,6 +59,8 @@ public class SetupPlayer : NetworkBehaviour
 
         float newRotation = player.Camera.transform.eulerAngles.y;
         Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
+
+        GameMaster.instance.lights[order].SetActive(true);
         AssignWind();
 
         CmdAddPlayer(player.order, player.wind);

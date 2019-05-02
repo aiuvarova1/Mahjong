@@ -99,6 +99,13 @@ public class LocalizationManager: MonoBehaviour
             {"No tiles for Pung","Нет костей для Панга" },
             {"No tiles for Kong","Нет костей для Конга" },
             {"No MahJong","Нет костей для Маджонга" },
+            {"On","Вкл" },
+            {"Off","Выкл" },
+            {"View","Вид" },
+            {"Total","Итог" },
+            {"Points","Очки" },
+            {"Old score","Счёт" },
+            {"New score","Новый счёт" }
 
 
         };

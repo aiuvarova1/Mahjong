@@ -10,6 +10,7 @@ public class GameMaster : NetworkBehaviour
     public static GameMaster instance = null;
 
     public SyncListInt availableCameras = new SyncListInt();
+    public List<GameObject> lights = new List<GameObject>();
 
 
     int playerCount;
@@ -48,6 +49,10 @@ public class GameMaster : NetworkBehaviour
 
         Application.runInBackground = true;
 
+        foreach (GameObject light in lights)
+        {
+            light.SetActive(false);
+        }
 
     }
     private void Start()
