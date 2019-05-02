@@ -71,7 +71,8 @@ public class JoinGame : MonoBehaviour
     public void CreateRoomButton(MatchInfoSnapshot match)
     {
         GameObject room = Instantiate(roomPrefab);
-        room.transform.parent = parentPanel.transform;
+        room.transform.SetParent(parentPanel.transform);
+        //room.transform.parent = parentPanel.transform;
         //??
         room.transform.localScale = new Vector3(1, 1, 1);
         // change room info on the button
@@ -94,6 +95,7 @@ public class JoinGame : MonoBehaviour
         Debug.Log("meow");
         networkManager.matchMaker.JoinMatch(match.networkId, "", "", "", 0, 0, networkManager.OnMatchJoined);
         StopCoroutine(refresher);
+        refresher = Refresher();
         ClearRoomList();
 
         //status.text = "Joining...";

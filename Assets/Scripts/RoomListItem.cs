@@ -16,7 +16,7 @@ public class RoomListItem : NetworkBehaviour {
     {
         match = myMatch;
         joinRoomDelegate = joinRoomCallback;
-        roomInfo.text = match.name + " (" + match.currentSize + "/" + match.maxSize + ")" + "\n" + "Click to join";
+        roomInfo.text = match.name + " (" + match.currentSize + "/" + match.maxSize + ")" ;
     }
 
     public void JoinRoom()

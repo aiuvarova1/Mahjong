@@ -105,7 +105,8 @@ public class LocalizationManager: MonoBehaviour
             {"Total","Итог" },
             {"Points","Очки" },
             {"Old score","Счёт" },
-            {"New score","Новый счёт" }
+            {"New score","Новый счёт" },
+            {"OK","ОК" },
 
 
         };
