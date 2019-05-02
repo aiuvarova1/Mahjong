@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\AudioManager.cs" />
     <Compile Include="Assets\Scripts\BezierMove.cs" />
     <Compile Include="Assets\Scripts\BuildWall.cs" />
     <Compile Include="Assets\Scripts\Chow.cs" />

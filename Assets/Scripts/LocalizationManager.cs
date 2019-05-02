@@ -70,7 +70,7 @@ public class LocalizationManager: MonoBehaviour
             {"Settings","Настройки" },
             {"Rules","Правила" },
             {"Exit","Выход" },
-            {"Language:","Язык:" },
+            {"Language","Язык" },
             {"Rooms","Комнаты" },
             {"Create\nroom","Создать\nкомнату" },
             {"Back","Назад" },
