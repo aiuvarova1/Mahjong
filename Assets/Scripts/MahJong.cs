@@ -81,6 +81,7 @@ public class MahJong : Combination
 
 
         score += GetFlowerPoints(flowers, order);
+        Debug.Log(score + "total");
 
         return score;
 
@@ -124,6 +125,7 @@ public class MahJong : Combination
 
         string suit = "";
 
+
         for (int i = 0; i < openedCombinations.Count; i++)
         {
 
@@ -131,29 +133,41 @@ public class MahJong : Combination
             {
                 onlyWindsAndDragons = false;
                 if (suit == "") suit = openedCombinations[i].tileList[0].name[0].ToString();
+                
                 else if (openedCombinations[i].tileList[0].name[0].ToString() != suit)
                 {
                     clear = false;
                     clearWithWindsAndDragons = false;
                 }
-
-                if (openedCombinations[i].tileList[0].name[1] != '1' && openedCombinations[i].tileList[0].name[1] != '9')
-                    only19WindsDragons = false;
+                Debug.Log(suit);
+                for (int j = 0; j < openedCombinations[i].tileList.Count; j++)
+                {
+                    if (openedCombinations[i].tileList[j].name[1] != '1' && openedCombinations[i].tileList[j].name[1] != '9')
+                        only19WindsDragons = false;
+                }
+                
             }
             else
                 clear = false;
 
         }
 
-        if (clearWithWindsAndDragons != false && suit!="")
+        if (clearWithWindsAndDragons && suit!="")
         {
+            Debug.Log("check clear wd");
+
             int suitNum = -1;
             suitNum= (suit[0] == 'b') ?0 : (suit[0] == 'd') ? 1:2;
 
+            Debug.Log(suitNum);
+
             for (int i = 0; i < closedCombinations.Count; i++)
             {
+                Debug.Log(closedCombinations[i].Count);
+
                 if(i!=suitNum && closedCombinations[i].Count>0)
                 {
+                    Debug.Log("not clear");
                     clear = false;
                     clearWithWindsAndDragons = false;
                 }
@@ -161,7 +175,7 @@ public class MahJong : Combination
                     clear = false;
             }
         }
-        if (onlyWindsAndDragons != false)
+        if (onlyWindsAndDragons)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -173,7 +187,7 @@ public class MahJong : Combination
             }
         }
 
-        if (only19WindsDragons != false)
+        if (only19WindsDragons)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -201,12 +215,12 @@ public class MahJong : Combination
             Debug.Log("clear with winds");
 
         }
-        else if (clear)
+        if (clear)
         {
             twice *= 8;
             Debug.Log("clear");
         }
-        else if (onlyWindsAndDragons)
+        if (onlyWindsAndDragons)
         {
             twice *= 8;
             Debug.Log("winds and dragons");
@@ -245,8 +259,11 @@ public class MahJong : Combination
                     clearWithWindsAndDragons = false;
                 }
 
-                if (opened[i].tileList[0].name[1] != '1' && opened[i].tileList[0].name[1] != '9')
-                    only19WindsDragons = false;
+                for (int j = 0; j < opened[i].tileList.Count; j++)
+                {
+                    if (opened[i].tileList[j].name[1] != '1' && opened[i].tileList[j].name[1] != '9')
+                        only19WindsDragons = false;
+                }
             }
             else
                 clear = false;
@@ -266,6 +283,8 @@ public class MahJong : Combination
 
                 if (closed[i].name[1] != '1' && closed[i].name[1] != '9')
                     only19WindsDragons = false;
+
+                
             }
             else
                 clear = false;

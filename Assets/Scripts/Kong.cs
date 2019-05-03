@@ -25,6 +25,7 @@ public class Kong : Combination
 
     public Kong(Pung pung,Tile t4, bool openedComb) :base(pung.tileList[0],pung.tileList[1],pung.tileList[2])
     {
+        tileList.Add(t4);
         opened = openedComb;
     }
 

@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    public const uint playersToStart = 1;
+    public const uint playersToStart = 4;
     
     public static GameMaster instance = null;
 
@@ -105,8 +105,14 @@ public class GameMaster : NetworkBehaviour
     void GetReady()
     {
         Debug.Log(players.Count + " get ready");
+        List<int> orders = new List<int>();
         foreach (Player player in players.Values)
         {
+            if (orders.FindIndex(x => x == player.order) == -1 )
+                orders.Add(player.order);
+            else
+                player.GetComponent<PlayerUI>().leave = true;
+
             player.GetComponent<PlayerUI>().TargetStartWaiting(player.connectionToClient);
         }
     }

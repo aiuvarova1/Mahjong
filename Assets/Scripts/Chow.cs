@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 
 public class Chow : Combination
@@ -14,6 +15,7 @@ public class Chow : Combination
 
     public override int CalculatePoints(string wind)
     {
+        Debug.Log("chow" + tileList[0].name[0]);
         return 0;
     }
 }

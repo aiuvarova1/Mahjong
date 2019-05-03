@@ -368,6 +368,7 @@ public class GameManager : NetworkBehaviour
 
     void OpenAllTiles()
     {
+        Debug.Log("OpenTiles");
         for (int i = 0; i < winds.Count; i++)
         {
             winds[i].player.RpcOpenTiles(winds[i].rotation);

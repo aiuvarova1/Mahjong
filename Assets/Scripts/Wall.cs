@@ -25,6 +25,8 @@ public class Wall : NetworkBehaviour
     int currentWind;
     int freeTilesCount = 2;
 
+    bool checkFreeTiles = false;
+
     private void Awake()
     {
         if (instance == null)
@@ -284,6 +286,7 @@ public class Wall : NetworkBehaviour
         freeTiles.Add(tiles[wallNum][restNum].upperTile);
         freeTiles.Add(tiles[wallNum][restNum].lowerTile);
 
+        checkFreeTiles = true;
 
         freeTileIsMoving = false;
         // tiles[wallNum][restNum].upperTile.tile.transform.Rotate(0, 45, 0);
@@ -356,7 +359,9 @@ public class Wall : NetworkBehaviour
 
 
         //was 0.6
-        Invoke("CheckFreeTiles", 0.6f);
+
+
+       // Invoke("CheckFreeTiles", 0.6f);
 
     }
 
@@ -405,4 +410,14 @@ public class Wall : NetworkBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (!isServer) return;
+
+        if(checkFreeTiles && freeTiles.Count == 0)
+        {
+            checkFreeTiles = false;
+            CheckFreeTiles();
+        }
+    }
 }

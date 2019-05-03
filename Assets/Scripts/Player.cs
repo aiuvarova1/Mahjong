@@ -16,7 +16,7 @@ public class Player : NetworkBehaviour
     public Vector3 startPosition;
 
     public Camera Camera { get; set; }
-    string name="";
+    string name = "";
     public string wind;
     public int order;
 
@@ -116,8 +116,8 @@ public class Player : NetworkBehaviour
                 break;
             case "table":
                 //GameManager.instance.GameTable.tableTiles.Add(playerTiles[index]);
-               // GameManager.instance.GameTable.lastTile = playerTiles[index];
-               // CmdSetLastTile(index);
+                // GameManager.instance.GameTable.lastTile = playerTiles[index];
+                // CmdSetLastTile(index);
                 if (isLocalPlayer)
                 {
                     gameObject.GetComponent<PlayerUI>().StopWaitingForMove();
@@ -128,7 +128,7 @@ public class Player : NetworkBehaviour
                     CmdPrepareForCombinations();
 
                     //!
-                    
+
                 }
                 //else
                 //{
@@ -205,6 +205,7 @@ public class Player : NetworkBehaviour
     public void CmdAddTileToPlayerArray(int currentWall, int currentPair, string tile)
     {
         RpcAddTileToPlayerArray(currentWall, currentPair, tile);
+
     }
 
 
@@ -357,7 +358,7 @@ public class Player : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         CmdPass();
-        
+
         //CmdAnswerToServer();
     }
 
@@ -620,6 +621,7 @@ public class Player : NetworkBehaviour
         }
         else
         {
+
             foreach (Tile tile in playerTiles)
             {
                 int firstIndex = -1;
@@ -634,9 +636,14 @@ public class Player : NetworkBehaviour
 
             foreach (Pung pung in openedTiles)
             {
+                Debug.Log(pung.tileList[0].name);
+
                 int tileIndex = CheckForTileInArray(pung.tileList[0].name);
+                Debug.Log(tileIndex);
+
                 if (tileIndex != -1)
                 {
+                    Debug.Log("kong from pung");
                     DeclareKongFromPung(pung, tileIndex);
                     return;
                 }
@@ -687,7 +694,7 @@ public class Player : NetworkBehaviour
             closedCombinations.Add(new List<Combination>());
         }
 
-        
+
 
         int pairSetNum = -1;
         List<Tile> setWithPair = new List<Tile>();
@@ -728,10 +735,11 @@ public class Player : NetworkBehaviour
                 setWithoutPair.RemoveAt(i);
                 setWithoutPair.RemoveAt(i);
 
-                if (setWithoutPair.Count==0 || FillOneSuitCombinations(setWithoutPair, ref combinations))
+                if (setWithoutPair.Count == 0 || FillOneSuitCombinations(setWithoutPair, ref combinations))
                 {
-                    Debug.Log("fill true"+ combinations.Count);
+                    Debug.Log("fill true" + combinations.Count);
                     closedCombinations[pairSetNum] = combinations;
+                    Debug.Log("fill true" + closedCombinations[pairSetNum].Count);
                     closedCombinations[pairSetNum].Add(new Pair(setWithPair[i], setWithPair[i + 1]));
                     break;
                 }
@@ -748,15 +756,17 @@ public class Player : NetworkBehaviour
         //other suits
         for (int i = 0; i < suitSets.Count; i++)
         {
+            Debug.Log(i + " " + suitSets.Count + " " + pairSetNum);
             if (i != pairSetNum)
             {
                 List<Combination> combinations = new List<Combination>();
 
-                if (suitSets[i].Count==0||FillOneSuitCombinations(suitSets[i], ref combinations))
+                if (suitSets[i].Count == 0 || FillOneSuitCombinations(suitSets[i], ref combinations))
                 {
+                    Debug.Log(combinations.Count);
                     closedCombinations[i] = combinations;
-                    
-                    break;
+                    Debug.Log(closedCombinations[i].Count);
+
                 }
                 else
                 {
@@ -819,15 +829,17 @@ public class Player : NetworkBehaviour
                         }
                     }
 
-                    Debug.Log($"{char.IsLower(suitSet[i].name[0])},i {int.Parse(suitSet[i].name[1].ToString())}, j {int.Parse(suitSet[j].name[1].ToString())},k {int.Parse(suitSet[k].name[1].ToString())}"); 
-                     if (char.IsLower(suitSet[i].name[0])
-                       && int.Parse(suitSet[i].name[1].ToString()) + 1 == int.Parse(suitSet[j].name[1].ToString())
-                       && int.Parse(suitSet[j].name[1].ToString()) + 1 == int.Parse(suitSet[k].name[1].ToString()))
+                    Debug.Log($"{char.IsLower(suitSet[i].name[0])},i {int.Parse(suitSet[i].name[1].ToString())}, j {int.Parse(suitSet[j].name[1].ToString())},k {int.Parse(suitSet[k].name[1].ToString())}");
+                    if (char.IsLower(suitSet[i].name[0])
+                      && int.Parse(suitSet[i].name[1].ToString()) + 1 == int.Parse(suitSet[j].name[1].ToString())
+                      && int.Parse(suitSet[j].name[1].ToString()) + 1 == int.Parse(suitSet[k].name[1].ToString()))
                     {
-                        for (int m = 0; m < 3; m++)
-                        {
-                            newList.RemoveAt(i);
-                        }
+
+                        //newList.RemoveAt(i);
+                        newList.RemoveAt(newList.FindIndex(x => x.name == suitSet[i].name));
+                        newList.RemoveAt(newList.FindIndex(x => x.name == suitSet[j].name));
+                        newList.RemoveAt(newList.FindIndex(x => x.name == suitSet[k].name));
+
                         if (newList.Count == 0)
                         {
                             combinationList.Add(new Chow(suitSet[i], suitSet[j], suitSet[k]));
@@ -1133,17 +1145,25 @@ public class Player : NetworkBehaviour
         }
         MahJong mahjong = (MahJong)waitingCombination;
 
-        Combination combToOpen=null;
+        Debug.Log("Declare");
+
+        Combination combToOpen = null;
         int combinationNum = -1;
+
+        Debug.Log(mahjong.closedCombinations.Count);
+
+        Debug.Log(GameManager.instance.GameTable.lastTile.name);
 
         foreach (List<Combination> combList in mahjong.closedCombinations)
         {
-            for(int i=0;i<combList.Count;i++)
+            Debug.Log(combList.Count);
+
+            for (int i = 0; i < combList.Count; i++)
             {
                 Combination comb = combList[i];
                 for (int j = 0; j < comb.tileList.Count; j++)
                 {
-                    if(comb.tileList[j]==GameManager.instance.GameTable.lastTile)
+                    if (comb.tileList[j] == GameManager.instance.GameTable.lastTile)
                     {
                         combinationNum = i;
                         combToOpen = comb;
@@ -1152,6 +1172,8 @@ public class Player : NetworkBehaviour
                 }
             }
         }
+
+        Debug.Log(combToOpen == null);
 
         //if table tile is taken
         if (combToOpen != null)
@@ -1172,7 +1194,7 @@ public class Player : NetworkBehaviour
 
         //!!!change
         GameManager.instance.DeclareCombination("MahJong");
-        mahjong.openedCombinations=openedTiles;
+        mahjong.openedCombinations = openedTiles;
         mahjong.flowers = flowers;
 
         GameManager.instance.FinishGame(mahjong);
@@ -1202,6 +1224,7 @@ public class Player : NetworkBehaviour
     [ClientRpc]
     public void RpcOpenTiles(float rotation)
     {
+        Debug.Log("rpcopen");
         for (int i = 0; i < playerTiles.Count; i++)
         {
             playerTiles[i].tile.GetComponent<BezierMove>().OpenTile(rotation);
@@ -1316,13 +1339,13 @@ public class Player : NetworkBehaviour
                     }
 
 
-                    
 
-                    if(Wall.instance.freeTileIsMoving)
+
+                    if (Wall.instance.freeTileIsMoving)
                     {
                         Debug.Log("free move");
-                            return;
-                        }
+                        return;
+                    }
 
                     if (Wall.instance.freeTiles.Count > 1 && Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile.transform.position
                         != new Vector3(Wall.instance.tiles
@@ -1335,18 +1358,18 @@ public class Player : NetworkBehaviour
                         return;
                     }
 
-                        //}
-                        //catch (ArgumentOutOfRangeException ex)
-                        //{
-                        //    Debug.Log("argument out of range" + (Wall.instance.freeTiles.Count - 1));
-                        //    Debug.Log(ex.Message);
-                        //    needToCheckMoving = false;
-                        //    Invoke("EnableCheck", 0.8f);
-                        //    return;
-                        //}
+                    //}
+                    //catch (ArgumentOutOfRangeException ex)
+                    //{
+                    //    Debug.Log("argument out of range" + (Wall.instance.freeTiles.Count - 1));
+                    //    Debug.Log(ex.Message);
+                    //    needToCheckMoving = false;
+                    //    Invoke("EnableCheck", 0.8f);
+                    //    return;
+                    //}
 
-                        //Wall.instance.GiveFreeTile();
-                        Invoke("InvokeGiveFreeTile", 0.1f);
+                    //Wall.instance.GiveFreeTile();
+                    Invoke("InvokeGiveFreeTile", 0.1f);
                     needFreeTile = false;
                     needToCheckMoving = false;
                     return;
@@ -1360,7 +1383,7 @@ public class Player : NetworkBehaviour
                 else
                 {
                     Debug.Log("not moving");
-                  //  Invoke("Sort", 0.5f);
+                    //  Invoke("Sort", 0.5f);
                     Invoke("GetNextFlower", 0.6f);
                 }
 

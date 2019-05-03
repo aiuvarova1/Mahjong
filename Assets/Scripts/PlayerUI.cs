@@ -68,7 +68,7 @@ public class PlayerUI : NetworkBehaviour
         networkManager = (NewNetworkManager)NetworkManager.singleton;
         mainCam = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
 
-       
+        //mainCam.enabled = false;
     }
 
     private void Awake()
@@ -85,6 +85,8 @@ public class PlayerUI : NetworkBehaviour
         chowPanel.SetActive(false);
         declaration.enabled = false;
         combinationInfo.enabled = false;
+
+        
 
 
         //!!!
@@ -119,6 +121,14 @@ public class PlayerUI : NetworkBehaviour
     [TargetRpc]
     public void TargetShowScores(NetworkConnection conn,int[] scores,int[] oldScores,string[] names,string winner)
     {
+
+        StartCoroutine(ShowScores(scores,oldScores,names,winner));
+    }
+
+    IEnumerator ShowScores(int[] scores, int[] oldScores, string[] names, string winner)
+    {
+        yield return new WaitForSeconds(3f);
+
         scorePanel.SetActive(true);
 
         QuitButton.SetActive(true);
@@ -126,16 +136,16 @@ public class PlayerUI : NetworkBehaviour
         GameObject tableNames = GameObject.FindGameObjectWithTag("Names");
         Button[] objects = tableNames.GetComponentsInChildren<Button>();
 
-        for (int i = 1; i < names.Length; i++)
+        for (int i = 1; i < names.Length + 1; i++)
         {
             objects[i].GetComponentInChildren<Text>().text = names[i - 1];
         }
 
-        tableNames= GameObject.FindGameObjectWithTag("OldScore");
-        objects= tableNames.GetComponentsInChildren<Button>();
+        tableNames = GameObject.FindGameObjectWithTag("OldScore");
+        objects = tableNames.GetComponentsInChildren<Button>();
 
 
-        for (int i = 1; i < names.Length; i++)
+        for (int i = 1; i < names.Length + 1; i++)
         {
             objects[i].GetComponentInChildren<Text>().text = (oldScores[i - 1]).ToString();
         }
@@ -144,7 +154,7 @@ public class PlayerUI : NetworkBehaviour
         objects = tableNames.GetComponentsInChildren<Button>();
 
 
-        for (int i = 1; i < names.Length; i++)
+        for (int i = 1; i < names.Length + 1; i++)
         {
             objects[i].GetComponentInChildren<Text>().text = (scores[i - 1]).ToString();
         }
@@ -168,44 +178,50 @@ public class PlayerUI : NetworkBehaviour
 
         FillMatrix(ref matrix, scores, winner);
 
+
+        tableNames = GameObject.FindGameObjectWithTag("Combinations");
+        objects = tableNames.GetComponentsInChildren<Button>();
         //set column names
         for (int i = 0; i < buttons.Count; i++)
         {
             buttons[i][0].GetComponentInChildren<Text>().text = (names[i]).ToString();
+            objects[i+1].GetComponentInChildren<Text>().text= (names[i]).ToString();
+
             for (int j = 1; j < buttons[i].Length; j++)
             {
                 buttons[i][j].GetComponentInChildren<Text>().text = matrix[i, j - 1].ToString();
             }
-            
+
         }
 
 
         tableNames = GameObject.FindGameObjectWithTag("Total");
         objects = tableNames.GetComponentsInChildren<Button>();
 
-        List<int> total = new List<int>();
+        List<int> total = new List<int>() { 0, 0, 0, 0 };
         for (int i = 0; i < 4; i++)
         {
+            Debug.Log("total " + i);
             for (int j = 0; j < 4; j++)
             {
                 total[i] += matrix[j, i];
+                Debug.Log(total[i]);
             }
-           
+
         }
 
-        for (int i = 1; i < names.Length; i++)
+        for (int i = 1; i < names.Length + 1; i++)
         {
-            objects[i].GetComponentInChildren<Text>().text = (total[i-1]).ToString();
+            objects[i].GetComponentInChildren<Text>().text = (total[i - 1]).ToString();
         }
 
         tableNames = GameObject.FindGameObjectWithTag("NewScore");
         objects = tableNames.GetComponentsInChildren<Button>();
 
-        for (int i = 1; i < names.Length; i++)
+        for (int i = 1; i < names.Length+1; i++)
         {
-            objects[i].GetComponentInChildren<Text>().text = (oldScores[i-1]+total[i - 1]).ToString();
+            objects[i].GetComponentInChildren<Text>().text = (oldScores[i - 1] + total[i - 1]).ToString();
         }
-
     }
 
     void FillMatrix(ref int[,]matrix,int[] scores,string winner)
@@ -292,8 +308,10 @@ public class PlayerUI : NetworkBehaviour
                             }
                             else
                             {
-                                if(j == winNum)
+                                if (j == winNum)
                                     matrix[j, i] = -scores[j];
+                                else if (j == 0)
+                                    matrix[j, i] = (scores[i] - scores[j]) * 2;
                                 else
                                     matrix[j, i] = (scores[i] - scores[j]);
                             }

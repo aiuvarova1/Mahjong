@@ -21,6 +21,7 @@ TagManager:
   - Points3
   - Total
   - NewScore
+  - Combinations
   layers:
   - Default
   - TransparentFX

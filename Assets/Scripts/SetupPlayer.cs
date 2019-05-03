@@ -58,6 +58,7 @@ public class SetupPlayer : NetworkBehaviour
         player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);
 
         float newRotation = player.Camera.transform.eulerAngles.y;
+
         Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
 
         GameMaster.instance.lights[order].SetActive(true);
@@ -98,12 +99,14 @@ public class SetupPlayer : NetworkBehaviour
     [Command]
     void CmdAddPlayer(int ord,string wind)
     {
+        GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), ord, wind);
         RpcAddPlayer(ord,wind);
     }
 
     [ClientRpc]
     void RpcAddPlayer(int ord,string wind)
     {
+        if (isServer) return;
         GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(),ord,wind);
         Debug.Log($"Camera {ord}, wind {wind}");
         Debug.Log(GameMaster.instance.PlayerCount + "players");

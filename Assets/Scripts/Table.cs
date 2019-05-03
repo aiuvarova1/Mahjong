@@ -49,8 +49,10 @@ public class Table
         Vector3 curPos = CurrentPosition;
         curPos.z += 2f;
         if (curPos.z > startPosition.z)
+        {
             curPos.z = -12;
-        curPos.x += 3f;
+            curPos.x += 3f;
+        }
         CurrentPosition = curPos;
     }
 
