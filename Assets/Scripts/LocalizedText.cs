@@ -12,7 +12,7 @@ public class LocalizedText : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Debug.Log("start"+key);
+
         ChangeText();
         if(LocalizationManager.instance!=null)
             LocalizationManager.instance.ChangeEvent += ChangeText;
@@ -34,7 +34,7 @@ public class LocalizedText : MonoBehaviour
 
     void ChangeText()
     {
-        Debug.Log(key);
+
         Text text = GetComponent<Text>();
         key = text.text;
 

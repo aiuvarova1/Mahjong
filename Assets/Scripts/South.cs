@@ -10,13 +10,14 @@ class South:Wind
 {
     const int num = 2;
     
-    public Vector3 startPosition = new Vector3(-11, 1f, -30);
+    //public Vector3 
     public Vector3  startOpenTilePosition = new Vector3(-15, 0, -27);
     public Vector3  startFlowerPosition = new Vector3(-15, 0, -23);
 
     public South(Player p) : base(p)
     {
-          rotation = 180;
+        startPosition = new Vector3(-11, 1f, -30);
+        rotation = 180;
          freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;
         freeFlowerPosition = startFlowerPosition;
@@ -37,6 +38,7 @@ class South:Wind
 
     public South()
     {
+        startPosition = new Vector3(-11, 1f, -30);
         rotation = 180;
         freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;

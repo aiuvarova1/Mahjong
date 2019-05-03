@@ -40,6 +40,8 @@ public class Player : NetworkBehaviour
     public Combination waitingCombination;
     public bool isFreeTile = false;
 
+    List<Vector3> positionList;
+
     //void 
 
 
@@ -62,39 +64,43 @@ public class Player : NetworkBehaviour
     {
         for (int i = 0; i < playerTiles.Count; i++)
         {
-            playerTiles[i].tile.transform.position = new Vector3(playerTiles[i].tile.transform.position.x, 1.2f, playerTiles[i].tile.transform.position.z);
+            playerTiles[i].tile.transform.position = new Vector3(playerTiles[i].tile.transform.position.x, 1.4f, playerTiles[i].tile.transform.position.z);
         }
     }
 
     public void SortTiles()
     {
-        List<Vector3> positions = CreatePositionList();
 
-        Debug.Log(isServer);
-
-        Debug.Log(playerTiles.Count + "player tiles");
         Debug.Log(playerTiles[playerTiles.Count - 1].name);
+
         playerTiles.Sort();
+
         Debug.Log("sorted");
 
         //playerTiles[0].tile.transform.position = startPosition;
         for (int i = 0; i < playerTiles.Count; i++)
         {
             // Debug.Log(playerTiles[i]);
-            playerTiles[i].tile.transform.position = positions[i];
+            playerTiles[i].tile.transform.position = positionList[i];
             // Debug.Log($"{i}, {playerTiles[i].name}");
         }
     }
-    List<Vector3> CreatePositionList()
-    {
-        List<Vector3> pos = new List<Vector3>();
 
-        for (int i = 0; i < playerTiles.Count; i++)
-        {
-            pos.Add(playerTiles[i].tile.transform.position);
-        }
-        return pos;
+    [ClientRpc]
+    public void RpcFillPositionList(Vector3[] pos)
+    {
+        positionList = new List<Vector3>(pos);
     }
+    //List<Vector3> CreatePositionList()
+    //{
+    //    List<Vector3> pos = new List<Vector3>();
+
+    //    for (int i = 0; i < playerTiles.Count; i++)
+    //    {
+    //        pos.Add(playerTiles[i].tile.transform.position);
+    //    }
+    //    return pos;
+    //}
     #endregion
 
     [ClientRpc]
@@ -1156,7 +1162,7 @@ public class Player : NetworkBehaviour
 
         foreach (List<Combination> combList in mahjong.closedCombinations)
         {
-            Debug.Log(combList.Count);
+            
 
             for (int i = 0; i < combList.Count; i++)
             {
@@ -1166,6 +1172,7 @@ public class Player : NetworkBehaviour
                     if (comb.tileList[j] == GameManager.instance.GameTable.lastTile)
                     {
                         combinationNum = i;
+                        Debug.Log("found" + j);
                         combToOpen = comb;
                         break;
                     }
@@ -1178,7 +1185,12 @@ public class Player : NetworkBehaviour
         //if table tile is taken
         if (combToOpen != null)
         {
+            Debug.Log(mahjong.closedCombinations[combinationNum].Count);
+
             mahjong.closedCombinations[combinationNum].Remove(combToOpen);
+
+            Debug.Log(mahjong.closedCombinations[combinationNum].Count);
+
             waitingCombination = combToOpen;
 
             LieCombinationTiles(windPos);
@@ -1196,6 +1208,8 @@ public class Player : NetworkBehaviour
         GameManager.instance.DeclareCombination("MahJong");
         mahjong.openedCombinations = openedTiles;
         mahjong.flowers = flowers;
+
+        
 
         GameManager.instance.FinishGame(mahjong);
 

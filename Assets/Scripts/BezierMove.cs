@@ -29,7 +29,7 @@ public class BezierMove : NetworkBehaviour
     public void OpenTile(float rotation)
     {
         endRotation= Quaternion.Euler(-90, rotation, 0);
-        transform.position = new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y + 0.4f, transform.position.z);
         rotating = true;
         
     }
@@ -166,7 +166,8 @@ public class BezierMove : NetworkBehaviour
     [ClientRpc]
     public void RpcCloseTile(float rotation)
     {
-        transform.rotation=(Quaternion.Euler(0, rotation, 0));
+        
+        transform.rotation=(Quaternion.Euler(90, rotation, 0));
     }
 
 

@@ -123,6 +123,25 @@ public class GameManager : NetworkBehaviour
 
     public void DistributeTiles()
     {
+        for (int i = 0; i < winds.Count; i++)
+        {
+            Vector3[] pos = new Vector3[14];
+            pos[0] = winds[i].startPosition;
+            pos[0].y = 1.4f;
+
+            Vector3 curPos = pos[0];
+
+            for (int j = 1; j < pos.Length; j++)
+            {
+                winds[i].MoveRightFreePosition(ref curPos);
+                pos[j] = curPos;
+            }
+
+            if (winds[i].player != null)
+                winds[i].player.RpcFillPositionList(pos);
+        }
+
+
         Wall.instance.AssighFreeTiles();
 
         Wall.instance.DistributeTiles();

@@ -32,7 +32,7 @@ public class Table
     public Table()
     {
         //tableTiles = new List<Tile>();
-        startPosition = new Vector3(10, East.startPosition.y, East.startPosition.z);
+        startPosition = new Vector3(10, GameManager.instance.winds[0].startPosition.y, GameManager.instance.winds[0].startPosition.z);
         rotation = -90;
         CurrentPosition = startPosition;
     }

@@ -10,14 +10,14 @@ using UnityEngine;
 {
     const int num = 3;
  
-    public Vector3 startPosition = new Vector3(30, 1f, -11);
+   // public Vector3 
 
     public Vector3 startOpenTilePosition = new Vector3(27, 0f, -15);
     public Vector3 startFlowerPosition = new Vector3(23, 0, -15);
 
     public West(Player p) : base(p)
     {
-
+        startPosition = new Vector3(30, 1f, -11);
         rotation = 90;
         freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;
@@ -38,6 +38,7 @@ using UnityEngine;
 
     public West()
     {
+        startPosition = new Vector3(30, 1f, -11);
         rotation = 90;
         freePosition = startPosition;
         freeOpenPosition = startOpenTilePosition;

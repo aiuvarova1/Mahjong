@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HostGame : MonoBehaviour
 {
@@ -24,17 +25,20 @@ public class HostGame : MonoBehaviour
         ConnectionConfig myConfig = networkManager.connectionConfig;
 
         myConfig.NetworkDropThreshold = 95;
-        myConfig.OverflowDropThreshold = 30;
+        myConfig.OverflowDropThreshold = 70;
         myConfig.InitialBandwidth = 0;
         myConfig.MinUpdateTimeout = 10;
         myConfig.ConnectTimeout = 2000;
         myConfig.PingTimeout = 1500;
-        myConfig.DisconnectTimeout = 6000;
+        myConfig.DisconnectTimeout = 12000;
         myConfig.PacketSize = 1470; myConfig.SendDelay = 2;
         myConfig.FragmentSize = 1300;
         myConfig.AcksType = ConnectionAcksType.Acks128;
         myConfig.MaxSentMessageQueueSize = 256;
         myConfig.AckDelay = 1;
+        
+
+        networkManager.maxDelay = 0.5f;
     }
 
     public void CreateRoom()

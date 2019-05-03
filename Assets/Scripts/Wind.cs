@@ -23,6 +23,8 @@ public abstract class Wind:IComparable<Wind>
     public Vector3 freeOpenPosition;
     public Vector3 freeFlowerPosition;
 
+    public Vector3 startPosition;
+
     //public static Vector3 startOpenTilePosition;
     //public static Vector3 startFlowerPosition;
 

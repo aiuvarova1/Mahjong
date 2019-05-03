@@ -22,6 +22,12 @@ public class MahJong : Combination
         int score = 20;
         int twice = 1;
 
+        Debug.Log(openedCombinations.Count + "open");
+
+        foreach (List<Combination> lst in closedCombinations)
+        {
+            Debug.Log(lst.Count);
+        }
         if (playerTurn) score += 2;
 
         bool noChow = true;

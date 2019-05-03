@@ -25,6 +25,11 @@ public class MenuManager : MonoBehaviour {
         {
             LocalizationManager.instance.SetReferences();
         }
+
+        if (scene.name == "Menu" && AudioManager.instance != null)
+        {
+            AudioManager.instance.SetReferences();
+        }
     }
 
     private void OnDisable()
