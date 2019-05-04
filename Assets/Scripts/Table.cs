@@ -50,7 +50,7 @@ public class Table
         curPos.z += 2f;
         if (curPos.z > startPosition.z)
         {
-            curPos.z = -12;
+            curPos.z = -11f;
             curPos.x += 3f;
         }
         CurrentPosition = curPos;

@@ -34,10 +34,13 @@ public class SetupPlayer : NetworkBehaviour
         int order = 0;
         try
         {
+            if (GameMaster.instance.availableCameras.Count == 0)
+                throw new ArgumentException();
+
             order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count)];
             //order = GameMaster.instance.availableCameras[UnityEngine.Random.Range(0, GameMaster.instance.availableCameras.Count-2)];
         }
-        catch (ArgumentOutOfRangeException)
+        catch (Exception ex)
         {
             GetComponent<PlayerUI>().DropConnection();
         }
@@ -99,14 +102,14 @@ public class SetupPlayer : NetworkBehaviour
     [Command]
     void CmdAddPlayer(int ord,string wind)
     {
-        GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), ord, wind);
+       // GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), ord, wind);
         RpcAddPlayer(ord,wind);
     }
 
     [ClientRpc]
     void RpcAddPlayer(int ord,string wind)
     {
-        if (isServer) return;
+        //if (isServer) return;
         GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(),ord,wind);
         Debug.Log($"Camera {ord}, wind {wind}");
         Debug.Log(GameMaster.instance.PlayerCount + "players");

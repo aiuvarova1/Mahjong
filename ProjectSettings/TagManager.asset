@@ -22,6 +22,7 @@ TagManager:
   - Total
   - NewScore
   - Combinations
+  - Host
   layers:
   - Default
   - TransparentFX

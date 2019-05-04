@@ -640,8 +640,15 @@ public class Player : NetworkBehaviour
                 }
             }
 
-            foreach (Pung pung in openedTiles)
+            foreach (Combination comb in openedTiles)
             {
+                Pung pung;
+                if (comb is Pung) pung = (Pung)comb;
+                else
+                {
+                    Debug.Log("not pung");
+                    continue;
+                }
                 Debug.Log(pung.tileList[0].name);
 
                 int tileIndex = CheckForTileInArray(pung.tileList[0].name);
@@ -990,7 +997,8 @@ public class Player : NetworkBehaviour
             //RpcLieOutTile(i, GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation, "comb");
             GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
             if (i == firstIndex || i == firstIndex + 3)
-                playerTiles[i].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
+                RpcCloseTile(playerTiles[i].tile, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
+                //playerTiles[i].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
 
         }
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
@@ -1022,7 +1030,8 @@ public class Player : NetworkBehaviour
 
         RpcLieOutTile(index, pung.additionalPosition, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation, "comb");
 
-        kong.tileList[3].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
+        RpcCloseTile(kong.tileList[3].tile, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
+        //kong.tileList[3].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
         GameManager.instance.DeclareCombination("Kong");
 
 
@@ -1035,6 +1044,12 @@ public class Player : NetworkBehaviour
         //RpcAddCombination();
         Invoke("AskForFreeTile", 1.5f);
 
+    }
+
+    [ClientRpc]
+    void RpcCloseTile(GameObject tile,float rotation)
+    {
+        tile.GetComponent<BezierMove>().CloseTile(rotation);
     }
 
 
@@ -1115,17 +1130,18 @@ public class Player : NetworkBehaviour
 
     }
 
-    [ClientRpc]
-    void RpcCloseTile(int index)
-    {
+    //[ClientRpc]
+    //void RpcCloseTile(int index)
+    //{
 
-    }
+    //}
 
     public void DeclareKong(int windPos)
     {
         LieCombinationTiles(windPos);
 
-        waitingCombination.tileList[3].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[windPos].rotation);
+        //waitingCombination.tileList[3].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[windPos].rotation);
+        RpcCloseTile(waitingCombination.tileList[3].tile, GameManager.instance.winds[windPos].rotation);
 
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
         GameManager.instance.CurrentWind = windPos;
@@ -1160,49 +1176,73 @@ public class Player : NetworkBehaviour
 
         Debug.Log(GameManager.instance.GameTable.lastTile.name);
 
-        foreach (List<Combination> combList in mahjong.closedCombinations)
+       // foreach (List<Combination> combList in mahjong.closedCombinations)
         {
-            
-
-            for (int i = 0; i < combList.Count; i++)
+            for (int k = 0; k < mahjong.closedCombinations.Count; k++)
             {
-                Combination comb = combList[i];
-                for (int j = 0; j < comb.tileList.Count; j++)
+                for (int i = 0; i < mahjong.closedCombinations[k].Count; i++)
                 {
-                    if (comb.tileList[j] == GameManager.instance.GameTable.lastTile)
+                    Combination comb = mahjong.closedCombinations[k][i];
+
+                    for (int j = 0; j < comb.tileList.Count; j++)
                     {
-                        combinationNum = i;
-                        Debug.Log("found" + j);
-                        combToOpen = comb;
-                        break;
+                        if (comb.tileList[j] == GameManager.instance.GameTable.lastTile)
+                        {
+                            combinationNum = i;
+                            Debug.Log("found" + i );
+
+
+                            combToOpen = comb;
+
+                            Debug.Log(mahjong.closedCombinations[k].Count);
+
+                            mahjong.closedCombinations[k].Remove(combToOpen);
+
+                            Debug.Log(mahjong.closedCombinations[k].Count);
+
+                            waitingCombination = combToOpen;
+
+                            LieCombinationTiles(windPos);
+                            GameManager.instance.CurrentWind = windPos;
+
+                            GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
+
+                            Invoke("InvokeDelete", 1.8f);
+
+                            openedTiles.Add(waitingCombination);
+
+                            break;
+                        }
                     }
                 }
             }
+
+           
         }
 
         Debug.Log(combToOpen == null);
 
-        //if table tile is taken
-        if (combToOpen != null)
-        {
-            Debug.Log(mahjong.closedCombinations[combinationNum].Count);
+        ////if table tile is taken
+        //if (combToOpen != null)
+        //{
+        //    Debug.Log(mahjong.closedCombinations[combinationNum].Count);
 
-            mahjong.closedCombinations[combinationNum].Remove(combToOpen);
+        //    mahjong.closedCombinations[combinationNum].Remove(combToOpen);
 
-            Debug.Log(mahjong.closedCombinations[combinationNum].Count);
+        //    Debug.Log(mahjong.closedCombinations[combinationNum].Count);
 
-            waitingCombination = combToOpen;
+        //    waitingCombination = combToOpen;
 
-            LieCombinationTiles(windPos);
-            GameManager.instance.CurrentWind = windPos;
+        //    LieCombinationTiles(windPos);
+        //    GameManager.instance.CurrentWind = windPos;
 
-            GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
+        //    GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
 
-            Invoke("InvokeDelete", 1.8f);
+        //    Invoke("InvokeDelete", 1.8f);
 
-            openedTiles.Add(waitingCombination);
+        //    openedTiles.Add(waitingCombination);
 
-        }
+        //}
 
         //!!!change
         GameManager.instance.DeclareCombination("MahJong");
@@ -1419,4 +1459,16 @@ public class Player : NetworkBehaviour
     {
         needToCheckMoving = true;
     }
+
+    private void OnDestroy()
+    {
+        Debug.Log(order + "destroy");
+    }
+
+
+    public virtual void OnClientDisconnect(NetworkConnection conn)
+    {
+        Debug.Log("Server is stopped from PlayerPrefab");
+    }
+
 }

@@ -15,13 +15,42 @@ public class JoinGame : MonoBehaviour
     public GameObject parentPanel;
     public Text status;
 
-    static NewNetworkManager networkManager;
+    public static GameObject hostPanel;
+
+    
+
+    public static NewNetworkManager networkManager;
 
     IEnumerator refresher;
+
+    public static void EnableHostPanel()
+    {
+        if (GameObject.FindGameObjectWithTag("Host") == null) return;
+        hostPanel = GameObject.FindGameObjectWithTag("Host");
+        //hostPanel.SetActive(true);
+
+    }
+
+    public static void DisableHostPanel()
+    {
+        if (GameObject.FindGameObjectWithTag("Host") == null) return;
+        hostPanel = GameObject.FindGameObjectWithTag("Host");
+        hostPanel.SetActive(false);
+    }
 
     // Use this for initialization
     void Start()
     {
+
+        hostPanel = GameObject.FindGameObjectWithTag("Host");
+
+        if (!NewNetworkManager.hostLeft)
+            hostPanel.SetActive(false);
+        else
+            NewNetworkManager.hostLeft = false;
+
+        Debug.Log("started");
+
         refresher = Refresher();
 
         networkManager = (NewNetworkManager)NetworkManager.singleton;

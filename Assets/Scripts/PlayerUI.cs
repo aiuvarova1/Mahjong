@@ -828,7 +828,7 @@ public class PlayerUI : NetworkBehaviour
         if (isLocalPlayer && leave)
         {
             leave = false;
-            LeaveRoom();
+            DropConnection();
         }
  
     }

@@ -102,6 +102,45 @@ public class GameMaster : NetworkBehaviour
         players.Remove(netID);
     }
 
+    public void TestUnregister(NetworkConnection conn)
+    {
+        PlayerCount--;
+        Debug.Log(PlayerCount);
+
+
+        Debug.Log("tst");
+        string remove = null;
+
+        foreach (string netID in players.Keys)
+        {
+            Player player = players[netID];
+            Debug.Log(player.order);
+
+            try
+            {
+                if (player.connectionToClient == conn)
+                {
+                    Debug.Log("found");
+                    availableCameras.Add(player.order);
+                    Debug.Log($"add {player.order} back");
+                    remove = netID;
+                    
+                }
+            }
+            catch(MissingReferenceException)
+            {
+                Debug.Log("эксепшон");
+                Debug.Log("found");
+                availableCameras.Add(player.order);
+                Debug.Log($"add {player.order} back");
+                remove = netID;
+
+            }
+        }
+        players.Remove(remove);
+
+    }
+
     void GetReady()
     {
         Debug.Log(players.Count + " get ready");

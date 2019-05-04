@@ -13,12 +13,18 @@ public class NewNetworkManager : NetworkManager
     public GameObject error;
     public Text errorText;
 
+    public static bool hostLeft=false;
+
+
+   // public static  bool hostLeft = false;
+
     //public override void OnClientDisconnect(NetworkConnection conn)
     //{
     //    conn.playerControllers[0].gameObject.GetComponent<PlayerUI>().LeaveRoom();
     //    base.OnClientDisconnect(conn);
     //}
-   
+
+
 
     void ShowErrorMessage(string message)
     {
@@ -41,6 +47,20 @@ public class NewNetworkManager : NetworkManager
             ShowErrorMessage("Failed to create the game");
         //else
             //JoinGame.RefreshRoomList();
+
+    }
+
+    public override void OnClientDisconnect(NetworkConnection conn)
+    {
+        hostLeft = true;
+        base.OnClientDisconnect(conn);
+        Debug.Log("Server is stopped from Manager");
+    }
+    public override void OnServerDisconnect(NetworkConnection conn)
+    {
+        GameMaster.instance.TestUnregister(conn);
+        base.OnServerDisconnect(conn);
+        Debug.Log("Client is stopped from Manager");
 
     }
 

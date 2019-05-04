@@ -109,6 +109,7 @@ public class LocalizationManager: MonoBehaviour
             {"OK","ОК" },
             {"Combinations","Комбинации" },
             {"Continue","Продолжить" },
+            {"The host has left the room","Хост покинул игру" }
 
 
 

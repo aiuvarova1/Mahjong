@@ -163,11 +163,12 @@ public class BezierMove : NetworkBehaviour
         transform.position = new Vector3(transform.position.x, transform.position.y - 0.7f, transform.position.z);
     }
 
-    [ClientRpc]
-    public void RpcCloseTile(float rotation)
+
+    public void CloseTile(float rotation)
     {
-        
+        Debug.Log(rotation);
         transform.rotation=(Quaternion.Euler(90, rotation, 0));
+        Debug.Log(transform.rotation);
     }
 
 
