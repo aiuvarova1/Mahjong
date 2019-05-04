@@ -4,12 +4,12 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
-public class LocalizationManager: MonoBehaviour
+public class LocalizationManager : MonoBehaviour
 {
-    public static LocalizationManager instance ;
+    public static LocalizationManager instance;
 
     private Dictionary<string, string> EngRu;
-    private Dictionary<string, string> RuEng= new Dictionary<string, string>();
+    private Dictionary<string, string> RuEng = new Dictionary<string, string>();
 
     public string language = "Eng";
 
@@ -31,7 +31,7 @@ public class LocalizationManager: MonoBehaviour
         dropDown = settingsPanel.GetComponentInChildren<Dropdown>();
 
         label = dropDown.GetComponentInChildren<Text>();
-        
+
 
         if (language == "Eng")
             dropDown.value = 0;
@@ -109,7 +109,8 @@ public class LocalizationManager: MonoBehaviour
             {"OK","ОК" },
             {"Combinations","Комбинации" },
             {"Continue","Продолжить" },
-            {"The host has left the room","Хост покинул игру" }
+            {"The host has left the room","Хост покинул игру" },
+            {"has left the room","покинул игру" }
 
 
 
@@ -137,14 +138,26 @@ public class LocalizationManager: MonoBehaviour
         Dictionary<string, string> localizedText;
 
         if (language == "Eng")
+        {
+            if ((key[0] >= 'a' && key[0] <= 'z') || (key[0] >= 'A' && key[0] <= 'Z'))
+                return key;
             localizedText = RuEng;
+        }
         else
+        {
+            if ((key[0] >= 'а' && key[0] <= 'я') || (key[0] >= 'А' && key[0] <= 'Я'))
+                return key;
             localizedText = EngRu;
+        }
+
+        Debug.Log(localizedText.Count);
+        Debug.Log(RuEng.Count);
 
         if (localizedText.ContainsKey(key))
         {
             result = localizedText[key];
         }
+        Debug.Log(result);
 
         return result;
 

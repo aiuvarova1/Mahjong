@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class BuildWall : MonoBehaviour {
+public class BuildWall : MonoBehaviour
+{
 
-    Vector3 startPosition1 = new Vector3(20,2.2f,17);
-    Vector3 startPosition2 = new Vector3(17,2.2f,-19);
-    Vector3 startPosition3 = new Vector3(-20,2.2f,-17);
-    Vector3 startPosition4 = new Vector3(-17,2.2f,19);
+    Vector3 startPosition1 = new Vector3(20, 2.2f, 17);
+    Vector3 startPosition2 = new Vector3(17, 2.2f, -19);
+    Vector3 startPosition3 = new Vector3(-20, 2.2f, -17);
+    Vector3 startPosition4 = new Vector3(-17, 2.2f, 19);
 
     public GameObject tilePrefab;
 
@@ -16,11 +17,11 @@ public class BuildWall : MonoBehaviour {
     public List<List<WallPair>> tiles = new List<List<WallPair>>(4);
 
     //for texture
-   public List<Vector2> coordinates = new List<Vector2>();
-     List<Tile> availableTiles = new List<Tile>(144);
+    public List<Vector2> coordinates = new List<Vector2>();
+    List<Tile> availableTiles = new List<Tile>(144);
     List<int> availableTilesIndexes = new List<int>();
 
-    public  List<int> indexes = new List<int>();
+    public List<int> indexes = new List<int>();
 
     public static BuildWall instance;
 
@@ -54,13 +55,13 @@ public class BuildWall : MonoBehaviour {
             {
                 for (int x = 0; x <= 6; x++)
 
-                    coordinates.Add(new Vector2(x , y));
+                    coordinates.Add(new Vector2(x, y));
             }
             else
             {
                 for (int x = 0; x < 9; x++)
 
-                    coordinates.Add(new Vector2(x , y));
+                    coordinates.Add(new Vector2(x, y));
             }
         }
 
@@ -78,7 +79,7 @@ public class BuildWall : MonoBehaviour {
             {
                 for (int k = 0; k < 3; k++)
                 {
-                    availableTiles.Add(new Tile(Instantiate(availableTiles[availableTiles.Count-1].tile), true, coordinates[i]));
+                    availableTiles.Add(new Tile(Instantiate(availableTiles[availableTiles.Count - 1].tile), true, coordinates[i]));
                 }
             }
 
@@ -92,19 +93,19 @@ public class BuildWall : MonoBehaviour {
         {
             // tiles[i] = new List<Tile>(36);
             tiles.Add(new List<WallPair>(18));
-            
+
         }
 
-        if(coordinates.Count==0)
+        if (coordinates.Count == 0)
             FillCoordinates();
 
         CreateTileVariants(tilePrefab);
 
 
-        CreateWall(1, tilePrefab,ref ind);
-        CreateWall(2, tilePrefab,ref ind);
-        CreateWall(3, tilePrefab,ref ind);
-        CreateWall(4, tilePrefab,ref ind);
+        CreateWall(1, tilePrefab, ref ind);
+        CreateWall(2, tilePrefab, ref ind);
+        CreateWall(3, tilePrefab, ref ind);
+        CreateWall(4, tilePrefab, ref ind);
 
         Wall.instance.Initialize(tiles);
     }
@@ -122,17 +123,17 @@ public class BuildWall : MonoBehaviour {
             indexes.Add(availableTilesIndexes[index]);
 
             availableTilesIndexes.RemoveAt(index);
-           
+
         }
     }
 
 
-    public void CreateWall(int num,GameObject tile,ref List<int> ind)
+    public void CreateWall(int num, GameObject tile, ref List<int> ind)
     {
 
         //coordinates of first right tile in the second row
-        Vector3 start=new Vector3();
-        float rotation=90;
+        Vector3 start = new Vector3();
+        float rotation = 90;
         //if coefficient>0,x or z coordinate grows else reduces
         int c = -1;
         switch (num)
@@ -167,19 +168,19 @@ public class BuildWall : MonoBehaviour {
             //availableTiles.RemoveAt(ind[0]);
             ind.RemoveAt(0);
 
-            
+
             upper.tile.transform.position = upperPosition;
             upper.tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
 
             //first row(odd)
 
-          
+
             Tile lower = availableTiles[ind[0]];
 
-           // availableTiles.RemoveAt(ind[0]);
+            // availableTiles.RemoveAt(ind[0]);
             ind.RemoveAt(0);
 
-           
+
             lower.tile.transform.position = lowerPosition;
             lower.tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
 
@@ -188,5 +189,21 @@ public class BuildWall : MonoBehaviour {
 
         }
 
+    }
+
+    public void Refresh()
+    {
+        tiles = new List<List<WallPair>>(4);
+
+        //for texture
+        coordinates = new List<Vector2>();
+        availableTiles = new List<Tile>(144);
+        availableTilesIndexes = new List<int>();
+
+        indexes = new List<int>();
+        for (int i = 0; i < 144; i++)
+        {
+            availableTilesIndexes.Add(i);
+        }
     }
 }

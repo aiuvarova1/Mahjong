@@ -24,6 +24,8 @@ public abstract class Wind:IComparable<Wind>
     public Vector3 freeFlowerPosition;
 
     public Vector3 startPosition;
+    public Vector3 startOpenTilePosition;
+    public Vector3 startFlowerPosition;
 
     //public static Vector3 startOpenTilePosition;
     //public static Vector3 startFlowerPosition;
@@ -49,6 +51,12 @@ public abstract class Wind:IComparable<Wind>
     public abstract void MoveRightFreePosition(ref Vector3 pos);
     public abstract void MoveLeftFreePosition(ref Vector3 pos);
 
+    public void Refresh()
+    {
+        freePosition = startPosition;
+        freeOpenPosition = startOpenTilePosition;
+        freeFlowerPosition = startFlowerPosition;
+    }
 
 }
 

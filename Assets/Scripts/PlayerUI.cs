@@ -50,6 +50,7 @@ public class PlayerUI : NetworkBehaviour
 
     public GameObject chowPanel;
     public GameObject scorePanel;
+    public GameObject leavePanel;
 
     public Button thirdButton;
     public Button firstButton;
@@ -71,6 +72,34 @@ public class PlayerUI : NetworkBehaviour
         //mainCam.enabled = false;
     }
 
+    public void Refresh()
+    {
+        Debug.Log("ui refresh");
+        StopAllCoroutines();
+
+        starter = WaitForStart();
+        CountDown = WaitForMove();
+        CombinationEnum = WaitForCombination();
+        hider = HideInfo();
+
+        leave = false;
+        ready = false;
+
+        infoPanel.SetActive(false);
+        countDown.enabled = false;
+
+        thirdButton.gameObject.SetActive(false);
+        chowPanel.SetActive(false);
+        declaration.enabled = false;
+        combinationInfo.enabled = false;
+
+        QuitButton.SetActive(true);
+        startButton.SetActive(true);
+
+        //score panel???
+        
+    }
+
     private void Awake()
     {
         starter = WaitForStart();
@@ -86,7 +115,7 @@ public class PlayerUI : NetworkBehaviour
         declaration.enabled = false;
         combinationInfo.enabled = false;
 
-        
+        leavePanel.SetActive(false);
 
 
         //!!!
@@ -114,6 +143,15 @@ public class PlayerUI : NetworkBehaviour
             player.Camera.enabled = true;
             mainCam.enabled = false;
         }
+    }
+
+    [TargetRpc]
+    public void TargetShowLeftPlayerInfo(NetworkConnection conn,string name,string wind)
+    {
+        leavePanel.SetActive(true);
+        Debug.Log(wind);
+        leavePanel.GetComponentInChildren<Text>().text = $"{name} ({LocalizationManager.instance.GetLocalizedValue(wind)}) " +
+            $"{LocalizationManager.instance.GetLocalizedValue("has left the room")}";
     }
 
     #region Coroutines
@@ -342,6 +380,11 @@ public class PlayerUI : NetworkBehaviour
     IEnumerator HideInfo()
     {
         combinationInfo.enabled = true;
+
+        Color fullCol = combinationInfo.color;
+        fullCol.a = 1f;
+        combinationInfo.color = fullCol;
+
         yield return new WaitForSeconds(2f);
 
         while (combinationInfo.color.a > 0)
@@ -375,6 +418,10 @@ public class PlayerUI : NetworkBehaviour
         if (LocalizationManager.instance != null)
             LocalizationManager.instance.ChangeFont(ref declaration);
 
+        Color fullCol = declaration.color;
+        fullCol.a = 1f;
+        declaration.color = fullCol;
+
 
         declaration.enabled = true;
         yield return new WaitForSeconds(2f);
@@ -387,7 +434,8 @@ public class PlayerUI : NetworkBehaviour
             yield return new WaitForSeconds(0.3f);
         }
         declaration.enabled = false;
-        Color fullCol = declaration.color;
+
+        fullCol = declaration.color;
         fullCol.a = 1f;
         declaration.color = fullCol;
     }
@@ -429,7 +477,7 @@ public class PlayerUI : NetworkBehaviour
             }
             infoText.text = prefix + $"({countdown})";
             yield return new WaitForSeconds(1);
-            Debug.Log(countdown);
+
             countdown--;
         }
         //infoPanel.SetActive(false);

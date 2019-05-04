@@ -6,22 +6,21 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
- class West:Wind
+class West : Wind
 {
     const int num = 3;
- 
-   // public Vector3 
 
-    public Vector3 startOpenTilePosition = new Vector3(27, 0f, -15);
-    public Vector3 startFlowerPosition = new Vector3(23, 0, -15);
+    // public Vector3 
+
+
 
     public West(Player p) : base(p)
     {
         startPosition = new Vector3(30, 1f, -11);
+        startOpenTilePosition = new Vector3(27, 0f, -15);
+        startFlowerPosition = new Vector3(23, 0, -15);
         rotation = 90;
-        freePosition = startPosition;
-        freeOpenPosition = startOpenTilePosition;
-        freeFlowerPosition = startFlowerPosition;
+        base.Refresh();
         Name = "West";
 
     }
@@ -39,10 +38,14 @@ using UnityEngine;
     public West()
     {
         startPosition = new Vector3(30, 1f, -11);
+        startOpenTilePosition = new Vector3(27, 0f, -15);
+        startFlowerPosition = new Vector3(23, 0, -15);
+
         rotation = 90;
-        freePosition = startPosition;
-        freeOpenPosition = startOpenTilePosition;
-        freeFlowerPosition = startFlowerPosition;
+        //freePosition = startPosition;
+        //freeOpenPosition = startOpenTilePosition;
+        //freeFlowerPosition = startFlowerPosition;
+        base.Refresh();
         Name = "West";
     }
 }

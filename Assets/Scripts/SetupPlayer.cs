@@ -26,7 +26,8 @@ public class SetupPlayer : NetworkBehaviour
             gameObject.GetComponent<PlayerUI>().canvas.enabled = false;
             return;
         }
-        
+
+        AudioManager.instance.SetTheme();
     } 
 
     void SetOrder()

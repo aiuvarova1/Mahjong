@@ -13,6 +13,11 @@ public class AudioManager : MonoBehaviour
     Slider soundSlider;
     Slider musicSlider;
 
+    public AudioClip lobbyTheme;
+    public AudioClip gameTheme;
+
+    public AudioClip playingClip;
+
     float soundValue = 0.5f;
     float musicValue = 0.7f;
 
@@ -27,6 +32,24 @@ public class AudioManager : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+        }
+    }
+
+    
+
+    public void SetTheme()
+    {
+        if (playingClip == lobbyTheme)
+        {
+            playingClip = gameTheme;
+            GetComponent<AudioSource>().clip = gameTheme;
+            GetComponent<AudioSource>().Play();
+        }
+        else
+        {
+            playingClip = lobbyTheme;
+            GetComponent<AudioSource>().clip = lobbyTheme;
+            GetComponent<AudioSource>().Play();
         }
     }
 
@@ -64,9 +87,9 @@ public class AudioManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        playingClip = GetComponent<AudioSource>().clip;
         //SetReferences();
-        
+
     }
 
     public void SetMusic(float soundLevel)

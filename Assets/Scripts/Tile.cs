@@ -22,7 +22,7 @@ public class Tile:IComparable<Tile>
         if(!created)
             CreateFace(coords);
         CreateName(coords);
-
+        
 
     }
 

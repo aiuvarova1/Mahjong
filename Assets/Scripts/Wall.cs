@@ -9,7 +9,7 @@ public class Wall : NetworkBehaviour
     public List<List<WallPair>> tiles;
     public List<Tile> freeTiles = new List<Tile>();
     public static Wall instance = null;
-    public List<Tile> tilesOnTheTable;
+    //public List<Tile> tilesOnTheTable;
 
     public int beginningWall;
     public int beginningPair;
@@ -45,7 +45,7 @@ public class Wall : NetworkBehaviour
 
     public void AssighFreeTiles()
     {
-       // int wallNum = Random.Range(0, tiles.Count);
+        // int wallNum = Random.Range(0, tiles.Count);
         // int restNum = Random.Range(2, 13);
 
         int wallNum = 0;
@@ -162,7 +162,7 @@ public class Wall : NetworkBehaviour
     {
         Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
         player.CmdAddTileToPlayerArray(currentWall, currentPair, tile);
-       // player.InvokeToolTip();
+        // player.InvokeToolTip();
     }
 
     public void GiveWallTile()
@@ -170,7 +170,7 @@ public class Wall : NetworkBehaviour
         Wind curWind = GameManager.instance.winds[GameManager.instance.CurrentWind];
         if (curWind.player == null) return;
 
-       if( CheckDraw(currentWall, currentPair))
+        if (CheckDraw(currentWall, currentPair))
         {
             GameManager.instance.DeclareDraw();
             return;
@@ -208,14 +208,14 @@ public class Wall : NetworkBehaviour
                 TargetAddTileToPlayerArray(curWind.player.connectionToClient, currentWall, currentPair, "lower");
 
             CheckForTheEndOfTheWall(ref currentWall, ref currentPair);
-            
+
         }
 
         curWind.MoveRightFreePosition(ref curWind.freePosition);
 
     }
 
-    bool CheckDraw( int wall,int pair)
+    bool CheckDraw(int wall, int pair)
     {
         int curWall = beginningWall;
         int curPair = beginningPair;
@@ -223,7 +223,7 @@ public class Wall : NetworkBehaviour
         for (int i = 0; i < 6; i++)
         {
             curPair--;
-            if(curPair<0)
+            if (curPair < 0)
             {
                 curPair = 17;
                 curWall--;
@@ -238,7 +238,7 @@ public class Wall : NetworkBehaviour
 
     }
 
-    
+
 
     [ClientRpc]
     void RpcMoveUpper(int currentWall, int currentPair, Vector3 freePosition, float rotation)
@@ -269,7 +269,7 @@ public class Wall : NetworkBehaviour
 
     {
 
-       // Debug.Log("free tile is moving in rpc" + freeTileIsMoving);
+        // Debug.Log("free tile is moving in rpc" + freeTileIsMoving);
         beginningWall = wallNum;
         beginningPair = restNum;
 
@@ -302,7 +302,7 @@ public class Wall : NetworkBehaviour
         float newRotation = tiles[prevWall][0].lowerTile.tile.transform.eulerAngles.y;
         float oldRotation = tiles[wallNum][0].lowerTile.tile.transform.eulerAngles.y;
 
-       
+
         if (num >= 2)
         {
             freeTiles[0].tile.GetComponent<BezierMove>().StartMoveNewFreeTiles(tiles[wallNum][num - 2].upperTile.tile.transform.position, true, oldRotation);
@@ -349,26 +349,26 @@ public class Wall : NetworkBehaviour
         GameManager.instance.winds[currentWind].player.tileToMove = freeTiles[freeTiles.Count - 1];
 
 
-       // Invoke("GiveFreeTiles", 0.01f);
+        // Invoke("GiveFreeTiles", 0.01f);
         RpcGiveFreeTile(curWind.freePosition, curWind.rotation);
         //Invoke("RemoveFromFreeTiles", 0.5f);
         //curWind.player.needToCheckMoving = true;
 
         curWind.MoveRightFreePosition(ref curWind.freePosition);
-       // Debug.Log(curWind.freePosition);
+        // Debug.Log(curWind.freePosition);
 
 
         //was 0.6
 
 
-       // Invoke("CheckFreeTiles", 0.6f);
+        // Invoke("CheckFreeTiles", 0.6f);
 
     }
 
     [ClientRpc]
     void RpcGiveFreeTile(Vector3 freePosition, float rotation)
     {
-        
+
         freeTiles[freeTiles.Count - 1].tile.GetComponent<BezierMove>().Move(freePosition, rotation);
     }
 
@@ -401,7 +401,7 @@ public class Wall : NetworkBehaviour
     {
         Debug.Log(freeTiles.Count + "check");
         Debug.Log(freeTilesCount);
-        if (freeTilesCount==0)
+        if (freeTilesCount == 0)
         {
             freeTilesCount = 2;
             freeTileIsMoving = true;
@@ -414,10 +414,35 @@ public class Wall : NetworkBehaviour
     {
         if (!isServer) return;
 
-        if(checkFreeTiles && freeTiles.Count == 0)
+        if (checkFreeTiles && freeTiles.Count == 0)
         {
             checkFreeTiles = false;
             CheckFreeTiles();
         }
+    }
+
+    public void Refresh()
+    {
+        Debug.Log("wall refreah");
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            for (int j = 0; j < tiles[i].Count; j++)
+            {
+                Destroy(tiles[i][j].upperTile.tile);
+                Destroy(tiles[i][j].lowerTile.tile);
+            }
+        }
+        freeTiles = new List<Tile>();
+
+        //public List<Tile> tilesOnTheTable;
+
+
+        isMoving = false;
+
+        freeTileIsMoving = false;
+
+        freeTilesCount = 2;
+
+        checkFreeTiles = false;
     }
 }

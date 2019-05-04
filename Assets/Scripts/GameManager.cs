@@ -23,7 +23,13 @@ public class GameManager : NetworkBehaviour
     public Table GameTable { get; set; }
 
     int currentWind;
-    public string majorWind ="East";
+    public string majorWind = "East";
+
+    public delegate void RefreshDel();
+    public event RefreshDel RefreshEv;
+
+    public bool stopTheGame = false;
+    public bool canStopTheGame = false;
 
 
     int numOfAnsweredPlayers;
@@ -31,7 +37,9 @@ public class GameManager : NetworkBehaviour
     public int NumOfAnsweredPlayers
     {
         get { return numOfAnsweredPlayers; }
-        set { numOfAnsweredPlayers = value;
+        set
+        {
+            numOfAnsweredPlayers = value;
             Debug.Log(numOfAnsweredPlayers + " num answered");
         }
     }
@@ -48,7 +56,7 @@ public class GameManager : NetworkBehaviour
             return currentWind;
         }
 
-       set
+        set
         {
             if (value > 3) currentWind = 0;
             else currentWind = value;
@@ -93,6 +101,14 @@ public class GameManager : NetworkBehaviour
         GameTable = new Table();
 
 
+    }
+
+    private void Start()
+    {
+        RefreshEv += instance.Refresh;
+        RefreshEv += Wall.instance.Refresh;
+        RefreshEv += BuildWall.instance.Refresh;
+        
     }
 
     public void StartGame()
@@ -147,14 +163,14 @@ public class GameManager : NetworkBehaviour
         Wall.instance.DistributeTiles();
 
         Invoke("SortTiles", 3f);
-        Invoke("FixTilesPositions",3.2f);
+        Invoke("FixTilesPositions", 3.2f);
 
         Invoke("CheckAllPlayersForFlowers", 3.5f);
     }
 
     void FixTilesPositions()
     {
-        for(int i = 0; i < winds.Count; i++)
+        for (int i = 0; i < winds.Count; i++)
         {
             if (winds[i].player != null)
                 winds[i].player.RpcFix();
@@ -206,10 +222,10 @@ public class GameManager : NetworkBehaviour
     void CheckAllPlayersForFlowers()
     {
         if (!isServer) return;
-        
-        Debug.Log(currentWind+"cur");
+
+        Debug.Log(currentWind + "cur");
         //may need fix
-        if (currentWind>=4)
+        if (currentWind >= 4)
         {
             currentWind = 0;
             GameMaster.instance.gameState = "playing";
@@ -254,7 +270,7 @@ public class GameManager : NetworkBehaviour
     }
     #endregion
 
-        
+
     #region Combinations and turns
     public void InvokeChange()
     {
@@ -275,8 +291,9 @@ public class GameManager : NetworkBehaviour
         if (curPlayer == null) return;
 
         curPlayer.TargetSelectLastTile(curPlayer.connectionToClient);
+        canStopTheGame = true;
         curPlayer.playerTurn = true;
-        TargetSetTurn(curPlayer.connectionToClient,true);
+        TargetSetTurn(curPlayer.connectionToClient, true);
 
     }
 
@@ -296,6 +313,7 @@ public class GameManager : NetworkBehaviour
     void Prepare()
     {
         Debug.Log("prepare for comb");
+        canStopTheGame = true;
 
         NumOfAnsweredPlayers = 0;
         chowDeclarator = null;
@@ -305,13 +323,13 @@ public class GameManager : NetworkBehaviour
 
         waitForCombinations = true;
 
-        if(winds[CurrentWind].player!=null)
+        if (winds[CurrentWind].player != null)
             winds[CurrentWind].player.isFreeTile = false;
 
 
         for (int i = 0; i < winds.Count; i++)
         {
-            if(winds[i].player!=null && i!=CurrentWind)
+            if (winds[i].player != null && i != CurrentWind)
                 winds[i].player.TargetSetCombinationTurn(winds[i].player.connectionToClient);
         }
         //foreach (Wind wind in winds)
@@ -334,7 +352,7 @@ public class GameManager : NetworkBehaviour
     }
 
 
-    
+
 
     private void Update()
     {
@@ -346,7 +364,13 @@ public class GameManager : NetworkBehaviour
         {
             Debug.Log("here");
 
-            
+            if (canStopTheGame && stopTheGame)
+            {
+                stopTheGame = false;
+                RefreshAll();
+                return;
+
+            }
 
             if (mahJongDeclarator != null)
             {
@@ -369,11 +393,18 @@ public class GameManager : NetworkBehaviour
                 CurrentWind++;
                 ChangeTurn();
             }
-
+            
             waitForCombinations = false;
+            canStopTheGame = false;
         }
         //if(waitForCombinations)
         //    Debug.Log("server");
+        if (canStopTheGame && stopTheGame)
+        {
+            stopTheGame = false;
+            RefreshAll();
+            
+        }
     }
     #endregion
 
@@ -400,12 +431,12 @@ public class GameManager : NetworkBehaviour
 
         Player winner = winds[CurrentWind].player;
 
-        int score = mahjong.CalculateMahJongPoints(winner.wind,winner.playerTurn,winner.isFreeTile,winner.order);
+        int score = mahjong.CalculateMahJongPoints(winner.wind, winner.playerTurn, winner.isFreeTile, winner.order);
         winner.score = score;
 
         for (int i = 0; i < winds.Count; i++)
         {
-            if(winds[i].player!=winner && winds[i].player != null)
+            if (winds[i].player != winner && winds[i].player != null)
             {
                 winds[i].player.score = MahJong.CountNotWinnerScore(ref winds[i].player.closedCombinations,
                     winds[i].player.openedTiles, winds[i].player.playerTiles, winds[i].player.flowers, winds[i].player.wind, i);
@@ -418,14 +449,14 @@ public class GameManager : NetworkBehaviour
 
         for (int i = 0; i < winds.Count; i++)
         {
-            scores[i]=winds[i].player.score;
+            scores[i] = winds[i].player.score;
             names[i] = winds[i].player.name;
             oldScores[i] = winds[i].player.oldScore;
         }
 
         for (int i = 0; i < winds.Count; i++)
         {
-            winds[i].player.GetComponent<PlayerUI>().TargetShowScores(winds[i].player.connectionToClient,scores,oldScores,names,winner.wind);
+            winds[i].player.GetComponent<PlayerUI>().TargetShowScores(winds[i].player.connectionToClient, scores, oldScores, names, winner.wind);
         }
 
 
@@ -438,9 +469,62 @@ public class GameManager : NetworkBehaviour
         string wind = winds[CurrentWind].Name;
         foreach (Wind playerWind in winds)
         {
-            
+
             if (playerWind.player != null && playerWind.Name != wind)
-                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient,wind, combination);
+                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient, wind, combination);
         }
+    }
+
+    public void RefreshAll()
+    {
+        if (!isServer) return;
+        Debug.Log("Refresh all");
+        for (int i = 0; i < winds.Count; i++)
+        {
+            winds[i].Refresh();
+            Debug.Log(i);
+            if (winds[i].player != null)
+            {
+                Debug.Log("player");
+                try
+                {
+                    winds[i].player.RpcRefresh();
+
+                    winds[i].player.TargetRefresh(winds[i].player.connectionToClient);
+                }catch(Exception ex)
+                {
+                    Debug.Log("ex");
+                    continue;
+                    
+                }
+            }
+        }
+
+
+
+        GameMaster.instance.gameState = "prepare";
+    }
+
+    public void OnRefresh()
+    {
+        RefreshEv?.Invoke();
+    }
+
+    public void Refresh()
+    {
+        Debug.Log("gm refresh");
+        wallIsBuilt = false;
+        tilesAreGiven = false;
+        waitForCombinations = false;
+
+        CurrentWind = 0;
+        GameTable = new Table();
+
+        numOfAnsweredPlayers = 0;
+
+        chowDeclarator = null;
+        pungDeclarator = null;
+        kongDeclarator = null;
+        mahJongDeclarator = null;
     }
 }

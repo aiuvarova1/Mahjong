@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    public const uint playersToStart = 4;
+    public const uint playersToStart = 1;
     
     public static GameMaster instance = null;
 
@@ -55,10 +55,16 @@ public class GameMaster : NetworkBehaviour
         }
 
     }
+
+    void Refresh()
+    {
+        readyPlayers = 0;
+    }
     private void Start()
     {
         
         if (availableCameras.Count == 0) InitCameras();
+        GameManager.instance.RefreshEv += Refresh;
     }
 
     void RefreshNumOfPlayers()
@@ -106,14 +112,14 @@ public class GameMaster : NetworkBehaviour
     {
         PlayerCount--;
         Debug.Log(PlayerCount);
-
+        Player player = null;
 
         Debug.Log("tst");
         string remove = null;
 
         foreach (string netID in players.Keys)
         {
-            Player player = players[netID];
+            player = players[netID];
             Debug.Log(player.order);
 
             try
@@ -124,7 +130,7 @@ public class GameMaster : NetworkBehaviour
                     availableCameras.Add(player.order);
                     Debug.Log($"add {player.order} back");
                     remove = netID;
-                    
+                    break;
                 }
             }
             catch(MissingReferenceException)
@@ -134,12 +140,27 @@ public class GameMaster : NetworkBehaviour
                 availableCameras.Add(player.order);
                 Debug.Log($"add {player.order} back");
                 remove = netID;
-
+                break;
             }
         }
         players.Remove(remove);
+        if (gameState == "playing" || gameState == "start" || gameState == "starting"
+            || gameState == "distributing" || gameState == "in process")
+        {
+            GameManager.instance.stopTheGame = true;
 
+            foreach (string id in players.Keys)
+            {
+                if (id == remove) return;
+                Player p = players[id];
+                p.GetComponent<PlayerUI>().TargetShowLeftPlayerInfo(p.connectionToClient,player.name,player.wind);
+            }
+
+        }
     }
+
+
+    
 
     void GetReady()
     {

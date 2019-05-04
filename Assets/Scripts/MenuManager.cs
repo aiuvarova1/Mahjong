@@ -34,6 +34,14 @@ public class MenuManager : MonoBehaviour {
             AudioManager.instance.SetReferences();
         }
 
+        if (scene.name == "Main")
+        {
+            AudioManager.instance.SetTheme();
+        }
+
+        if (scene.name == "Lobby" && AudioManager.instance.playingClip != AudioManager.instance.lobbyTheme)
+            AudioManager.instance.SetTheme();
+
         //if (scene.name == "Lobby" && NewNetworkManager.hostLeft)
         //{
         //    Debug.Log("enable");

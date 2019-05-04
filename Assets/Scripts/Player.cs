@@ -13,7 +13,7 @@ public class Player : NetworkBehaviour
 
     public List<Tile> flowers = new List<Tile>();
 
-    public Vector3 startPosition;
+    //public Vector3 startPosition;
 
     public Camera Camera { get; set; }
     string name = "";
@@ -55,7 +55,15 @@ public class Player : NetworkBehaviour
     public void RpcSort()
     {
         Debug.Log("rpc");
-        SortTiles();
+        try
+        {
+            SortTiles();
+        }
+        catch (Exception)
+        {
+            Debug.Log("ex");
+            return;
+        }
 
     }
 
@@ -249,6 +257,7 @@ public class Player : NetworkBehaviour
     [Command]
     public void CmdLieTileOnTable(int index)
     {
+        GameManager.instance.canStopTheGame = false;
         freeSpacePosition = playerTiles[index].tile.transform.position;
         freeSpacePosition.y = 1.2f;
         freeSpaceIndex = index;
@@ -331,8 +340,15 @@ public class Player : NetworkBehaviour
 
     public void InvokeSelect()
     {
-        playerTiles[playerTiles.Count - 1].tile.GetComponent<BezierMove>().SelectTile();
-        selectedTile = playerTiles[playerTiles.Count - 1];
+        try
+        {
+            playerTiles[playerTiles.Count - 1].tile.GetComponent<BezierMove>().SelectTile();
+            selectedTile = playerTiles[playerTiles.Count - 1];
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return;
+        }
     }
     #endregion
 
@@ -998,7 +1014,7 @@ public class Player : NetworkBehaviour
             GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
             if (i == firstIndex || i == firstIndex + 3)
                 RpcCloseTile(playerTiles[i].tile, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
-                //playerTiles[i].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
+            //playerTiles[i].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
 
         }
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
@@ -1047,7 +1063,7 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcCloseTile(GameObject tile,float rotation)
+    void RpcCloseTile(GameObject tile, float rotation)
     {
         tile.GetComponent<BezierMove>().CloseTile(rotation);
     }
@@ -1176,7 +1192,7 @@ public class Player : NetworkBehaviour
 
         Debug.Log(GameManager.instance.GameTable.lastTile.name);
 
-       // foreach (List<Combination> combList in mahjong.closedCombinations)
+        // foreach (List<Combination> combList in mahjong.closedCombinations)
         {
             for (int k = 0; k < mahjong.closedCombinations.Count; k++)
             {
@@ -1189,7 +1205,7 @@ public class Player : NetworkBehaviour
                         if (comb.tileList[j] == GameManager.instance.GameTable.lastTile)
                         {
                             combinationNum = i;
-                            Debug.Log("found" + i );
+                            Debug.Log("found" + i);
 
 
                             combToOpen = comb;
@@ -1217,7 +1233,7 @@ public class Player : NetworkBehaviour
                 }
             }
 
-           
+
         }
 
         Debug.Log(combToOpen == null);
@@ -1249,7 +1265,7 @@ public class Player : NetworkBehaviour
         mahjong.openedCombinations = openedTiles;
         mahjong.flowers = flowers;
 
-        
+
 
         GameManager.instance.FinishGame(mahjong);
 
@@ -1333,21 +1349,24 @@ public class Player : NetworkBehaviour
         {
             case "East":
                 GameManager.instance.winds[0].player = this;
-                return;
+
+                break;
             case "South":
                 GameManager.instance.winds[1].player = this;
-                return;
+                break;
             case "West":
                 GameManager.instance.winds[2].player = this;
-                return;
+                break;
             case "North":
                 GameManager.instance.winds[3].player = this;
-                return;
+                break;
             default:
 
                 return;
 
         }
+
+        
     }
 
     bool CheckTileMoving(Tile tile)
@@ -1469,6 +1488,51 @@ public class Player : NetworkBehaviour
     public virtual void OnClientDisconnect(NetworkConnection conn)
     {
         Debug.Log("Server is stopped from PlayerPrefab");
+    }
+
+    [ClientRpc]
+    public void RpcRefresh()
+    {
+
+        Debug.Log("rpcrefresh");
+
+        needToCheckMoving = false;
+        needFreeTile = false;
+
+        playerTurn = false;
+
+        startedCoroutine = false;
+        turnForCombination = false;
+
+        playerTiles = new List<Tile>();
+
+        openedTiles = new List<Combination>();
+        closedCombinations = new List<Combination>();
+
+        flowers = new List<Tile>();
+        isFreeTile = false;
+    }
+
+    [TargetRpc]
+    public void TargetRefresh(NetworkConnection conn)
+    {
+        Debug.Log("target refresh");
+        GetComponent<PlayerUI>().Refresh();
+        GameManager.instance.OnRefresh();
+       
+    }
+
+    public void testRefr()
+    {
+        // GameManager.instance.RefreshAll();
+        CmdRefr();
+
+    }
+
+    [Command]
+    public void CmdRefr()
+    {
+        GameManager.instance.stopTheGame = true;
     }
 
 }
