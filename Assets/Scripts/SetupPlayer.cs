@@ -28,7 +28,47 @@ public class SetupPlayer : NetworkBehaviour
         }
 
         AudioManager.instance.SetTheme();
-    } 
+    }
+
+    //[TargetRpc]
+    //public void TargetChangeCam()
+    //{
+    //    Destroy(player.Camera);
+
+    //}
+
+    [ClientRpc]
+    public void RpcChangeWind()
+    {
+        if (isLocalPlayer)
+        {
+            GameMaster.instance.lights[player.order].SetActive(false);
+            Destroy(player.Camera);
+        }
+
+        player.order++;
+        if (player.order == 4)
+            player.order = 0;
+        AssignWind();
+
+        if (isLocalPlayer)
+        {
+            GameMaster.instance.lights[player.order].SetActive(true);
+            player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);
+
+            float newRotation = player.Camera.transform.eulerAngles.y;
+
+            Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
+        }
+
+
+    }
+
+    [ClientRpc]
+    public void RpcRefreshOldScore()
+    {
+        player.oldScore = 2000;
+    }
 
     void SetOrder()
     {

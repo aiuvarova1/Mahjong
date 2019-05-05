@@ -87,6 +87,7 @@
     <Compile Include="Assets\Scripts\Pung.cs" />
     <Compile Include="Assets\Scripts\RoomListItem.cs" />
     <Compile Include="Assets\Scripts\SetupPlayer.cs" />
+    <Compile Include="Assets\Scripts\SliderDrag.cs" />
     <Compile Include="Assets\Scripts\South.cs" />
     <Compile Include="Assets\Scripts\Table.cs" />
     <Compile Include="Assets\Scripts\Tile.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Assets\Scripts\WallPair.cs" />
     <Compile Include="Assets\Scripts\West.cs" />
     <Compile Include="Assets\Scripts\Wind.cs" />
+    <None Include="Assets\playerPrefs.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/Project/Mahjong/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

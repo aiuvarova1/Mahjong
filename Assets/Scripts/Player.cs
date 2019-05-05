@@ -67,6 +67,8 @@ public class Player : NetworkBehaviour
 
     }
 
+    
+
     [ClientRpc]
     public void RpcFix()
     {
@@ -99,16 +101,7 @@ public class Player : NetworkBehaviour
     {
         positionList = new List<Vector3>(pos);
     }
-    //List<Vector3> CreatePositionList()
-    //{
-    //    List<Vector3> pos = new List<Vector3>();
 
-    //    for (int i = 0; i < playerTiles.Count; i++)
-    //    {
-    //        pos.Add(playerTiles[i].tile.transform.position);
-    //    }
-    //    return pos;
-    //}
     #endregion
 
     [ClientRpc]
@@ -129,9 +122,7 @@ public class Player : NetworkBehaviour
                 flowers.Add(playerTiles[index]);
                 break;
             case "table":
-                //GameManager.instance.GameTable.tableTiles.Add(playerTiles[index]);
-                // GameManager.instance.GameTable.lastTile = playerTiles[index];
-                // CmdSetLastTile(index);
+
                 if (isLocalPlayer)
                 {
                     gameObject.GetComponent<PlayerUI>().StopWaitingForMove();
@@ -144,13 +135,6 @@ public class Player : NetworkBehaviour
                     //!
 
                 }
-                //else
-                //{
-                //    Debug.Log("Launch wait");
-                //    GameObject.FindWithTag("Player").gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
-                //    //gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
-
-                //}
 
                 break;
 
@@ -179,11 +163,6 @@ public class Player : NetworkBehaviour
         GameObject.FindWithTag("Player").gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
     }
 
-    //[Command]
-    //void CmdSetLastTile(int index)
-    //{
-    //    GameManager.instance.GameTable.lastTile = playerTiles[index];
-    //}
 
     [ClientRpc]
     void RpcTakeTableTile(Vector3 freePosition, float rotation)
@@ -197,21 +176,6 @@ public class Player : NetworkBehaviour
         playerTurn = turn;
     }
 
-
-
-
-    //[Command]
-    //void CmdRemoveFromArray(int index)
-    //{
-    //    // playerTiles.RemoveAt(index);
-    //    Debug.Log(playerTiles.Count);
-    //}
-
-    //[ClientRpc]
-    //public void RpcRemoveFromArray(int index)
-    //{
-    //    playerTiles.RemoveAt(index);
-    //}
 
     #region lying tiles
 

@@ -12,6 +12,8 @@ public class GameMaster : NetworkBehaviour
     public SyncListInt availableCameras = new SyncListInt();
     public List<GameObject> lights = new List<GameObject>();
 
+    int roundsPlayed = 0;
+
 
     int playerCount;
 
@@ -28,10 +30,12 @@ public class GameMaster : NetworkBehaviour
 
 
     public int readyPlayers;
+    public int readyToContinuePlayers;
+    public int playersToContinue;
 
     //"prepare" by default
     [SyncVar]
-    public string gameState = "start";
+    public string gameState = "end";
 
     [SerializeField]
     public List<Camera> allCameras = new List<Camera>();
@@ -98,6 +102,10 @@ public class GameMaster : NetworkBehaviour
         players.Add(netID, player);
         if(player.Camera!=null) availableCameras.Remove(player.order);
         PlayerCount++;
+        if(isServer && gameState == "end")
+        {
+            player.GetComponent<PlayerUI>().TargetInfo(player.connectionToClient, "Waiting for the end of the game...");
+        }
     }
 
     public void UnregisterPlayer(string netID)
@@ -239,6 +247,16 @@ public class GameMaster : NetworkBehaviour
         GameObject.FindWithTag("Player").GetComponent<Player>().CmdAddWind();
     }
 
+    void ChangeWinds()
+    {
+        foreach (Player player in players.Values)
+        {
+            player.GetComponent<SetupPlayer>().RpcChangeWind();
+            TargetAddWind(player.connectionToClient);
+           // TargetAddWind(player.connectionToClient);
+        }
+    }
+
     private void Update()
     {
         if (!isServer) return;
@@ -262,6 +280,7 @@ public class GameMaster : NetworkBehaviour
                 {
                     gameState = "start";
                     SetReady();
+                    readyPlayers = 0;
                 }
                 return;
             case "start":
@@ -288,6 +307,58 @@ public class GameMaster : NetworkBehaviour
                 GameManager.instance.InvokeChange();
                 Debug.Log(gameState);
                 gameState = "in process";
+                return;
+            case "in process":
+                return;
+            case "end":
+
+                playersToContinue = PlayerCount;
+
+                if (playersToContinue == readyToContinuePlayers && playersToContinue != 0)
+                {
+                    if (playersToContinue == 4)
+                    {
+                        if (GameManager.instance.winnerWind != "East")
+                        {
+                            roundsPlayed++;
+
+                            //switch major wind at the end of the round
+                            if (roundsPlayed % 4==0)
+                            {
+                                switch (GameManager.instance.majorWind)
+                                {
+                                    case "East":
+                                        GameManager.instance.majorWind = "South";
+                                        break;
+                                    case "South":
+                                        GameManager.instance.majorWind = "West";
+                                        break;
+                                    case "West":
+                                        GameManager.instance.majorWind = "North";
+                                        break;
+                                    case "North":
+                                        GameManager.instance.majorWind = "East";
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+
+                            ChangeWinds();
+                        }
+                    }
+                    else
+                    {
+                        foreach (Player player in players.Values)
+                        {
+                            player.GetComponent<SetupPlayer>().RpcRefreshOldScore();
+                            // TargetAddWind(player.connectionToClient);
+                        }
+                    }
+                    Debug.Log("continue");
+                    gameState = "prepare";
+                }
+
                 return;
             default:
                 return;

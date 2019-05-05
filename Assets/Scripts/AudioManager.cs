@@ -18,8 +18,8 @@ public class AudioManager : MonoBehaviour
 
     public AudioClip playingClip;
 
-    float soundValue = 0.5f;
-    float musicValue = 0.7f;
+    public float soundValue = 0.5f;
+    public float musicValue = 0.7f;
 
     public static AudioManager instance;
 
@@ -77,11 +77,21 @@ public class AudioManager : MonoBehaviour
         soundSlider.onValueChanged.AddListener(delegate { SetSound(soundSlider.value); });
         musicSlider.onValueChanged.AddListener(delegate { SetMusic(musicSlider.value); });
 
-        soundSlider.value = soundValue;
-        musicSlider.value = musicValue;
+        SetSliders();
 
         mixer.SetFloat("musicVol", Mathf.Log(musicValue) * 20);
         mixer.SetFloat("soundVol", Mathf.Log(soundValue) * 20);
+    }
+
+    public void SetSliders()
+    {
+        Debug.Log(musicValue);
+        musicSlider.value = musicValue;
+        Debug.Log(musicSlider.value);
+
+
+        soundSlider.value = soundValue;
+        
     }
 
     // Start is called before the first frame update

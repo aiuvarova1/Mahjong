@@ -100,6 +100,24 @@ public class PlayerUI : NetworkBehaviour
         
     }
 
+    [TargetRpc]
+    public void TargetInfo(NetworkConnection conn,string info)
+    {
+        Debug.Log("target");
+        ChangeInfo(info);
+    }
+
+    public void ChangeInfo(string info)
+    {
+        Debug.Log("cmd");
+        StopCoroutine(hider);
+        StopHideInfo();
+        combinationInfo.enabled = true;
+        combinationInfo.text = LocalizationManager.instance.GetLocalizedValue(info);
+
+
+    }
+
     private void Awake()
     {
         starter = WaitForStart();
@@ -113,7 +131,7 @@ public class PlayerUI : NetworkBehaviour
         thirdButton.gameObject.SetActive(false);
         chowPanel.SetActive(false);
         declaration.enabled = false;
-        combinationInfo.enabled = false;
+        //combinationInfo.enabled = false;
 
         leavePanel.SetActive(false);
 
@@ -127,6 +145,26 @@ public class PlayerUI : NetworkBehaviour
         scorePanel.SetActive(false);
         
 
+    }
+
+    public void AskToContinueGame()
+    {
+        CmdContinue();
+        
+    }
+
+    [Command]
+    void CmdContinue()
+    {
+        Debug.Log(GameMaster.instance.gameState);
+        GameMaster.instance.readyToContinuePlayers++;
+        
+        Debug.Log(GameMaster.instance.readyToContinuePlayers);
+        Debug.Log(GameMaster.instance.playersToContinue);
+        Debug.Log(GameMaster.instance.gameState);
+
+        GetComponent<Player>().RpcRefresh();
+        GetComponent<Player>().TargetRefresh(connectionToClient);
     }
 
     public void ChangeCamera()
@@ -159,14 +197,6 @@ public class PlayerUI : NetworkBehaviour
     [TargetRpc]
     public void TargetShowScores(NetworkConnection conn,int[] scores,int[] oldScores,string[] names,string winner)
     {
-
-        StartCoroutine(ShowScores(scores,oldScores,names,winner));
-    }
-
-    IEnumerator ShowScores(int[] scores, int[] oldScores, string[] names, string winner)
-    {
-        yield return new WaitForSeconds(3f);
-
         scorePanel.SetActive(true);
 
         QuitButton.SetActive(true);
@@ -223,7 +253,7 @@ public class PlayerUI : NetworkBehaviour
         for (int i = 0; i < buttons.Count; i++)
         {
             buttons[i][0].GetComponentInChildren<Text>().text = (names[i]).ToString();
-            objects[i+1].GetComponentInChildren<Text>().text= (names[i]).ToString();
+            objects[i + 1].GetComponentInChildren<Text>().text = (names[i]).ToString();
 
             for (int j = 1; j < buttons[i].Length; j++)
             {
@@ -256,11 +286,31 @@ public class PlayerUI : NetworkBehaviour
         tableNames = GameObject.FindGameObjectWithTag("NewScore");
         objects = tableNames.GetComponentsInChildren<Button>();
 
-        for (int i = 1; i < names.Length+1; i++)
+        
+
+        for (int i = 1; i < names.Length + 1; i++)
         {
+            
             objects[i].GetComponentInChildren<Text>().text = (oldScores[i - 1] + total[i - 1]).ToString();
         }
+        player.oldScore = oldScores[player.order] + total[player.order];
+        CmdSetScore(player.oldScore);
+
     }
+
+    //[TargetRpc]
+    //public void TargetSetOldScore()
+    //{
+    //    CmdSetScore(player.oldScore);
+    //}
+
+    [Command]
+    void CmdSetScore(int score)
+    {
+        player.oldScore = score;
+    }
+
+    
 
     void FillMatrix(ref int[,]matrix,int[] scores,string winner)
     {
@@ -409,12 +459,21 @@ public class PlayerUI : NetworkBehaviour
 
     IEnumerator DeclareCombination(string wind,string combination)
     {
+        if (combination == "" && wind == "")
+        {
+            if (LocalizationManager.instance != null)
+                declaration.text = LocalizationManager.instance.GetLocalizedValue("Draw!");
+        }
         //!!!
-        if(LocalizationManager.instance == null || LocalizationManager.instance.language=="Eng")
-            declaration.text = $"{wind} declares {combination}!";
         else
-            declaration.text = $"{LocalizationManager.instance.GetLocalizedValue(wind)} объявляет {LocalizationManager.instance.GetLocalizedValue(combination)}!";
+        {
+            if (LocalizationManager.instance == null || LocalizationManager.instance.language == "Eng")
+                declaration.text = $"{wind} declares {combination}!";
+            else
+                declaration.text = $"{LocalizationManager.instance.GetLocalizedValue(wind)} объявляет {LocalizationManager.instance.GetLocalizedValue(combination)}!";
 
+            
+        }
         if (LocalizationManager.instance != null)
             LocalizationManager.instance.ChangeFont(ref declaration);
 
@@ -511,6 +570,10 @@ public class PlayerUI : NetworkBehaviour
         int countdown = 30;
 
         countDown.text = "30";
+        combinationInfo.enabled = true;
+
+        combinationInfo.text = LocalizationManager.instance.GetLocalizedValue("Your move");
+        
 
         countDown.enabled = true;
 
@@ -557,6 +620,7 @@ public class PlayerUI : NetworkBehaviour
         CountDown = WaitForMove();
         countDown.enabled = false;
         player.startedCoroutine = false;
+        combinationInfo.enabled = false;
     }
 
     IEnumerator WaitForCombination()
@@ -565,6 +629,10 @@ public class PlayerUI : NetworkBehaviour
         //player.turnForCombination = true;
         CmdSetCombinationTurn(true);
         int countdown = 20;
+
+        combinationInfo.enabled = true;
+        combinationInfo.text = LocalizationManager.instance.GetLocalizedValue("Your turn");
+
 
         countDown.text = "20";
 
@@ -615,6 +683,7 @@ public class PlayerUI : NetworkBehaviour
         CombinationEnum = WaitForCombination();
         countDown.enabled = false;
         player.turnForCombination = false;
+        combinationInfo.enabled = false;
     }
 
 

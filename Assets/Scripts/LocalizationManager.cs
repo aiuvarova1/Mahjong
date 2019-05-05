@@ -18,7 +18,7 @@ public class LocalizationManager : MonoBehaviour
 
     public Text label;
     public GameObject settingsPanel;
-    Dropdown dropDown;
+    public Dropdown dropDown;
 
     public Font RuFont;
     public Font EngFont;
@@ -28,6 +28,12 @@ public class LocalizationManager : MonoBehaviour
         if (GameObject.FindGameObjectWithTag("SettingsPanel") == null) return;
 
         settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
+        
+
+        PlayerPrefs.instance.nameText= GameObject.FindObjectsOfType<InputField>()[1];
+
+        PlayerPrefs.instance.SetReferences();
+
         dropDown = settingsPanel.GetComponentInChildren<Dropdown>();
 
         label = dropDown.GetComponentInChildren<Text>();
@@ -110,7 +116,12 @@ public class LocalizationManager : MonoBehaviour
             {"Combinations","Комбинации" },
             {"Continue","Продолжить" },
             {"The host has left the room","Хост покинул игру" },
-            {"has left the room","покинул игру" }
+            {"has left the room","покинул игру" },
+            {"Waiting for the end of the game...","Ожидаем конца игры..." },
+            {"Your move","Ваш ход" },
+            {"Your turn","Ваша очередь" },
+            {"Draw!","Ничья!" },
+            {"Please, enter your name","Пожалуйста, введите Ваше имя" },
 
 
 
@@ -150,8 +161,7 @@ public class LocalizationManager : MonoBehaviour
             localizedText = EngRu;
         }
 
-        Debug.Log(localizedText.Count);
-        Debug.Log(RuEng.Count);
+
 
         if (localizedText.ContainsKey(key))
         {

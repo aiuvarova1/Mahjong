@@ -23,6 +23,8 @@ TagManager:
   - NewScore
   - Combinations
   - Host
+  - Name
+  - NamePanel
   layers:
   - Default
   - TransparentFX

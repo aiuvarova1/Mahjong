@@ -423,7 +423,8 @@ public class Wall : NetworkBehaviour
 
     public void Refresh()
     {
-        Debug.Log("wall refreah");
+        Debug.Log("wall refresh");
+        if (tiles == null) return;
         for (int i = 0; i < tiles.Count; i++)
         {
             for (int j = 0; j < tiles[i].Count; j++)

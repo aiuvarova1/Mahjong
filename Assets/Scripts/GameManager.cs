@@ -31,6 +31,8 @@ public class GameManager : NetworkBehaviour
     public bool stopTheGame = false;
     public bool canStopTheGame = false;
 
+    public string winnerWind;
+
 
     int numOfAnsweredPlayers;
 
@@ -332,13 +334,7 @@ public class GameManager : NetworkBehaviour
             if (winds[i].player != null && i != CurrentWind)
                 winds[i].player.TargetSetCombinationTurn(winds[i].player.connectionToClient);
         }
-        //foreach (Wind wind in winds)
-        //{
-        //    if (wind.player != null && )
-        //    {
-        //        wind.player.TargetSetCombinationTurn(wind.player.connectionToClient);
-        //    }
-        //}
+
     }
 
     int DefineWind(Player player)
@@ -374,6 +370,9 @@ public class GameManager : NetworkBehaviour
 
             if (mahJongDeclarator != null)
             {
+                GameMaster.instance.readyToContinuePlayers = 0;
+                GameMaster.instance.gameState = "end";
+                RefreshWinds();
                 mahJongDeclarator.DeclareMahJong(DefineWind(mahJongDeclarator));
             }
             else if (kongDeclarator != null)
@@ -413,8 +412,19 @@ public class GameManager : NetworkBehaviour
     public void DeclareDraw()
     {
         Debug.Log("Draw");
+        RefreshWinds();
+        for (int i = 0; i < winds.Count; i++)
+        {
+            if (winds[i].player != null)
+                winds[i].player.GetComponent<PlayerUI>().TargetShowDeclaredCombination(winds[i].player.connectionToClient,
+                    "", "");
+        }
+
+        Invoke("RefreshAll", 4f);
 
     }
+
+   
 
     void OpenAllTiles()
     {
@@ -431,8 +441,13 @@ public class GameManager : NetworkBehaviour
 
         Player winner = winds[CurrentWind].player;
 
+        winnerWind = winner.wind;
+
+
         int score = mahjong.CalculateMahJongPoints(winner.wind, winner.playerTurn, winner.isFreeTile, winner.order);
         winner.score = score;
+
+        
 
         for (int i = 0; i < winds.Count; i++)
         {
@@ -443,6 +458,12 @@ public class GameManager : NetworkBehaviour
             }
         }
 
+        Invoke("SetScores", 2f);
+
+    }
+
+    void SetScores()
+    {
         int[] scores = new int[winds.Count];
         string[] names = new string[winds.Count];
         int[] oldScores = new int[winds.Count];
@@ -456,11 +477,8 @@ public class GameManager : NetworkBehaviour
 
         for (int i = 0; i < winds.Count; i++)
         {
-            winds[i].player.GetComponent<PlayerUI>().TargetShowScores(winds[i].player.connectionToClient, scores, oldScores, names, winner.wind);
+            winds[i].player.GetComponent<PlayerUI>().TargetShowScores(winds[i].player.connectionToClient, scores, oldScores, names, winds[CurrentWind].player.wind);
         }
-
-
-
     }
     #endregion
 
@@ -481,7 +499,7 @@ public class GameManager : NetworkBehaviour
         Debug.Log("Refresh all");
         for (int i = 0; i < winds.Count; i++)
         {
-            winds[i].Refresh();
+            //winds[i].Refresh();
             Debug.Log(i);
             if (winds[i].player != null)
             {
@@ -503,6 +521,14 @@ public class GameManager : NetworkBehaviour
 
 
         GameMaster.instance.gameState = "prepare";
+    }
+
+    public void RefreshWinds()
+    {
+        for (int i = 0; i < winds.Count; i++)
+        {
+            winds[i].Refresh();
+        }
     }
 
     public void OnRefresh()
