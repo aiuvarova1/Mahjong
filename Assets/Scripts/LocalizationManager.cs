@@ -122,6 +122,9 @@ public class LocalizationManager : MonoBehaviour
             {"Your turn","Ваша очередь" },
             {"Draw!","Ничья!" },
             {"Please, enter your name","Пожалуйста, введите Ваше имя" },
+            {"Enter","Ввод" },
+            {"You: ","Вы: " }
+
 
 
 

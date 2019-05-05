@@ -144,6 +144,7 @@ MonoBehaviour:
   language: Eng
   label: {fileID: 0}
   settingsPanel: {fileID: 0}
+  dropDown: {fileID: 0}
   RuFont: {fileID: 12800000, guid: 073edc0e4ac06b641945c66a40f63768, type: 3}
   EngFont: {fileID: 12800000, guid: a03e8266bc5aec9459426d3b5fbd790a, type: 3}
 --- !u!4 &74241908
@@ -3356,6 +3357,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4342602911702892, guid: de3e2f3f6aebe7c45b3d95ee93c8339e, type: 3}
       propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114304849703017976, guid: de3e2f3f6aebe7c45b3d95ee93c8339e,
+        type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114608327348927642, guid: de3e2f3f6aebe7c45b3d95ee93c8339e,

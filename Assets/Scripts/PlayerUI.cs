@@ -749,6 +749,7 @@ public class PlayerUI : NetworkBehaviour
     #region Quit
     public void DropConnection()
     {
+        Debug.Log("disc");
         MatchInfo match = networkManager.matchInfo;
         networkManager.matchMaker.DropConnection(match.networkId, match.nodeId, 0, networkManager.OnDropConnection);
         networkManager.StopHost();

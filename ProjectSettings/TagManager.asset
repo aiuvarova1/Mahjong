@@ -25,6 +25,9 @@ TagManager:
   - Host
   - Name
   - NamePanel
+  - Chat
+  - Message
+  - Content
   layers:
   - Default
   - TransparentFX

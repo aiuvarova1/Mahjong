@@ -81,7 +81,7 @@
     <Compile Include="Assets\Scripts\North.cs" />
     <Compile Include="Assets\Scripts\Pair.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
-    <Compile Include="Assets\Scripts\PlayerName.cs" />
+    <Compile Include="Assets\Scripts\PlayerChat.cs" />
     <Compile Include="Assets\Scripts\PlayerPrefs.cs" />
     <Compile Include="Assets\Scripts\PlayerUI.cs" />
     <Compile Include="Assets\Scripts\Pung.cs" />

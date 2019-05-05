@@ -26,8 +26,13 @@ public class SetupPlayer : NetworkBehaviour
             gameObject.GetComponent<PlayerUI>().canvas.enabled = false;
             return;
         }
-
-        AudioManager.instance.SetTheme();
+        try
+        {
+            AudioManager.instance.SetTheme();
+        }catch(Exception ex)
+        {
+            return;
+        }
     }
 
     //[TargetRpc]
@@ -96,6 +101,8 @@ public class SetupPlayer : NetworkBehaviour
         player = gameObject.GetComponent<Player>();
 
         player.order = order;
+        if(PlayerPrefs.instance!=null)
+            player.name = PlayerPrefs.instance.Name;
 
         gameObject.tag = "Player";
 
@@ -108,7 +115,7 @@ public class SetupPlayer : NetworkBehaviour
         GameMaster.instance.lights[order].SetActive(true);
         AssignWind();
 
-        CmdAddPlayer(player.order, player.wind);
+        CmdAddPlayer(player.order, player.wind,player.name);
     }
 
     void AssignWind()
@@ -141,15 +148,16 @@ public class SetupPlayer : NetworkBehaviour
     }
 
     [Command]
-    void CmdAddPlayer(int ord,string wind)
+    void CmdAddPlayer(int ord,string wind,string name)
     {
        // GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), ord, wind);
-        RpcAddPlayer(ord,wind);
+        RpcAddPlayer(ord,wind,name);
     }
 
     [ClientRpc]
-    void RpcAddPlayer(int ord,string wind)
+    void RpcAddPlayer(int ord,string wind,string name)
     {
+        player.name = name;
         //if (isServer) return;
         GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(),ord,wind);
         Debug.Log($"Camera {ord}, wind {wind}");
