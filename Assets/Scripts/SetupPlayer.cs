@@ -21,18 +21,38 @@ public class SetupPlayer : NetworkBehaviour
         }
 
 
-        if (!isLocalPlayer)
-        {
-            gameObject.GetComponent<PlayerUI>().canvas.enabled = false;
-            return;
-        }
+       
+
         try
         {
-            AudioManager.instance.SetTheme();
+            if(isLocalPlayer)
+                AudioManager.instance.SetTheme();
+
         }catch(Exception ex)
         {
             return;
         }
+
+        if (!isLocalPlayer)
+        {
+            gameObject.GetComponent<PlayerUI>().canvas.enabled = false;
+            CmdAddPlayerName(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().wind,
+                GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().name);
+            return;
+        }
+
+
+    }
+
+    [Command]
+    void CmdAddPlayerName(string wind,string name)
+    {
+        TargetAddPlayerName(connectionToClient, wind, name);
+    }
+    [TargetRpc]
+    void TargetAddPlayerName(NetworkConnection conn,string wind,string name)
+    {
+        gameObject.GetComponent<UiWinds>().SetName(wind,name);
     }
 
     //[TargetRpc]
@@ -92,6 +112,7 @@ public class SetupPlayer : NetworkBehaviour
         }
         player = gameObject.GetComponent<Player>();
 
+
         TargetSetOrder(player.connectionToClient, order);
     }
 
@@ -114,6 +135,8 @@ public class SetupPlayer : NetworkBehaviour
 
         GameMaster.instance.lights[order].SetActive(true);
         AssignWind();
+
+        gameObject.GetComponent<UiWinds>().AssignWinds();
 
         CmdAddPlayer(player.order, player.wind,player.name);
     }
@@ -143,7 +166,11 @@ public class SetupPlayer : NetworkBehaviour
                 return;
 
         }
-        player.GetComponent<PlayerUI>().playerWind.text = $"Your wind: {player.wind}";
+        if(LocalizationManager.instance==null)
+            player.GetComponent<PlayerUI>().playerWind.text = $"Your wind: {player.wind}";
+        else
+            player.GetComponent<PlayerUI>().playerWind.text = $"{LocalizationManager.instance.GetLocalizedValue("Your wind")}: " +
+                $"{LocalizationManager.instance.GetLocalizedValue(player.wind)}";
 
     }
 
@@ -160,6 +187,9 @@ public class SetupPlayer : NetworkBehaviour
         player.name = name;
         //if (isServer) return;
         GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(),ord,wind);
+
+        GameObject.FindGameObjectWithTag("Player").GetComponent<UiWinds>().SetName(wind, name);
+
         Debug.Log($"Camera {ord}, wind {wind}");
         Debug.Log(GameMaster.instance.PlayerCount + "players");
 

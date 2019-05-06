@@ -181,3 +181,4 @@ eb10680d212af634b6f86d221a1df8dc Assembly-CSharp.dll:.NewNetworkManager
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.TileName
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.SliderDrag
+958bdd7cfc4af0e562d0a892b6e67454 Assembly-CSharp.dll:.UiWinds

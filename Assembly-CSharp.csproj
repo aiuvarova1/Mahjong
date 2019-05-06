@@ -93,6 +93,7 @@
     <Compile Include="Assets\Scripts\Tile.cs" />
     <Compile Include="Assets\Scripts\TileName.cs" />
     <Compile Include="Assets\Scripts\ToolTip.cs" />
+    <Compile Include="Assets\Scripts\UiWinds.cs" />
     <Compile Include="Assets\Scripts\Wall.cs" />
     <Compile Include="Assets\Scripts\WallPair.cs" />
     <Compile Include="Assets\Scripts\West.cs" />

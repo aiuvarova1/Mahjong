@@ -151,6 +151,8 @@ public class GameMaster : NetworkBehaviour
                 break;
             }
         }
+        RpcRemovePlayerName(player.wind);
+
         players.Remove(remove);
         if (gameState == "playing" || gameState == "start" || gameState == "starting"
             || gameState == "distributing" || gameState == "in process")
@@ -165,6 +167,12 @@ public class GameMaster : NetworkBehaviour
             }
 
         }
+    }
+
+    [ClientRpc]
+    void RpcRemovePlayerName(string wind)
+    {
+        GameObject.FindGameObjectWithTag("Player").GetComponent<UiWinds>().RemoveName(wind);
     }
 
 
