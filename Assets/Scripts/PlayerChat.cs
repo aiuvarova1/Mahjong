@@ -22,6 +22,8 @@ public class PlayerChat : NetworkBehaviour
 
     public void AddMessage()
     {
+
+       
         string message = enteredText.text;
         Debug.Log(message);
 
@@ -34,6 +36,7 @@ public class PlayerChat : NetworkBehaviour
 
         textModel.text = $"{LocalizationManager.instance.GetLocalizedValue("You: ")} {message}";
         textModel.transform.localScale = new Vector3(1, 1, 1);
+        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(content.GetComponent<RectTransform>());
 
         enteredText.text = "";
         scrollRect.velocity = new Vector2(0f, 1000f);
@@ -58,6 +61,8 @@ public class PlayerChat : NetworkBehaviour
 
         textModel.transform.SetParent(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerChat>().content.transform);
         textModel.transform.localScale = new Vector3(1, 1, 1);
+
+        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerChat>().content.GetComponent<RectTransform>());
 
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerChat>().scrollRect.velocity= new Vector2(0f, 1000f);
 
