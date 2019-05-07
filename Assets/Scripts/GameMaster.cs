@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    public const uint playersToStart = 3;
+    public const uint playersToStart = 4;
     
     public static GameMaster instance = null;
 
@@ -71,14 +71,14 @@ public class GameMaster : NetworkBehaviour
         GameManager.instance.RefreshEv += Refresh;
     }
 
-    void RefreshNumOfPlayers()
-    {
-        Debug.Log(playerCount);
-        foreach (Player player in players.Values)
-        {
-            player.GetComponent<PlayerUI>().TargetRefreshPlayers(player.connectionToClient,PlayerCount);
-        }
-    }
+    //void RefreshNumOfPlayers()
+    //{
+    //    Debug.Log(playerCount);
+    //    foreach (Player player in players.Values)
+    //    {
+    //        player.GetComponent<PlayerUI>().TargetRefreshPlayers(player.connectionToClient,PlayerCount);
+    //    }
+    //}
 
 
     private void InitCameras()
@@ -114,6 +114,14 @@ public class GameMaster : NetworkBehaviour
         availableCameras.Add(players[netID].order);
         Debug.Log($"add {players[netID].order} back");
         players.Remove(netID);
+    }
+
+    public void AddLabel(SetupPlayer p)
+    {
+        foreach (Player player in players.Values)
+        {
+            p.TargetAddPlayerName(p.player.connectionToClient,player.wind, player.name);
+        }
     }
 
     public void TestUnregister(NetworkConnection conn)

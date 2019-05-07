@@ -9,11 +9,11 @@ using System;
 public class SetupPlayer : NetworkBehaviour
 {
 
-    Player player;
+    public Player player;
 
     private void Start()
     {
-        
+
 
         if (isServer)
         {
@@ -21,14 +21,15 @@ public class SetupPlayer : NetworkBehaviour
         }
 
 
-       
+
 
         try
         {
-            if(isLocalPlayer)
+            if (isLocalPlayer)
                 AudioManager.instance.SetTheme();
 
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             return;
         }
@@ -36,8 +37,7 @@ public class SetupPlayer : NetworkBehaviour
         if (!isLocalPlayer)
         {
             gameObject.GetComponent<PlayerUI>().canvas.enabled = false;
-            CmdAddPlayerName(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().wind,
-                GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().name);
+
             return;
         }
 
@@ -45,14 +45,18 @@ public class SetupPlayer : NetworkBehaviour
     }
 
     [Command]
-    void CmdAddPlayerName(string wind,string name)
+    void CmdAddPlayerName(string wind, string name)
     {
         TargetAddPlayerName(connectionToClient, wind, name);
     }
     [TargetRpc]
-    void TargetAddPlayerName(NetworkConnection conn,string wind,string name)
+   public  void TargetAddPlayerName(NetworkConnection conn, string wind, string name)
     {
-        gameObject.GetComponent<UiWinds>().SetName(wind,name);
+        Debug.Log(name);
+        Debug.Log(wind);
+
+        Debug.Log("target");
+        gameObject.GetComponent<UiWinds>().SetName(wind, name);
     }
 
     //[TargetRpc]
@@ -117,12 +121,12 @@ public class SetupPlayer : NetworkBehaviour
     }
 
     [TargetRpc]
-    void TargetSetOrder(NetworkConnection conn,int order)
+    void TargetSetOrder(NetworkConnection conn, int order)
     {
         player = gameObject.GetComponent<Player>();
 
         player.order = order;
-        if(PlayerPrefs.instance!=null)
+        if (PlayerPrefs.instance != null)
             player.name = PlayerPrefs.instance.Name;
 
         gameObject.tag = "Player";
@@ -138,7 +142,7 @@ public class SetupPlayer : NetworkBehaviour
 
         gameObject.GetComponent<UiWinds>().AssignWinds();
 
-        CmdAddPlayer(player.order, player.wind,player.name);
+        CmdAddPlayer(player.order, player.wind, player.name);
     }
 
     void AssignWind()
@@ -166,7 +170,7 @@ public class SetupPlayer : NetworkBehaviour
                 return;
 
         }
-        if(LocalizationManager.instance==null)
+        if (LocalizationManager.instance == null)
             player.GetComponent<PlayerUI>().playerWind.text = $"Your wind: {player.wind}";
         else
             player.GetComponent<PlayerUI>().playerWind.text = $"{LocalizationManager.instance.GetLocalizedValue("Your wind")}: " +
@@ -175,18 +179,21 @@ public class SetupPlayer : NetworkBehaviour
     }
 
     [Command]
-    void CmdAddPlayer(int ord,string wind,string name)
+    void CmdAddPlayer(int ord, string wind, string name)
     {
-       // GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), ord, wind);
-        RpcAddPlayer(ord,wind,name);
+        // GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), ord, wind);
+        RpcAddPlayer(ord, wind, name);
+        GameMaster.instance.AddLabel(this);
     }
 
     [ClientRpc]
-    void RpcAddPlayer(int ord,string wind,string name)
+    void RpcAddPlayer(int ord, string wind, string name)
     {
+        player = gameObject.GetComponent<Player>();
+
         player.name = name;
         //if (isServer) return;
-        GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(),ord,wind);
+        GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), ord, wind);
 
         GameObject.FindGameObjectWithTag("Player").GetComponent<UiWinds>().SetName(wind, name);
 
@@ -198,6 +205,10 @@ public class SetupPlayer : NetworkBehaviour
         {
             Debug.Log($"Camera {GameMaster.instance.availableCameras[i]}");
         }
+
+
+    //    CmdAddPlayerName(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().wind,
+    //GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().name);
     }
 
     public override void OnStartClient()

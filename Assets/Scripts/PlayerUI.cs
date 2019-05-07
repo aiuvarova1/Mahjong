@@ -23,7 +23,7 @@ public class PlayerUI : NetworkBehaviour
     [SerializeField]
     GameObject startButton;
 
-    public Text numOfPlayers;
+    //public Text numOfPlayers;
     public Text playerWind;
 
     public GameObject QuitButton;
@@ -500,9 +500,18 @@ public class PlayerUI : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void TargetShowDeclaredCombination(NetworkConnection conn,string wind, string combination)
+    public void TargetShowDeclaredCombination(NetworkConnection conn,string wind, string combination,bool needDeclare,int audioNum)
     {
-        StartCoroutine(DeclareCombination(wind,combination));
+        if(needDeclare)
+            StartCoroutine(DeclareCombination(wind,combination));
+
+        if(audioNum!=-1 && AudioManager.instance != null)
+        {
+            GetComponent<AudioSource>().clip = AudioManager.instance.combSounds[audioNum];
+            GetComponent<AudioSource>().Play();
+        }
+
+
     }
 
 
@@ -802,18 +811,13 @@ public class PlayerUI : NetworkBehaviour
 
     }
 
-    [TargetRpc]
 
-    public void TargetRefreshPlayers(NetworkConnection conn, int num)
-    {
-        numOfPlayers.text = $"Players: {num}/4";
-    }
 
     [TargetRpc]
     public void TargetDisableInfoComponents(NetworkConnection conn)
     {
         QuitButton.SetActive(false);
-        numOfPlayers.enabled = false;
+        //numOfPlayers.enabled = false;
     }
 
 

@@ -417,7 +417,7 @@ public class GameManager : NetworkBehaviour
         {
             if (winds[i].player != null)
                 winds[i].player.GetComponent<PlayerUI>().TargetShowDeclaredCombination(winds[i].player.connectionToClient,
-                    "", "");
+                    "", "",true,-1);
         }
 
         Invoke("RefreshAll", 4f);
@@ -482,14 +482,18 @@ public class GameManager : NetworkBehaviour
     }
     #endregion
 
-    public void DeclareCombination(string combination)
+    public void DeclareCombination(string combination,int audioNum)
     {
         string wind = winds[CurrentWind].Name;
         foreach (Wind playerWind in winds)
         {
 
             if (playerWind.player != null && playerWind.Name != wind)
-                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient, wind, combination);
+                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient, wind, combination,true,audioNum);
+            else if (playerWind.Name == wind)
+                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient, wind, combination, false, audioNum);
+
+
         }
     }
 

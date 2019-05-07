@@ -117,9 +117,10 @@ public class PlayerPrefs : MonoBehaviour
                 }
             }
         }
-        catch (Exception)
+        catch (Exception e)
         {
             Debug.Log("ex");
+            Debug.Log(e.Message);
         }
 
         //catch (Exception)

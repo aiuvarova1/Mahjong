@@ -983,7 +983,7 @@ public class Player : NetworkBehaviour
         }
         GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
 
-        GameManager.instance.DeclareCombination("closed Kong");
+        GameManager.instance.DeclareCombination("closed Kong",2);
 
         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
 
@@ -1012,7 +1012,7 @@ public class Player : NetworkBehaviour
 
         RpcCloseTile(kong.tileList[3].tile, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
         //kong.tileList[3].tile.GetComponent<BezierMove>().RpcCloseTile(GameManager.instance.winds[GameManager.instance.CurrentWind].rotation);
-        GameManager.instance.DeclareCombination("Kong");
+        GameManager.instance.DeclareCombination("Kong",2);
 
 
 
@@ -1047,7 +1047,7 @@ public class Player : NetworkBehaviour
         GameManager.instance.CurrentWind = windPos;
 
         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
-        GameManager.instance.DeclareCombination("Pung");
+        GameManager.instance.DeclareCombination("Pung",1);
 
         Invoke("InvokeDelete", 1.8f);
 
@@ -1099,7 +1099,7 @@ public class Player : NetworkBehaviour
 
         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
 
-        GameManager.instance.DeclareCombination("Chow");
+        GameManager.instance.DeclareCombination("Chow",0);
 
         Invoke("InvokeDelete", 1.8f);
 
@@ -1128,7 +1128,7 @@ public class Player : NetworkBehaviour
 
         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
 
-        GameManager.instance.DeclareCombination("Kong");
+        GameManager.instance.DeclareCombination("Kong",2);
 
         Invoke("InvokeDelete", 1.8f);
 
@@ -1225,7 +1225,7 @@ public class Player : NetworkBehaviour
         //}
 
         //!!!change
-        GameManager.instance.DeclareCombination("MahJong");
+        GameManager.instance.DeclareCombination("MahJong",3);
         mahjong.openedCombinations = openedTiles;
         mahjong.flowers = flowers;
 
@@ -1498,5 +1498,7 @@ public class Player : NetworkBehaviour
     {
         GameManager.instance.stopTheGame = true;
     }
+
+
 
 }

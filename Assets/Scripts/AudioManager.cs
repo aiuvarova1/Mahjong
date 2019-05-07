@@ -16,6 +16,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip lobbyTheme;
     public AudioClip gameTheme;
 
+
+    public List<AudioClip> combSounds = new List<AudioClip>();
+    
     public AudioClip playingClip;
 
     public float soundValue = 0.5f;
@@ -52,6 +55,8 @@ public class AudioManager : MonoBehaviour
             GetComponent<AudioSource>().Play();
         }
     }
+
+
 
     public void SetReferences()
     {
