@@ -15,7 +15,7 @@ using UnityEngine;
 
     public East(Player p) : base(p)
     {
-        startPosition = new Vector3(-30, 1f, 11);
+        startPosition = new Vector3(-31, 1f, 11);
         startOpenTilePosition = new Vector3(-27, 0, 15);
         startFlowerPosition = new Vector3(-23, 0, 15);
 
@@ -34,6 +34,11 @@ using UnityEngine;
     public override void MoveLeftFreePosition(ref Vector3 pos)
     {
         pos.z += 2f;
+    }
+
+    public override void MoveForwardPosition(ref Vector3 pos)
+    {
+        pos.x -= 2f;
     }
 
 

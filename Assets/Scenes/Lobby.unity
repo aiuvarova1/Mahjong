@@ -3325,7 +3325,7 @@ PrefabInstance:
     - target: {fileID: 114779385898424168, guid: de3e2f3f6aebe7c45b3d95ee93c8339e,
         type: 3}
       propertyPath: m_ConnectionConfig.m_DisconnectTimeout
-      value: 4000
+      value: 6000
       objectReference: {fileID: 0}
     - target: {fileID: 4342602911702892, guid: de3e2f3f6aebe7c45b3d95ee93c8339e, type: 3}
       propertyPath: m_LocalPosition.x

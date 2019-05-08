@@ -16,13 +16,18 @@ class West : Wind
 
     public West(Player p) : base(p)
     {
-        startPosition = new Vector3(30, 1f, -11);
+        startPosition = new Vector3(31, 1f, -11);
         startOpenTilePosition = new Vector3(27, 0f, -15);
         startFlowerPosition = new Vector3(23, 0, -15);
         rotation = 90;
         base.Refresh();
         Name = "West";
 
+    }
+
+    public override void MoveForwardPosition(ref Vector3 pos)
+    {
+        pos.x += 2f;
     }
 
     public override void MoveRightFreePosition(ref Vector3 pos)

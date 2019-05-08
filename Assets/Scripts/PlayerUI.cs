@@ -570,6 +570,7 @@ public class PlayerUI : NetworkBehaviour
     [TargetRpc]
     public void TargetStartWaiting(NetworkConnection conn)
     {
+        Debug.Log("starter");
         StartCoroutine(starter);
     }
 

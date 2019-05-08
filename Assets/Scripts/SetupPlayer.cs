@@ -50,7 +50,7 @@ public class SetupPlayer : NetworkBehaviour
         TargetAddPlayerName(connectionToClient, wind, name);
     }
     [TargetRpc]
-   public  void TargetAddPlayerName(NetworkConnection conn, string wind, string name)
+    public void TargetAddPlayerName(NetworkConnection conn, string wind, string name)
     {
         Debug.Log(name);
         Debug.Log(wind);
@@ -66,31 +66,47 @@ public class SetupPlayer : NetworkBehaviour
 
     //}
 
-    [ClientRpc]
-    public void RpcChangeWind()
+    [TargetRpc]
+    public void TargetChangeWind(NetworkConnection conn)
     {
-        if (isLocalPlayer)
-        {
-            GameMaster.instance.lights[player.order].SetActive(false);
-            Destroy(player.Camera);
-        }
+        GameMaster.instance.lights[player.order].SetActive(false);
+        
 
-        player.order++;
-        if (player.order == 4)
-            player.order = 0;
+        player.order--;
+        if (player.order == -1)
+            player.order = 3;
+
         AssignWind();
 
-        if (isLocalPlayer)
-        {
-            GameMaster.instance.lights[player.order].SetActive(true);
-            player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);
+        GameMaster.instance.lights[player.order].SetActive(true);
 
-            float newRotation = player.Camera.transform.eulerAngles.y;
+        Camera cam = Instantiate(GameMaster.instance.allCameras[player.order]);
 
-            Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
-        }
+        Destroy(player.Camera.gameObject);
 
+        player.Camera = cam;
+        float newRotation = player.Camera.transform.eulerAngles.y;
 
+        Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
+
+        gameObject.GetComponent<UiWinds>().AssignWinds();
+
+        CmdChangeWind(player.order, player.wind);
+    }
+
+    [Command]
+    public void CmdChangeWind(int order,string wind)
+    {
+        RpcChangeWind(order, wind);
+    }
+
+    [ClientRpc]
+    public void RpcChangeWind(int order, string wind)
+    {
+
+        player.order = order;
+        player.wind = wind;
+        Debug.Log($"ord {player.order}");
     }
 
     [ClientRpc]
@@ -207,8 +223,8 @@ public class SetupPlayer : NetworkBehaviour
         }
 
 
-    //    CmdAddPlayerName(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().wind,
-    //GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().name);
+        //    CmdAddPlayerName(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().wind,
+        //GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().name);
     }
 
     public override void OnStartClient()

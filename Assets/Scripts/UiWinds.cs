@@ -14,6 +14,7 @@ public class UiWinds : MonoBehaviour
 
     public void AssignWinds()
     {
+        windLabels.Clear();
 
         switch (gameObject.GetComponent<Player>().wind)
         {

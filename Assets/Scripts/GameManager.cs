@@ -94,10 +94,13 @@ public class GameManager : NetworkBehaviour
         }
         else if (instance != this) Destroy(gameObject);
 
-        winds.Add(new East());
-        winds.Add(new South());
-        winds.Add(new West());
-        winds.Add(new North());
+        if (winds.Count == 0)
+        {
+            winds.Add(new East());
+            winds.Add(new South());
+            winds.Add(new West());
+            winds.Add(new North());
+        }
 
         CurrentWind = 0;
         GameTable = new Table();
@@ -258,7 +261,10 @@ public class GameManager : NetworkBehaviour
                 CheckAllPlayersForFlowers();
             }
             else
+            {
+                player.Sort();
                 Invoke("BeginPlayerMove", 0.3f);
+            }
             return;
         }
 
@@ -308,6 +314,11 @@ public class GameManager : NetworkBehaviour
 
     public void PrepareForCombinations()
     {
+        for (int i = 0; i < winds.Count; i++)
+        {
+            if (winds[i].player != null)
+                winds[i].player.RpcSort();
+        }
         Invoke("Prepare", 2);
 
     }
@@ -356,7 +367,7 @@ public class GameManager : NetworkBehaviour
 
 
         //set turns!
-        if (waitForCombinations && GameMaster.playersToStart - 1 == NumOfAnsweredPlayers)
+        if (waitForCombinations && GameMaster.playersToStart - 1 <= NumOfAnsweredPlayers)
         {
             Debug.Log("here");
 
@@ -371,9 +382,9 @@ public class GameManager : NetworkBehaviour
             if (mahJongDeclarator != null)
             {
                 GameMaster.instance.readyToContinuePlayers = 0;
-                GameMaster.instance.gameState = "end";
-                RefreshWinds();
+                GameMaster.instance.gameState = "end"; 
                 mahJongDeclarator.DeclareMahJong(DefineWind(mahJongDeclarator));
+                RefreshWinds();
             }
             else if (kongDeclarator != null)
             {
@@ -500,6 +511,8 @@ public class GameManager : NetworkBehaviour
     public void RefreshAll()
     {
         if (!isServer) return;
+
+        RefreshWinds();
         Debug.Log("Refresh all");
         for (int i = 0; i < winds.Count; i++)
         {
@@ -531,7 +544,10 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 0; i < winds.Count; i++)
         {
+            Debug.Log("refresh wind " + i);
+            
             winds[i].Refresh();
+            Debug.Log(winds[i].freePosition);
         }
     }
 

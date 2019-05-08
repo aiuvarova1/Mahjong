@@ -30,6 +30,7 @@ public class BezierMove : NetworkBehaviour
     {
         endRotation= Quaternion.Euler(-90, rotation, 0);
         transform.position = new Vector3(transform.position.x, transform.position.y + 0.4f, transform.position.z);
+       
         rotating = true;
         
     }
@@ -167,8 +168,23 @@ public class BezierMove : NetworkBehaviour
     public void CloseTile(float rotation)
     {
         Debug.Log(rotation);
-        transform.rotation=(Quaternion.Euler(90, rotation, 0));
+
         Debug.Log(transform.rotation);
+        Debug.Log(transform.eulerAngles);
+
+        //transform.eulerAngles = new Vector3(0, rotation, 0);
+        transform.rotation=(Quaternion.Euler(0, rotation,90));
+        Debug.Log(transform.rotation);
+        Debug.Log(transform.eulerAngles);
+    }
+
+    public void ShowTile(float rotation)
+    {
+        Debug.Log(rotation);
+        Debug.Log(transform.rotation);
+        transform.rotation=Quaternion.Euler(-180, rotation, 0);
+        Debug.Log(transform.rotation);
+        transform.position = new Vector3(transform.position.x, 0, transform.position.z);
     }
 
 

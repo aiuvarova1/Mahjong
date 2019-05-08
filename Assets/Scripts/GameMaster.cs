@@ -172,6 +172,7 @@ public class GameMaster : NetworkBehaviour
                 if (id == remove) return;
                 Player p = players[id];
                 p.GetComponent<PlayerUI>().TargetShowLeftPlayerInfo(p.connectionToClient,player.name,player.wind);
+
             }
 
         }
@@ -267,9 +268,10 @@ public class GameMaster : NetworkBehaviour
     {
         foreach (Player player in players.Values)
         {
-            player.GetComponent<SetupPlayer>().RpcChangeWind();
+            player.GetComponent<SetupPlayer>().TargetChangeWind(player.connectionToClient);
             TargetAddWind(player.connectionToClient);
-           // TargetAddWind(player.connectionToClient);
+            // TargetAddWind(player.connectionToClient);
+            AddLabel(player.gameObject.GetComponent<SetupPlayer>());
         }
     }
 
@@ -283,7 +285,9 @@ public class GameMaster : NetworkBehaviour
                 return;
             case "ready":
                 gameState = "waiting";
-                GetReady();
+                Invoke("GetReady",1.2f);
+
+                //GetReady();
                 return;
             case "waiting":
                 if (playersToStart != PlayerCount)
@@ -302,6 +306,7 @@ public class GameMaster : NetworkBehaviour
             case "start":
                 AssignWinds();
                 DisableInfo();
+                GameManager.instance.RefreshWinds();
                 GameManager.instance.StartGame();
 
                 gameState = "starting";

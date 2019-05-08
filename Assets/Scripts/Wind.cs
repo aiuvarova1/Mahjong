@@ -50,6 +50,7 @@ public abstract class Wind:IComparable<Wind>
 
     public abstract void MoveRightFreePosition(ref Vector3 pos);
     public abstract void MoveLeftFreePosition(ref Vector3 pos);
+    public abstract void MoveForwardPosition(ref Vector3 pos);
 
     public void Refresh()
     {

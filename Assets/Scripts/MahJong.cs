@@ -214,18 +214,17 @@ public class MahJong : Combination
         //0-bamboos,1-dots,2-symbols,3-winds,4-dragons
 
 
-
-        if (clearWithWindsAndDragons)
+        if (clear)
+        {
+            twice *= 8;
+            Debug.Log("clear");
+        }else if (clearWithWindsAndDragons)
         {
             twice *= 2;
             Debug.Log("clear with winds");
 
         }
-        if (clear)
-        {
-            twice *= 8;
-            Debug.Log("clear");
-        }
+        
         if (onlyWindsAndDragons)
         {
             twice *= 8;
@@ -296,17 +295,19 @@ public class MahJong : Combination
                 clear = false;
         }
 
-        if (clearWithWindsAndDragons)
+        if (clear)
+        {
+            twice *= 8;
+            Debug.Log("clear");
+        }
+        else if (clearWithWindsAndDragons)
         {
             twice *= 2;
             Debug.Log("clear with winds");
 
         }
-        else if (clear)
-        {
-            twice *= 8;
-            Debug.Log("clear");
-        }else if (onlyWindsAndDragons)
+
+        if (onlyWindsAndDragons)
         {
             twice *= 8;
             Debug.Log("winds and dragons");

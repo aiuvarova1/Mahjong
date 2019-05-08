@@ -30,7 +30,7 @@ public class HostGame : MonoBehaviour
         myConfig.MinUpdateTimeout = 10;
         myConfig.ConnectTimeout = 2000;
         myConfig.PingTimeout = 1500;
-        myConfig.DisconnectTimeout = 4000;
+        myConfig.DisconnectTimeout = 8000;
         myConfig.PacketSize = 1470; myConfig.SendDelay = 2;
         myConfig.FragmentSize = 1300;
         myConfig.AcksType = ConnectionAcksType.Acks128;
