@@ -14,7 +14,6 @@ public class GameMaster : NetworkBehaviour
 
     int roundsPlayed = 0;
 
-
     int playerCount;
 
     public int PlayerCount
@@ -42,7 +41,7 @@ public class GameMaster : NetworkBehaviour
 
     private Dictionary<string, Player> players = new Dictionary<string, Player>();
 
-
+    #region Start
     private void Awake()
     {
         if (instance == null)
@@ -64,22 +63,12 @@ public class GameMaster : NetworkBehaviour
     {
         readyPlayers = 0;
     }
+
     private void Start()
     {
-        
         if (availableCameras.Count == 0) InitCameras();
         GameManager.instance.RefreshEv += Refresh;
     }
-
-    //void RefreshNumOfPlayers()
-    //{
-    //    Debug.Log(playerCount);
-    //    foreach (Player player in players.Values)
-    //    {
-    //        player.GetComponent<PlayerUI>().TargetRefreshPlayers(player.connectionToClient,PlayerCount);
-    //    }
-    //}
-
 
     private void InitCameras()
     {
@@ -106,23 +95,20 @@ public class GameMaster : NetworkBehaviour
         {
             player.GetComponent<PlayerUI>().TargetInfo(player.connectionToClient, "Waiting for the end of the game...");
         }
-    }
 
-    public void UnregisterPlayer(string netID)
-    {
-        PlayerCount--;
-        availableCameras.Add(players[netID].order);
-        Debug.Log($"add {players[netID].order} back");
-        players.Remove(netID);
     }
 
     public void AddLabel(SetupPlayer p)
     {
         foreach (Player player in players.Values)
         {
-            p.TargetAddPlayerName(p.player.connectionToClient,player.wind, player.name);
+            p.TargetAddPlayerName(p.player.connectionToClient, player.wind, player.name);
         }
     }
+
+    #endregion
+
+    #region remove player
 
     public void TestUnregister(NetworkConnection conn)
     {
@@ -184,8 +170,8 @@ public class GameMaster : NetworkBehaviour
         GameObject.FindGameObjectWithTag("Player").GetComponent<UiWinds>().RemoveName(wind);
     }
 
-
-    
+    #endregion
+    #region Game Beginning
 
     void GetReady()
     {
@@ -386,4 +372,5 @@ public class GameMaster : NetworkBehaviour
 
         }
     }
+    #endregion
 }

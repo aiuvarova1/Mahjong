@@ -280,6 +280,20 @@ public class GameManager : NetworkBehaviour
 
 
     #region Combinations and turns
+
+    public void DeclareCombination(string combination, int audioNum)
+    {
+        string wind = winds[CurrentWind].Name;
+        foreach (Wind playerWind in winds)
+        {
+
+            if (playerWind.player != null && playerWind.Name != wind)
+                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient, wind, combination, true, audioNum);
+            else if (playerWind.Name == wind)
+                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient, wind, combination, false, audioNum);
+        }
+    }
+
     public void InvokeChange()
     {
         Invoke("ChangeTurn", 1.6f);
@@ -448,17 +462,14 @@ public class GameManager : NetworkBehaviour
 
     public void FinishGame(MahJong mahjong)
     {
-        Invoke("OpenAllTiles", 2f);
+        Invoke("OpenAllTiles", 2.3f);
 
         Player winner = winds[CurrentWind].player;
 
         winnerWind = winner.wind;
 
-
         int score = mahjong.CalculateMahJongPoints(winner.wind, winner.playerTurn, winner.isFreeTile, winner.order);
         winner.score = score;
-
-        
 
         for (int i = 0; i < winds.Count; i++)
         {
@@ -470,7 +481,6 @@ public class GameManager : NetworkBehaviour
         }
 
         Invoke("SetScores", 2f);
-
     }
 
     void SetScores()
@@ -493,21 +503,8 @@ public class GameManager : NetworkBehaviour
     }
     #endregion
 
-    public void DeclareCombination(string combination,int audioNum)
-    {
-        string wind = winds[CurrentWind].Name;
-        foreach (Wind playerWind in winds)
-        {
 
-            if (playerWind.player != null && playerWind.Name != wind)
-                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient, wind, combination,true,audioNum);
-            else if (playerWind.Name == wind)
-                playerWind.player.gameObject.GetComponent<PlayerUI>().TargetShowDeclaredCombination(playerWind.player.connectionToClient, wind, combination, false, audioNum);
-
-
-        }
-    }
-
+    #region refreshing
     public void RefreshAll()
     {
         if (!isServer) return;
@@ -573,4 +570,5 @@ public class GameManager : NetworkBehaviour
         kongDeclarator = null;
         mahJongDeclarator = null;
     }
+    #endregion 
 }

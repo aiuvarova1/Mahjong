@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class HostGame : MonoBehaviour
 {
-
     const uint roomSize = 4;
 
     public string RoomName { private get; set; }
@@ -51,14 +50,5 @@ public class HostGame : MonoBehaviour
         }
 
     }
-    private void Update()
-    {
-
-    }
-
-
-
-
-
 
 }

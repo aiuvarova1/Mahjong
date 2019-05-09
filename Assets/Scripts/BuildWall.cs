@@ -112,10 +112,6 @@ public class BuildWall : MonoBehaviour
 
     public void FillIndexes()
     {
-        //for (int i = 143; i >= 0; i--)
-        //{
-        //    indexes.Add(Random.Range(0, i + 1));
-        //}
 
         for (int i = 0; i < 144; i++)
         {
@@ -161,40 +157,28 @@ public class BuildWall : MonoBehaviour
         {
             Vector3 upperPosition = new Vector3(start[0] + c * 2 * i * ((num + 1) % 2), start[1], start[2] + c * 2 * i * (num % 2));
             Vector3 lowerPosition = new Vector3(start[0] + c * 2 * i * ((num + 1) % 2), start[1] - 1.2f, start[2] + c * 2 * i * (num % 2));
-            //second row(even)
 
             Tile upper = availableTiles[ind[0]];
 
-            //availableTiles.RemoveAt(ind[0]);
             ind.RemoveAt(0);
-
 
             upper.tile.transform.position = upperPosition;
             upper.tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
 
-            //first row(odd)
-
-
             Tile lower = availableTiles[ind[0]];
 
-            // availableTiles.RemoveAt(ind[0]);
             ind.RemoveAt(0);
-
 
             lower.tile.transform.position = lowerPosition;
             lower.tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
 
             tiles[num - 1].Add(new WallPair(upper, lower));
-
-
         }
-
     }
 
     public void Refresh()
     {
         tiles = new List<List<WallPair>>(4);
-
         //for texture
         coordinates = new List<Vector2>();
         availableTiles = new List<Tile>(144);

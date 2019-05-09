@@ -8,11 +8,9 @@ using UnityEngine;
 
  class East:Wind
 {
-    const int num = 1;
+    //const int num = 1;
+
    // public Vector3 
-
-     
-
     public East(Player p) : base(p)
     {
         startPosition = new Vector3(-31, 1f, 11);

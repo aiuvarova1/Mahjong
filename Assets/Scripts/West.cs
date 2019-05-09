@@ -8,7 +8,7 @@ using UnityEngine;
 
 class West : Wind
 {
-    const int num = 3;
+    //const int num = 3;
 
     // public Vector3 
 

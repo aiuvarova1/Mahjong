@@ -60,7 +60,7 @@ public class PlayerUI : NetworkBehaviour
     Combination secondChow;
     Combination thirdChow;
 
-    Camera mainCam;
+    public Camera mainCam;
 
 
     private void Start()
@@ -247,13 +247,13 @@ public class PlayerUI : NetworkBehaviour
         FillMatrix(ref matrix, scores, winner);
 
 
-        tableNames = GameObject.FindGameObjectWithTag("Combinations");
-        objects = tableNames.GetComponentsInChildren<Button>();
+        //tableNames = GameObject.FindGameObjectWithTag("Combinations");
+        //objects = tableNames.GetComponentsInChildren<Button>();
         //set column names
         for (int i = 0; i < buttons.Count; i++)
         {
             buttons[i][0].GetComponentInChildren<Text>().text = (names[i]).ToString();
-            objects[i + 1].GetComponentInChildren<Text>().text = (names[i]).ToString();
+            //objects[i + 1].GetComponentInChildren<Text>().text = (names[i]).ToString();
 
             for (int j = 1; j < buttons[i].Length; j++)
             {
@@ -765,17 +765,6 @@ public class PlayerUI : NetworkBehaviour
         networkManager.StopHost();
     }
 
-    public void LeaveRoom()
-    {
-        if (isLocalPlayer)
-        {
-            Debug.Log("Leave");
-            string netID = GetComponent<NetworkIdentity>().netId.ToString();
-            player.GetComponent<SetupPlayer>().CmdUnregisterPlayer(netID);
-
-        }
-
-    }
     #endregion
 
     #region GameMaster methods

@@ -9,7 +9,7 @@ using UnityEngine;
 public class Kong : Combination
 {
 
-    bool opened;
+   // bool opened;
 
     public Kong(Tile t1, Tile t2, Tile t3,bool openedComb) : base(t1, t2, t3)
     {

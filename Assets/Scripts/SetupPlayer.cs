@@ -87,7 +87,11 @@ public class SetupPlayer : NetworkBehaviour
         player.Camera = cam;
         float newRotation = player.Camera.transform.eulerAngles.y;
 
-        Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
+        GetComponent<PlayerUI>().mainCam.enabled = true;
+
+        GetComponent<PlayerUI>().mainCam.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
+
+        GetComponent<PlayerUI>().mainCam.enabled = false;
 
         gameObject.GetComponent<UiWinds>().AssignWinds();
 
@@ -238,23 +242,6 @@ public class SetupPlayer : NetworkBehaviour
 
     }
 
-    [Command]
-    public void CmdUnregisterPlayer(string netID)
-    {
-        Debug.Log($"command {GameMaster.instance.PlayerCount} players");
-        RpcUnregisterPlayer(netID);
-        TargetDisconnect(connectionToClient);
-    }
-
-    [ClientRpc]
-    public void RpcUnregisterPlayer(string netID)
-    {
-        Debug.Log($"rpc {GameMaster.instance.PlayerCount} players");
-        GameMaster.instance.UnregisterPlayer(netID);
-        Debug.Log($"rpc {GameMaster.instance.PlayerCount} players");
-        Debug.Log($"{GameMaster.instance.availableCameras.Count} cameras");
-    }
-
 
     [TargetRpc]
     private void TargetDisconnect(NetworkConnection target)
@@ -263,15 +250,4 @@ public class SetupPlayer : NetworkBehaviour
         GetComponent<PlayerUI>().DropConnection();
     }
 
-    //void OnApplicationQuit()
-    //{
-    //    if (isLocalPlayer)
-    //    {
-    //        CmdUnregisterPlayer(GetComponent<NetworkIdentity>().netId.ToString());
-    //    }
-    //    if (isServer)
-    //    {
-    //        RpcUnregisterPlayer(GetComponent<NetworkIdentity>().netId.ToString());
-    //    }
-    //}
 }

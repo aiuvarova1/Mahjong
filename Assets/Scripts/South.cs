@@ -8,7 +8,7 @@ using UnityEngine;
 
 class South:Wind
 {
-    const int num = 2;
+    //const int num = 2;
     
     //public Vector3 
     

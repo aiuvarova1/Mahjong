@@ -7,7 +7,6 @@ public class BezierMove : NetworkBehaviour
 {
     float thirdRowHeight = 3.4f;
 
-   // public Transform transformBegin;
     public Vector3 endPoint;
     Quaternion endRotation;
 
@@ -41,22 +40,17 @@ public class BezierMove : NetworkBehaviour
         FillArray(transform.position,end,8.4f);
 
         //moving from pos[0] to pos[1]
-
         endPoint = pos[1];
         endRotation = Quaternion.Euler(0, rotation, 0);
-        //Wall.instance.isMoving = true;
-        StartCoroutine(WaitForMoving(rotation));
         
-
+        StartCoroutine(WaitForMoving(rotation));
     }
 
     IEnumerator WaitForMoving(float rotation)
     {
-        //yield return new WaitForSeconds(0.1f);
         moving = true;
         rotating = true;
 
-        //!!!!!
         if (check && owner!=null)
             owner.needToCheckMoving = true;
 
@@ -65,23 +59,32 @@ public class BezierMove : NetworkBehaviour
         OpenTile(rotation);
     }
 
-    public void LieOut(Vector3 endPos,float rotation)
+    public void LieOut(Vector3 endPos,float rotation,bool closed)
     {
 
+        if (closed)
+        {
+            Debug.Log("closed");
+            //transform.position = new Vector3(transform.position.x, 2.8f, transform.position.z);
+            endPos.y = 1.8f;
+            endRotation = Quaternion.Euler(0, rotation, 0);
+        }
+        else
+        {
+            Debug.Log("opened");
+            //transform.position = new Vector3(transform.position.x, 1, transform.position.z);
+            endRotation = Quaternion.Euler(-180, rotation, 0);
+        }
+
         transform.position = new Vector3(transform.position.x, 1, transform.position.z);
-
-        FillArray(transform.position, endPos,2.4f);
-
+       
+        FillArray(transform.position, endPos, 2.4f);
 
         endPoint = pos[1];
-        endRotation = Quaternion.Euler(-180, rotation, 0);
-
-       
 
         moving = true;
         rotating = true;
 
-        //!!!!!
         if (check && owner != null)
             owner.needToCheckMoving = true;
     }
@@ -99,7 +102,6 @@ public class BezierMove : NetworkBehaviour
     {
         p0 = x0;
 
-
         p3 = x3;
 
         p1 = new Vector3((p0.x+3*p3.x)/4f, height, (p0.z + 3*p3.z) / 4f);
@@ -113,14 +115,6 @@ public class BezierMove : NetworkBehaviour
 
     public void StartMoveNewFreeTiles(Vector3 pos,bool isFirst,float r)
     {
-        //MoveTile(transform.position.x, thirdRowHeight, transform.position.z, r);
-        // MoveTile(tile.transform.position.x, thirdRowHeight, tile.transform.position.z, r);
-        //pos.y = thirdRowHeight;
-        //transform.position = pos;
-        //Debug.Log(r);
-        //Debug.Log(transform.rotation);
-        //transform.rotation = Quaternion.Euler(0, r, 0);
-        //Debug.Log(transform.rotation);
         StartCoroutine(MoveNewFreeTiles(pos,isFirst,r));
     }
 
@@ -144,13 +138,8 @@ public class BezierMove : NetworkBehaviour
         endPoint = new Vector3(x,y,z);
         endRotation = Quaternion.Euler(0, rotation, 0);
 
-       
         moving = true;
         rotating = true;
-
-        //!!!!!
-        //if (check && owner != null)
-        //    owner.needToCheckMoving = true;
 
     }
 
@@ -162,20 +151,6 @@ public class BezierMove : NetworkBehaviour
     public void DeselectTile()
     {
         transform.position = new Vector3(transform.position.x, transform.position.y - 0.7f, transform.position.z);
-    }
-
-
-    public void CloseTile(float rotation)
-    {
-        Debug.Log(rotation);
-
-        Debug.Log(transform.rotation);
-        Debug.Log(transform.eulerAngles);
-
-        //transform.eulerAngles = new Vector3(0, rotation, 0);
-        transform.rotation=(Quaternion.Euler(0, rotation,90));
-        Debug.Log(transform.rotation);
-        Debug.Log(transform.eulerAngles);
     }
 
     public void ShowTile(float rotation)
@@ -196,7 +171,6 @@ public class BezierMove : NetworkBehaviour
             if (transform.position == endPoint)
             {
                 num++;
-
                 
                 if (num >= pos.Count)
                 {
@@ -208,11 +182,6 @@ public class BezierMove : NetworkBehaviour
 
                     if (check)
                         check = false;
-
-                    //if (Wall.instance.freeTileIsMoving &&
-                    //    gameObject == Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1].tile)
-                    //    Wall.instance.freeTileIsMoving = false;
-
 
                     return;
                 }
@@ -232,18 +201,9 @@ public class BezierMove : NetworkBehaviour
                 rotating = false;
                 return;
             }
-            //Vector3 direction = (endPoint - transform.position).normalized;
-
-            //create the rotation we need to be in to look at the target
-            //Quaternion lookRotation = Quaternion.LookRotation(direction);
-
+           
             //rotate us over time according to speed until we are in the required rotation
             transform.rotation = Quaternion.Slerp(transform.rotation, endRotation, Time.deltaTime * speed);
-            
         }
-
-
-
     }
-
 }
