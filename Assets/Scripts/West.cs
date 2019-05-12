@@ -8,12 +8,6 @@ using UnityEngine;
 
 class West : Wind
 {
-    //const int num = 3;
-
-    // public Vector3 
-
-
-
     public West(Player p) : base(p)
     {
         startPosition = new Vector3(31, 1f, -11);
@@ -47,9 +41,7 @@ class West : Wind
         startFlowerPosition = new Vector3(23, 0, -15);
 
         rotation = 90;
-        //freePosition = startPosition;
-        //freeOpenPosition = startOpenTilePosition;
-        //freeFlowerPosition = startFlowerPosition;
+
         base.Refresh();
         Name = "West";
     }

@@ -22,7 +22,7 @@ public class PlayerPrefs : MonoBehaviour
         get { return playerName; }
         set
         {
-            if (value == "" || value.Length > 8)
+            if (value == "" || value.Length > 10)
                 throw new ArgumentException();
             playerName = value;
             nameText.text = playerName;
@@ -56,14 +56,14 @@ public class PlayerPrefs : MonoBehaviour
         if (Name != "")
             namePanel.SetActive(false);
         nameText.text = Name;
+        nameText.onEndEdit.AddListener(delegate { ChangeName(nameText.text); });
+        
     }
     // Start is called before the first frame update
     void Start()
     {
-        // nameText = (GameObject.FindGameObjectWithTag("Name")).GetComponent<Text>();
+
         namePanel = (GameObject.FindGameObjectWithTag("NamePanel"));
-
-
         try
         {
             using (StreamReader sr = new StreamReader(path))
@@ -123,17 +123,6 @@ public class PlayerPrefs : MonoBehaviour
             Debug.Log(e.Message);
         }
 
-        //catch (Exception)
-        //{
-        //    Debug.Log("ex");
-        //    if (Name != "")
-        //    {
-        //        namePanel.SetActive(false);
-        //    }
-
-        //    return;
-        //}
-
         if (Name != "")
         {
             namePanel.SetActive(false);
@@ -147,9 +136,6 @@ public class PlayerPrefs : MonoBehaviour
         ChangeName(text);
 
         namePanel.SetActive(false);
-
-
-
     }
 
     public void WriteFileData()
@@ -157,21 +143,13 @@ public class PlayerPrefs : MonoBehaviour
         Debug.Log("write");
         try
         {
-            //File.SetAttributes(path, FileAttributes.Normal);
             using (StreamWriter sw = new StreamWriter(path))
             {
                 sw.WriteLine(LocalizationManager.instance.language);
                 sw.WriteLine(AudioManager.instance.soundValue);
                 sw.WriteLine(AudioManager.instance.musicValue);
                 sw.WriteLine(Name);
-
-                
-
             }
-
-            //File.SetAttributes(path, FileAttributes.Hidden);
-            //File.SetAttributes(path, FileAttributes.ReadOnly);
-
         }
         catch(Exception ex)
         {

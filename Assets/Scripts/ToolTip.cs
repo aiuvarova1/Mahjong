@@ -5,14 +5,11 @@ using UnityEngine.UI;
 
 public class ToolTip : MonoBehaviour
 {
-    //public GameObject toolTipPanel;
-    public Text toolTipText;
 
+    public Text toolTipText;
     Vector3 mousePos;
 
     bool needTip = false;
-
-    
 
     private void OnMouseEnter()
     {
@@ -25,21 +22,14 @@ public class ToolTip : MonoBehaviour
             toolTipText.text = gameObject.GetComponent<TileName>().RuName;
         if(LocalizationManager.instance!=null)
             LocalizationManager.instance.ChangeFont(ref toolTipText);
-        //toolTipPanel.SetActive(true);
-        //Debug.Log(toolTipPanel.active);
+
         toolTipText.enabled = true;
 
         mousePos = Input.mousePosition;
         mousePos.y += 30;
         toolTipText.transform.position =mousePos ;
-        //toolTipPanel.transform.position = mousePos;
-
     }
 
-    private void OnMouseOver()
-    {
-        
-    }
     private void OnMouseExit()
     {
         if (!needTip) return;
@@ -48,15 +38,9 @@ public class ToolTip : MonoBehaviour
     }
     private void Start()
     {
-        
-        //toolTipPanel = GameObject.FindWithTag("Player").GetComponent<PlayerUI>().toolTipPanel;
-       // Debug.Log("panel" + toolTipPanel == null);
-       // toolTipText =toolTipPanel.transform.GetChild(0).gameObject.GetComponent<Text>();
        toolTipText = GameObject.FindWithTag("Player").GetComponent<PlayerUI>().toolTipText;
          
         toolTipText.enabled = toolTipText.enabled;
         needTip = true;
-        //toolTipPanel.SetActive(false);
-        //Instantiate(toolTipPanel);
     }
 }

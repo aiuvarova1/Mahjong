@@ -8,7 +8,7 @@ public class PlayerChat : NetworkBehaviour
 {
     public Text chatTextPrefab;
     ScrollRect scrollRect;
-
+    
     public GameObject chatScroll;
 
     public InputField enteredText;
@@ -16,20 +16,16 @@ public class PlayerChat : NetworkBehaviour
 
     public void Start()
     {
-
         scrollRect = chatScroll.GetComponent<ScrollRect>();
     }
 
     public void AddMessage()
     {
-
-       
         string message = enteredText.text;
         Debug.Log(message);
 
         Text textModel = Instantiate(chatTextPrefab);
 
-       
         textModel.transform.SetParent(content.transform,false);
         Debug.Log(textModel.transform.position);
         Debug.Log(textModel.transform.parent);

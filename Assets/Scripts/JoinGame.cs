@@ -5,6 +5,7 @@ using UnityEngine.Networking.Match;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class JoinGame : MonoBehaviour
 {
@@ -71,7 +72,14 @@ public class JoinGame : MonoBehaviour
 
     public void RefreshRoomList()
     {
-        networkManager.matchMaker.ListMatches(0, 15, "", true, 0, 0, OnMatchList);
+        try
+        {
+            networkManager.matchMaker.ListMatches(0, 15, "", true, 0, 0, OnMatchList);
+        }
+        catch(NullReferenceException)
+        {
+            networkManager.StartMatchMaker();
+        }
     }
 
     void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matches)
@@ -101,10 +109,9 @@ public class JoinGame : MonoBehaviour
     {
         GameObject room = Instantiate(roomPrefab);
         room.transform.SetParent(parentPanel.transform);
-        //room.transform.parent = parentPanel.transform;
-        //??
+
         room.transform.localScale = new Vector3(1, 1, 1);
-        // change room info on the button
+
         RoomListItem roomListItem = room.GetComponent<RoomListItem>();
         if (roomListItem != null) roomListItem.Setup(match, JoinRoom);
         roomList.Add(room);
@@ -121,7 +128,6 @@ public class JoinGame : MonoBehaviour
 
     public void JoinRoom(MatchInfoSnapshot match)
     {
-        Debug.Log("meow");
         networkManager.matchMaker.JoinMatch(match.networkId, "", "", "", 0, 0, networkManager.OnMatchJoined);
         StopCoroutine(refresher);
         refresher = Refresher();
@@ -131,15 +137,10 @@ public class JoinGame : MonoBehaviour
         //StopCoroutine(Refresher());
 
         StartCoroutine(WaitForJoin());
-        
-        //RefreshRoomList();
-       //
-
     }
     IEnumerator WaitForJoin()
     {
-        //ClearRoomList();
-        
+
         int countdown = 10;
         while (countdown > 0)
         {
@@ -193,11 +194,4 @@ public class JoinGame : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-        
-
-    }
 }

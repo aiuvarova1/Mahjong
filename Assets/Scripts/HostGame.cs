@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class HostGame : MonoBehaviour
 {
@@ -44,8 +45,16 @@ public class HostGame : MonoBehaviour
     {
         if (RoomName!="" && RoomName != null)
         {
+            GameObject.FindGameObjectWithTag("ok").SetActive(false);
             Debug.Log(RoomName+ " created");
-            networkManager.matchMaker.CreateMatch(RoomName, roomSize, true, "","","",0,0, networkManager.OnMatchCreate);
+            try
+            {
+                networkManager.matchMaker.CreateMatch(RoomName, roomSize, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
+            }catch (NullReferenceException)
+            {
+                GameObject.FindGameObjectWithTag("ok").SetActive(true);
+            }
+            
 
         }
 

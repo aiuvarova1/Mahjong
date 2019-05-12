@@ -27,9 +27,6 @@ public abstract class Wind:IComparable<Wind>
     public Vector3 startOpenTilePosition;
     public Vector3 startFlowerPosition;
 
-    //public static Vector3 startOpenTilePosition;
-    //public static Vector3 startFlowerPosition;
-
     public float rotation;
 
     public int CompareTo(Wind wind)

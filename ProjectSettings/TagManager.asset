@@ -28,6 +28,7 @@ TagManager:
   - Chat
   - Message
   - Content
+  - ok
   layers:
   - Default
   - TransparentFX

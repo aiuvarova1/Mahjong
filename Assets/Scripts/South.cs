@@ -8,11 +8,6 @@ using UnityEngine;
 
 class South:Wind
 {
-    //const int num = 2;
-    
-    //public Vector3 
-    
-
     public South(Player p) : base(p)
     {
         startPosition = new Vector3(-11, 1f, -31);
@@ -20,9 +15,7 @@ class South:Wind
         startFlowerPosition = new Vector3(-15, 0, -23);
 
         rotation = 180;
-        // freePosition = startPosition;
-        //freeOpenPosition = startOpenTilePosition;
-        //freeFlowerPosition = startFlowerPosition;
+       
         base.Refresh();
         Name = "South";
     }
@@ -51,9 +44,6 @@ class South:Wind
         startFlowerPosition = new Vector3(-15, 0, -23);
 
         rotation = 180;
-        //freePosition = startPosition;
-        //freeOpenPosition = startOpenTilePosition;
-        //freeFlowerPosition = startFlowerPosition;
         base.Refresh();
         Name = "South";
     }

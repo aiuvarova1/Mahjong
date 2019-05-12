@@ -80,11 +80,8 @@ public class MahJong : Combination
 
         score *= twice;
 
-
         Debug.Log(twice + "twice");
         Debug.Log(score + "twice score");
-        //flowers!!
-
 
         score += GetFlowerPoints(flowers, order);
         Debug.Log(score + "total");
@@ -378,8 +375,6 @@ public class MahJong : Combination
     public override int CalculatePoints(string wind)
     {
         return 0;
-
-
     }
 
 }

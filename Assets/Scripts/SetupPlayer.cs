@@ -14,20 +14,15 @@ public class SetupPlayer : NetworkBehaviour
     private void Start()
     {
 
-
         if (isServer)
         {
             SetOrder();
         }
 
-
-
-
         try
         {
             if (isLocalPlayer)
                 AudioManager.instance.SetTheme();
-
         }
         catch (Exception ex)
         {
@@ -40,8 +35,6 @@ public class SetupPlayer : NetworkBehaviour
 
             return;
         }
-
-
     }
 
     [Command]
@@ -58,13 +51,6 @@ public class SetupPlayer : NetworkBehaviour
         Debug.Log("target");
         gameObject.GetComponent<UiWinds>().SetName(wind, name);
     }
-
-    //[TargetRpc]
-    //public void TargetChangeCam()
-    //{
-    //    Destroy(player.Camera);
-
-    //}
 
     [TargetRpc]
     public void TargetChangeWind(NetworkConnection conn)
@@ -211,6 +197,7 @@ public class SetupPlayer : NetworkBehaviour
     {
         player = gameObject.GetComponent<Player>();
 
+        player.wind = wind;
         player.name = name;
         //if (isServer) return;
         GameMaster.instance.AddPlayer(GetComponent<NetworkIdentity>().netId.ToString(), ord, wind);
@@ -225,10 +212,6 @@ public class SetupPlayer : NetworkBehaviour
         {
             Debug.Log($"Camera {GameMaster.instance.availableCameras[i]}");
         }
-
-
-        //    CmdAddPlayerName(GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().wind,
-        //GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().name);
     }
 
     public override void OnStartClient()

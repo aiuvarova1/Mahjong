@@ -294,20 +294,8 @@ Each losing player pays any other losing player with a greater value hand, the d
 
         };
 
-        //    var res = dict
-        //.GroupBy(p => p.Value)
-        //.ToDictionary(g => g.Key, g => g.Select(pp => pp.Key).ToList());
-        //RuEng = new Dictionary<string, string>();
-
-        //foreach (string key in EngRu.Keys)
-        //{
-        //    Debug.Log(key);
-        //    RuEng.Add(EngRu[key], key);
-        //}
         RuEng = EngRu.ToDictionary(x => x.Value, x => x.Key);
 
-
-        // RuEng =( EngRu.ToLookup(pair => pair.Value, pair => pair.Key));
     }
 
     public string GetLocalizedValue(string key)

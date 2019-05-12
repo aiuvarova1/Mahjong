@@ -8,15 +8,6 @@ using UnityEngine;
 
 public class Kong : Combination
 {
-
-   // bool opened;
-
-    public Kong(Tile t1, Tile t2, Tile t3,bool openedComb) : base(t1, t2, t3)
-    {
-        Name = "Kong";
-        opened = openedComb;
-    }
-
     public Kong(Tile t1, Tile t2, Tile t3,Tile t4,  bool openedComb) : base(t1, t2, t3)
     {
         tileList.Add(t4);

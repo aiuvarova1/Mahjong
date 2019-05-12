@@ -34,7 +34,7 @@ public class GameMaster : NetworkBehaviour
 
     //"prepare" by default
     [SyncVar]
-    public string gameState = "end";
+    public string gameState = "prepare";
 
     [SerializeField]
     public List<Camera> allCameras = new List<Camera>();
@@ -152,13 +152,14 @@ public class GameMaster : NetworkBehaviour
             || gameState == "distributing" || gameState == "in process")
         {
             GameManager.instance.stopTheGame = true;
+            GameManager.instance.RefreshAll();
 
             foreach (string id in players.Keys)
             {
                 if (id == remove) return;
                 Player p = players[id];
                 p.GetComponent<PlayerUI>().TargetShowLeftPlayerInfo(p.connectionToClient,player.name,player.wind);
-
+                player.GetComponent<SetupPlayer>().RpcRefreshOldScore();
             }
 
         }
@@ -257,7 +258,7 @@ public class GameMaster : NetworkBehaviour
             player.GetComponent<SetupPlayer>().TargetChangeWind(player.connectionToClient);
             TargetAddWind(player.connectionToClient);
             // TargetAddWind(player.connectionToClient);
-            AddLabel(player.gameObject.GetComponent<SetupPlayer>());
+           // AddLabel(player.gameObject.GetComponent<SetupPlayer>());
         }
     }
 

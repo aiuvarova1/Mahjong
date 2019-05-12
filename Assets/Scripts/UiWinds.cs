@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class UiWinds : MonoBehaviour
 {
@@ -10,12 +11,9 @@ public class UiWinds : MonoBehaviour
 
     Dictionary<string, Text> windLabels = new Dictionary<string, Text>();
 
-   // List<Text> windlabels = new List<Text>();
-
     public void AssignWinds()
     {
         windLabels.Clear();
-
         switch (gameObject.GetComponent<Player>().wind)
         {
             case "East":
@@ -42,18 +40,39 @@ public class UiWinds : MonoBehaviour
         windLabels.Add(up,labels[1]);
         windLabels.Add(right,labels[2]);
 
+        List<string> names = new List<string>();
+
+        for (int i = 0; i < 3; i++)
+        {
+            if (labels[i].text.Length != 0)
+            {
+                try
+                {
+                    names.Add( "\n"+(labels[i].text.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))[1]);
+                }
+                catch (Exception ex)
+                {
+                    names.Add( "");
+                }
+            }
+            else
+            {
+                names.Add("");
+            }
+        }
+
         if (LocalizationManager.instance != null)
         {
-            labels[0].text = LocalizationManager.instance.GetLocalizedValue(left);
-            labels[1].text = LocalizationManager.instance.GetLocalizedValue(up);
-            labels[2].text = LocalizationManager.instance.GetLocalizedValue(right);
+            labels[0].text = LocalizationManager.instance.GetLocalizedValue(left) + names[0];
+            labels[1].text = LocalizationManager.instance.GetLocalizedValue(up) + names[1];
+            labels[2].text = LocalizationManager.instance.GetLocalizedValue(right) + names[2];
 
         }
         else
         {
-            labels[0].text = left;
-            labels[1].text = up;
-            labels[2].text = right;
+            labels[0].text = left + names[0];
+            labels[1].text = up+ names[1];
+            labels[2].text = right+names[2];
         }
     }
 

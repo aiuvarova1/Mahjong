@@ -23,7 +23,6 @@ public class PlayerUI : NetworkBehaviour
     [SerializeField]
     GameObject startButton;
 
-    //public Text numOfPlayers;
     public Text playerWind;
 
     public GameObject QuitButton;
@@ -62,14 +61,32 @@ public class PlayerUI : NetworkBehaviour
 
     public Camera mainCam;
 
-
+    #region start and finish
     private void Start()
     {
         player = gameObject.GetComponent<Player>();
         networkManager = (NewNetworkManager)NetworkManager.singleton;
         mainCam = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+    }
 
-        //mainCam.enabled = false;
+    private void Awake()
+    {
+        starter = WaitForStart();
+        CountDown = WaitForMove();
+        CombinationEnum = WaitForCombination();
+        hider = HideInfo();
+
+        infoPanel.SetActive(false);
+        countDown.enabled = false;
+
+        thirdButton.gameObject.SetActive(false);
+        chowPanel.SetActive(false);
+        declaration.enabled = false;
+        //combinationInfo.enabled = false;
+
+        leavePanel.SetActive(false);
+
+        scorePanel.SetActive(false);
     }
 
     public void Refresh()
@@ -95,107 +112,13 @@ public class PlayerUI : NetworkBehaviour
 
         QuitButton.SetActive(true);
         startButton.SetActive(true);
-
-        //score panel???
-        
     }
+    #endregion
+
+    #region info and scores
 
     [TargetRpc]
-    public void TargetInfo(NetworkConnection conn,string info)
-    {
-        Debug.Log("target");
-        ChangeInfo(info);
-    }
-
-    public void ChangeInfo(string info)
-    {
-        Debug.Log("cmd");
-        StopCoroutine(hider);
-        StopHideInfo();
-        combinationInfo.enabled = true;
-        combinationInfo.text = LocalizationManager.instance.GetLocalizedValue(info);
-
-
-    }
-
-    private void Awake()
-    {
-        starter = WaitForStart();
-        CountDown = WaitForMove();
-        CombinationEnum = WaitForCombination();
-        hider = HideInfo();
-
-        infoPanel.SetActive(false);
-        countDown.enabled = false;
-
-        thirdButton.gameObject.SetActive(false);
-        chowPanel.SetActive(false);
-        declaration.enabled = false;
-        //combinationInfo.enabled = false;
-
-        leavePanel.SetActive(false);
-
-
-        //!!!
-        //GameObject names = GameObject.FindGameObjectWithTag("Names");
-        //Button[] objects=names.GetComponentsInChildren<Button>();
-
-        //objects[1].GetComponentInChildren<Text>().text = "Pobeda";
-
-        scorePanel.SetActive(false);
-        
-
-    }
-
-    public void AskToContinueGame()
-    {
-        CmdContinue();
-        
-    }
-
-    [Command]
-    void CmdContinue()
-    {
-        Debug.Log(GameMaster.instance.gameState);
-        GameMaster.instance.readyToContinuePlayers++;
-        
-        Debug.Log(GameMaster.instance.readyToContinuePlayers);
-        Debug.Log(GameMaster.instance.playersToContinue);
-        Debug.Log(GameMaster.instance.gameState);
-
-        GetComponent<Player>().RpcRefresh();
-        GetComponent<Player>().TargetRefresh(connectionToClient);
-    }
-
-    public void ChangeCamera()
-    {
-        
-        if(player.Camera.enabled)
-        {
-            player.Camera.enabled = false;
-           
-            mainCam.enabled = true;
-        }
-        else
-        {
-            player.Camera.enabled = true;
-            mainCam.enabled = false;
-        }
-    }
-
-    [TargetRpc]
-    public void TargetShowLeftPlayerInfo(NetworkConnection conn,string name,string wind)
-    {
-        leavePanel.SetActive(true);
-        Debug.Log(wind);
-        leavePanel.GetComponentInChildren<Text>().text = $"{name} ({LocalizationManager.instance.GetLocalizedValue(wind)}) " +
-            $"{LocalizationManager.instance.GetLocalizedValue("has left the room")}";
-    }
-
-    #region Coroutines
-
-    [TargetRpc]
-    public void TargetShowScores(NetworkConnection conn,int[] scores,int[] oldScores,string[] names,string winner)
+    public void TargetShowScores(NetworkConnection conn, int[] scores, int[] oldScores, string[] names, string winner)
     {
         scorePanel.SetActive(true);
 
@@ -286,11 +209,11 @@ public class PlayerUI : NetworkBehaviour
         tableNames = GameObject.FindGameObjectWithTag("NewScore");
         objects = tableNames.GetComponentsInChildren<Button>();
 
-        
+
 
         for (int i = 1; i < names.Length + 1; i++)
         {
-            
+
             objects[i].GetComponentInChildren<Text>().text = (oldScores[i - 1] + total[i - 1]).ToString();
         }
         player.oldScore = oldScores[player.order] + total[player.order];
@@ -298,23 +221,16 @@ public class PlayerUI : NetworkBehaviour
 
     }
 
-    //[TargetRpc]
-    //public void TargetSetOldScore()
-    //{
-    //    CmdSetScore(player.oldScore);
-    //}
-
     [Command]
     void CmdSetScore(int score)
     {
         player.oldScore = score;
     }
 
-    
 
-    void FillMatrix(ref int[,]matrix,int[] scores,string winner)
+    void FillMatrix(ref int[,] matrix, int[] scores, string winner)
     {
-        int winNum=-1;
+        int winNum = -1;
 
         switch (winner)
         {
@@ -371,12 +287,12 @@ public class PlayerUI : NetworkBehaviour
                         if (j != i)
                         {
                             //east row
-                            if(j==0)
+                            if (j == 0)
                                 matrix[j, i] = -scores[0] * 2;
                             else
-                                matrix[j, i] = scores[i]-scores[j];
+                                matrix[j, i] = scores[i] - scores[j];
                         }
-                            
+
                         else
                             matrix[j, i] = 0;
                     }
@@ -409,14 +325,81 @@ public class PlayerUI : NetworkBehaviour
                     }
                 }
             }
-            
+
+        }
+    }
+
+
+    [TargetRpc]
+    public void TargetInfo(NetworkConnection conn, string info)
+    {
+        Debug.Log("target");
+        ChangeInfo(info);
+    }
+
+    public void ChangeInfo(string info)
+    {
+        Debug.Log("cmd");
+        StopCoroutine(hider);
+        StopHideInfo();
+        combinationInfo.enabled = true;
+        combinationInfo.text = LocalizationManager.instance.GetLocalizedValue(info);
+    }
+
+
+
+    public void AskToContinueGame()
+    {
+        CmdContinue();
+    }
+
+    [Command]
+    void CmdContinue()
+    {
+        Debug.Log(GameMaster.instance.gameState);
+        GameMaster.instance.readyToContinuePlayers++;
+
+        Debug.Log(GameMaster.instance.readyToContinuePlayers);
+        Debug.Log(GameMaster.instance.playersToContinue);
+        Debug.Log(GameMaster.instance.gameState);
+
+        GetComponent<Player>().RpcRefresh();
+        GetComponent<Player>().TargetRefresh(connectionToClient);
+    }
+
+    public void ChangeCamera()
+    {
+
+        if (player.Camera.enabled)
+        {
+            player.Camera.enabled = false;
+
+            mainCam.enabled = true;
+        }
+        else
+        {
+            player.Camera.enabled = true;
+            mainCam.enabled = false;
         }
     }
 
     [TargetRpc]
-    public void TargetShowInfo(NetworkConnection conn ,string info)
+    public void TargetShowLeftPlayerInfo(NetworkConnection conn, string name, string wind)
     {
-        if (LocalizationManager.instance==null|| LocalizationManager.instance.language == "Eng")
+        leavePanel.SetActive(true);
+        Debug.Log(wind);
+        leavePanel.GetComponentInChildren<Text>().text = $"{name} ({LocalizationManager.instance.GetLocalizedValue(wind)}) " +
+            $"{LocalizationManager.instance.GetLocalizedValue("has left the room")}";
+    }
+    #endregion
+
+    #region Coroutines
+
+
+    [TargetRpc]
+    public void TargetShowInfo(NetworkConnection conn, string info)
+    {
+        if (LocalizationManager.instance == null || LocalizationManager.instance.language == "Eng")
             combinationInfo.text = info;
         else
             combinationInfo.text = LocalizationManager.instance.GetLocalizedValue(info);
@@ -450,14 +433,13 @@ public class PlayerUI : NetworkBehaviour
 
     void StopHideInfo()
     {
-        
         Color fullCol = combinationInfo.color;
         fullCol.a = 1f;
         combinationInfo.color = fullCol;
         hider = HideInfo();
     }
 
-    IEnumerator DeclareCombination(string wind,string combination)
+    IEnumerator DeclareCombination(string wind, string combination)
     {
         if (combination == "" && wind == "")
         {
@@ -471,8 +453,6 @@ public class PlayerUI : NetworkBehaviour
                 declaration.text = $"{wind} declares {combination}!";
             else
                 declaration.text = $"{LocalizationManager.instance.GetLocalizedValue(wind)} объявляет {LocalizationManager.instance.GetLocalizedValue(combination)}!";
-
-            
         }
         if (LocalizationManager.instance != null)
             LocalizationManager.instance.ChangeFont(ref declaration);
@@ -480,8 +460,7 @@ public class PlayerUI : NetworkBehaviour
         Color fullCol = declaration.color;
         fullCol.a = 1f;
         declaration.color = fullCol;
-
-
+       
         declaration.enabled = true;
         yield return new WaitForSeconds(2f);
 
@@ -493,27 +472,23 @@ public class PlayerUI : NetworkBehaviour
             yield return new WaitForSeconds(0.3f);
         }
         declaration.enabled = false;
-
         fullCol = declaration.color;
         fullCol.a = 1f;
         declaration.color = fullCol;
     }
 
     [TargetRpc]
-    public void TargetShowDeclaredCombination(NetworkConnection conn,string wind, string combination,bool needDeclare,int audioNum)
+    public void TargetShowDeclaredCombination(NetworkConnection conn, string wind, string combination, bool needDeclare, int audioNum)
     {
-        if(needDeclare)
-            StartCoroutine(DeclareCombination(wind,combination));
+        if (needDeclare)
+            StartCoroutine(DeclareCombination(wind, combination));
 
-        if(audioNum!=-1 && AudioManager.instance != null)
+        if (audioNum != -1 && AudioManager.instance != null)
         {
             GetComponent<AudioSource>().clip = AudioManager.instance.combSounds[audioNum];
             GetComponent<AudioSource>().Play();
         }
-
-
     }
-
 
 
     IEnumerator WaitForStart()
@@ -548,8 +523,6 @@ public class PlayerUI : NetworkBehaviour
 
             countdown--;
         }
-        //infoPanel.SetActive(false);
-        
         CmdFailToStart();
         StopWaiting();
     }
@@ -583,7 +556,6 @@ public class PlayerUI : NetworkBehaviour
         combinationInfo.enabled = true;
 
         combinationInfo.text = LocalizationManager.instance.GetLocalizedValue("Your move");
-        
 
         countDown.enabled = true;
 
@@ -594,25 +566,17 @@ public class PlayerUI : NetworkBehaviour
             yield return new WaitForSeconds(1);
             countdown--;
         }
-        //countDown.enabled = false;
-        
-        player.SelectTile(player.selectedTile.tile);
+
+        if(player.selectedTile!=null)
+            player.SelectTile(player.selectedTile.tile);
         player.startedCoroutine = false;
         StopWaitingForMove();
-        //CmdStopCoroutine();
-
     }
-    //[Command]
-    //void CmdStopCoroutine()
-    //{
-    //    player.startedCoroutine = false;
-    //}
 
     public void LaunchWaitForMove()
     {
         if (isClient)
         {
-            
             StartCoroutine(CountDown);
         }
     }
@@ -635,14 +599,11 @@ public class PlayerUI : NetworkBehaviour
 
     IEnumerator WaitForCombination()
     {
-
-        //player.turnForCombination = true;
         CmdSetCombinationTurn(true);
         int countdown = 20;
 
         combinationInfo.enabled = true;
         combinationInfo.text = LocalizationManager.instance.GetLocalizedValue("Your turn");
-
 
         countDown.text = "20";
 
@@ -655,17 +616,12 @@ public class PlayerUI : NetworkBehaviour
             yield return new WaitForSeconds(1);
             countdown--;
         }
-        //countDown.enabled = false;
-        
 
         if (chowPanel.activeSelf)
             chowPanel.SetActive(false);
         if (thirdButton.enabled)
             thirdButton.enabled = false;
 
-       // player.CmdAnswerToServer();
-        //GameManager.instance.NumOfAnsweredPlayers++;
-        //player.turnForCombination = false;
         CmdSetCombinationTurn(false);
         //player.playerTurn = false;
         StopWaitingForCombination();
@@ -674,7 +630,6 @@ public class PlayerUI : NetworkBehaviour
 
     public void LaunchWaitForCombination()
     {
-
         StartCoroutine(CombinationEnum);
     }
 
@@ -682,9 +637,7 @@ public class PlayerUI : NetworkBehaviour
     [TargetRpc]
     public void TargetStopWaitingForCombination(NetworkConnection conn)
     {
-
         StopWaitingForCombination();
-
     }
 
     public void StopWaitingForCombination()
@@ -694,9 +647,12 @@ public class PlayerUI : NetworkBehaviour
         countDown.enabled = false;
         player.turnForCombination = false;
         combinationInfo.enabled = false;
+
+        if (chowPanel.activeSelf)
+            chowPanel.SetActive(false);
+        if (thirdButton.enabled)
+            thirdButton.enabled = false;
     }
-
-
 
     [Command]
     void CmdSetCombinationTurn(bool turn)
@@ -718,7 +674,6 @@ public class PlayerUI : NetworkBehaviour
 
             yield return new WaitForSeconds(0.0025f);
         }
-
     }
 
     [TargetRpc]
@@ -752,8 +707,6 @@ public class PlayerUI : NetworkBehaviour
         StartCoroutine("LightenTheScreen");
     }
 
-
-
     #endregion
 
     #region Quit
@@ -763,6 +716,16 @@ public class PlayerUI : NetworkBehaviour
         MatchInfo match = networkManager.matchInfo;
         networkManager.matchMaker.DropConnection(match.networkId, match.nodeId, 0, networkManager.OnDropConnection);
         networkManager.StopHost();
+    }
+
+    public void Update()
+    {
+        if (isLocalPlayer && leave)
+        {
+            leave = false;
+            DropConnection();
+        }
+
     }
 
     #endregion
@@ -820,7 +783,7 @@ public class PlayerUI : NetworkBehaviour
     #endregion
 
     #region Chow
-    public void MakeChowChoice(Combination first,Combination second,Combination third)
+    public void MakeChowChoice(Combination first, Combination second, Combination third)
     {
         //RefreshChows();
         string firstText = "";
@@ -839,7 +802,7 @@ public class PlayerUI : NetworkBehaviour
 
     }
 
-    void GetChowSequence(Combination comb,ref string text)
+    void GetChowSequence(Combination comb, ref string text)
     {
         if (comb == null)
         {
@@ -855,7 +818,7 @@ public class PlayerUI : NetworkBehaviour
     }
 
     [TargetRpc]
-    void TargetGiveChowChoice(NetworkConnection conn, string text1,string text2,string text3)
+    void TargetGiveChowChoice(NetworkConnection conn, string text1, string text2, string text3)
     {
         if (text3 != "") thirdButton.gameObject.SetActive(true);
 
@@ -881,7 +844,7 @@ public class PlayerUI : NetworkBehaviour
         player.waitingCombination = firstChow;
 
         StopWaitForChow();
-        
+
     }
 
     public void SelectSecondChow()
@@ -896,7 +859,7 @@ public class PlayerUI : NetworkBehaviour
         player.waitingCombination = secondChow;
 
         StopWaitForChow();
-       // DisableChowPanel();
+        // DisableChowPanel();
     }
 
     public void SelectThirdChow()
@@ -920,8 +883,6 @@ public class PlayerUI : NetworkBehaviour
     {
         GameManager.instance.chowDeclarator = player;
         GameManager.instance.NumOfAnsweredPlayers++;
-
-        
     }
 
     void DisableChowPanel()
@@ -933,15 +894,5 @@ public class PlayerUI : NetworkBehaviour
 
         thirdButton.gameObject.SetActive(false);
     }
-    #endregion
-
-    public void Update()
-    {
-        if (isLocalPlayer && leave)
-        {
-            leave = false;
-            DropConnection();
-        }
- 
-    }
+    #endregion 
 }

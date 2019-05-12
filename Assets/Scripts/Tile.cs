@@ -14,16 +14,12 @@ public class Tile:IComparable<Tile>
 
     public bool isOwned=false;
 
-    
-
     public Tile(GameObject tile,bool created,Vector2 coords)
     {
         this.tile = tile;
         if(!created)
             CreateFace(coords);
         CreateName(coords);
-        
-
     }
 
     public int CompareTo(Tile tileToCompare)

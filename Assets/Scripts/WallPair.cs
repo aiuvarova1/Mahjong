@@ -21,10 +21,5 @@ public class WallPair
     {
 
     }
-
-    public void Refresh()
-    {
-        
-    }
 }
 

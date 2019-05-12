@@ -385,13 +385,13 @@ public class GameManager : NetworkBehaviour
         {
             Debug.Log("here");
 
-            if (canStopTheGame && stopTheGame)
-            {
-                stopTheGame = false;
-                RefreshAll();
-                return;
+            //if (canStopTheGame && stopTheGame)
+            //{
+            //    stopTheGame = false;
+            //    RefreshAll();
+            //    return;
 
-            }
+            //}
 
             if (mahJongDeclarator != null)
             {
@@ -423,12 +423,12 @@ public class GameManager : NetworkBehaviour
         }
         //if(waitForCombinations)
         //    Debug.Log("server");
-        if (canStopTheGame && stopTheGame)
-        {
-            stopTheGame = false;
-            RefreshAll();
+        //if (canStopTheGame && stopTheGame)
+        //{
+        //    stopTheGame = false;
+        //    RefreshAll();
             
-        }
+        //}
     }
     #endregion
 
@@ -462,7 +462,7 @@ public class GameManager : NetworkBehaviour
 
     public void FinishGame(MahJong mahjong)
     {
-        Invoke("OpenAllTiles", 2.3f);
+        Invoke("OpenAllTiles", 3f);
 
         Player winner = winds[CurrentWind].player;
 

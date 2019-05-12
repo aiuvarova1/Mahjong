@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour {
 
-    
-   
 	// Use this for initialization
 	void Start () {
         Application.targetFrameRate = 60;
@@ -42,22 +40,7 @@ public class MenuManager : MonoBehaviour {
         if (scene.name == "Lobby" && AudioManager.instance.playingClip != AudioManager.instance.lobbyTheme)
             AudioManager.instance.SetTheme();
 
-        //if (scene.name == "Lobby" && NewNetworkManager.hostLeft)
-        //{
-        //    Debug.Log("enable");
-        //    NewNetworkManager.hostLeft = false;
-        //    JoinGame.EnableHostPanel();
-        //}
-        //}else if(scene.name == "Lobby")
-        //{
-        //    JoinGame.DisableHostPanel();
-        //}
     }
-
-    //private void DestroyPanel()
-    //{
-    //    Destroy(hostPanelClone);
-    //}
 
     private void OnDisable()
     {
@@ -94,9 +77,5 @@ public class MenuManager : MonoBehaviour {
         }
     }
 
-    // Update is called once per frame
-    void Update () {
-            
-	}
 }
 

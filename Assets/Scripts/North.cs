@@ -8,12 +8,6 @@ using UnityEngine;
 
 class North:Wind
 {
-    //const int num = 4;
-
-    //public Vector3 
-
-     
-
     public North(Player p) : base(p)
     {
         startPosition = new Vector3(11, 1f, 31);
@@ -24,8 +18,6 @@ class North:Wind
         Refresh();
         Name = "North";
     }
-
-
 
     public override void MoveRightFreePosition(ref Vector3 pos)
     {

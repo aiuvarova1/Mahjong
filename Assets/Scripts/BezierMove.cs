@@ -66,13 +66,14 @@ public class BezierMove : NetworkBehaviour
         {
             Debug.Log("closed");
             //transform.position = new Vector3(transform.position.x, 2.8f, transform.position.z);
-            endPos.y = 1.8f;
+            endPos.y = 0.9f;
             endRotation = Quaternion.Euler(0, rotation, 0);
         }
         else
         {
             Debug.Log("opened");
             //transform.position = new Vector3(transform.position.x, 1, transform.position.z);
+            endPos.y += 0.1f;
             endRotation = Quaternion.Euler(-180, rotation, 0);
         }
 
@@ -155,11 +156,11 @@ public class BezierMove : NetworkBehaviour
 
     public void ShowTile(float rotation)
     {
-        Debug.Log(rotation);
+       
+        transform.position = new Vector3(transform.position.x, 0.1f, transform.position.z);
+
+        transform.rotation = Quaternion.Euler(-180, rotation, 0);
         Debug.Log(transform.rotation);
-        transform.rotation=Quaternion.Euler(-180, rotation, 0);
-        Debug.Log(transform.rotation);
-        transform.position = new Vector3(transform.position.x, 0, transform.position.z);
     }
 
 
