@@ -908,7 +908,7 @@ public class Player : NetworkBehaviour
                 if (firstIndex == -1)
                 {
                     freeSpacePosition = playerTiles[index].tile.transform.position;
-                    freeSpacePosition.y = 1.2f;
+                    freeSpacePosition.y = 1.4f;
                     freeSpaceIndex = index;
                     firstIndex = index;
                 }
@@ -944,7 +944,7 @@ public class Player : NetworkBehaviour
         openedTiles.Add(new Kong(playerTiles[firstIndex], playerTiles[firstIndex + 1], playerTiles[firstIndex + 2], playerTiles[firstIndex + 3], false));
 
         freeSpacePosition = playerTiles[firstIndex].tile.transform.position;
-        freeSpacePosition.y = 1.2f;
+        freeSpacePosition.y = 1.4f;
         freeSpaceIndex = firstIndex;
 
         string name = playerTiles[firstIndex].name;
@@ -980,7 +980,7 @@ public class Player : NetworkBehaviour
         openedTiles.Add(kong);
 
         freeSpacePosition = playerTiles[index].tile.transform.position;
-        freeSpacePosition.y = 1.2f;
+        freeSpacePosition.y = 1.4f;
         freeSpaceIndex = index;
 
         RpcLieOutCombinationTile(pung.additionalPosition, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation, playerTiles[index].name, true);
@@ -1086,15 +1086,9 @@ public class Player : NetworkBehaviour
                     {
                         combinationNum = i;
                         Debug.Log("found" + i);
-
-
                         combToOpen = comb;
 
-                        Debug.Log(mahjong.closedCombinations[k].Count);
-
                         mahjong.closedCombinations[k].Remove(combToOpen);
-
-                        Debug.Log(mahjong.closedCombinations[k].Count);
 
                         waitingCombination = combToOpen;
 
@@ -1103,7 +1097,8 @@ public class Player : NetworkBehaviour
 
                         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
 
-                        Invoke("InvokeDelete", 1.8f);
+                        //Invoke("InvokeDelete", 1.8f);
+                        Invoke("Sort", 1.8f);
 
                         openedTiles.Add(waitingCombination);
 
