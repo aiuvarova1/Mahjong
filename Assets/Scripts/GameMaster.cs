@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class GameMaster : NetworkBehaviour
 {
-    public const uint playersToStart = 1;
+    public const uint playersToStart = 4;
     
     public static GameMaster instance = null;
 

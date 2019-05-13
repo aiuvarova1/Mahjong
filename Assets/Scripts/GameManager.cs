@@ -229,7 +229,6 @@ public class GameManager : NetworkBehaviour
         if (!isServer) return;
 
         Debug.Log(currentWind + "cur");
-        
 
         //may need fix
         if (currentWind >= 4)
