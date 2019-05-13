@@ -1098,7 +1098,7 @@ public class Player : NetworkBehaviour
                         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
 
                         //Invoke("InvokeDelete", 1.8f);
-                        Invoke("Sort", 1.8f);
+                       // Invoke("Sort", 1f);
 
                         openedTiles.Add(waitingCombination);
 

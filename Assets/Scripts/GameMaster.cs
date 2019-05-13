@@ -185,6 +185,7 @@ public class GameMaster : NetworkBehaviour
             else
                 player.GetComponent<PlayerUI>().leave = true;
 
+            
             player.GetComponent<PlayerUI>().TargetStartWaiting(player.connectionToClient);
         }
     }
@@ -279,6 +280,7 @@ public class GameMaster : NetworkBehaviour
             case "waiting":
                 if (playersToStart != PlayerCount)
                 {
+                    readyPlayers = 0;
                     gameState = "prepare";
                     SetReady();
 

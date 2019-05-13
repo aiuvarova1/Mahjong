@@ -494,7 +494,7 @@ public class PlayerUI : NetworkBehaviour
     IEnumerator WaitForStart()
     {
 
-        int countdown = 20;
+        int countdown = 30;
 
         string prefix;
 
@@ -536,14 +536,18 @@ public class PlayerUI : NetworkBehaviour
     {
         StopCoroutine(starter);
         starter = WaitForStart();
-        infoPanel.SetActive(false);
+        startButton.SetActive(true);
+        
         infoText.text = " ";
+        infoPanel.SetActive(false);
     }
 
     [TargetRpc]
     public void TargetStartWaiting(NetworkConnection conn)
     {
         Debug.Log("starter");
+        ready = false;
+        StopWaiting();
         StartCoroutine(starter);
     }
 
