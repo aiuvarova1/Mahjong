@@ -47,7 +47,7 @@ public class Tile:IComparable<Tile>
             case 0:
                 name += 'f';
                 name += (int)coordinates[0]+1;
-                if ((int)coordinates[0] % 4 == 0)
+                if ((int)coordinates[0] / 4 == 0)
                 {
                     tile.GetComponent<TileName>().Name = $"Season {(int)coordinates[0] + 1}";
                     tile.GetComponent<TileName>().RuName = $"Сезон {(int)coordinates[0] + 1}";

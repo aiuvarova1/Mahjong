@@ -40,6 +40,8 @@ public class Player : NetworkBehaviour
 
     List<Vector3> positionList;
 
+    float tileRotation;
+
     #region sorting
     public void Sort()
     {
@@ -55,9 +57,10 @@ public class Player : NetworkBehaviour
         {
             SortTiles();
         }
-        catch (Exception)
+        catch (Exception e)
         {
             Debug.Log("ex");
+            Debug.Log(e.Message);
             return;
         }
 
@@ -75,7 +78,7 @@ public class Player : NetworkBehaviour
     public void SortTiles()
     {
 
-        Debug.Log(playerTiles[playerTiles.Count - 1].name);
+        Debug.Log(playerTiles.Count);
 
         playerTiles.Sort();
 
@@ -84,7 +87,8 @@ public class Player : NetworkBehaviour
         //playerTiles[0].tile.transform.position = startPosition;
         for (int i = 0; i < playerTiles.Count; i++)
         {
-            playerTiles[i].tile.transform.rotation = Quaternion.Euler(-90, playerTiles[i].tile.transform.eulerAngles.y, 0);
+            //playerTiles[i].tile.transform.rotation = Quaternion.Euler(-90, playerTiles[i].tile.transform.eulerAngles.y, 0);
+            playerTiles[i].tile.transform.rotation = Quaternion.Euler(-90, tileRotation, 0);
             // Debug.Log(playerTiles[i]);
             playerTiles[i].tile.transform.position = positionList[i];
             // Debug.Log($"{i}, {playerTiles[i].name}");
@@ -92,9 +96,10 @@ public class Player : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcFillPositionList(Vector3[] pos)
+    public void RpcFillPositionList(Vector3[] pos,float rotation)
     {
         positionList = new List<Vector3>(pos);
+        tileRotation = rotation;
     }
 
     #endregion

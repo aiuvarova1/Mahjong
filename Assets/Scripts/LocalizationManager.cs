@@ -135,6 +135,7 @@ public class LocalizationManager : MonoBehaviour
             "Костей каждой масти от 1 до 9 по 4 штуки.\n Кроме того есть 4 ветра: Восток, Юг, Запад, Север, \n"},
             {"Winds\n","Ветра\n" },
             {"Dragons\n","Драконы\n" },
+            {"closed Kong","закрытый Конг" },
             {"and 3 dragons - Red, Green and White, 4 copies of each type.\n","и 3 дракона - Красный, Зеленый и Белый, по 4 штуки каждого вида.\n" },
             {"There are also 8 additional tiles: 4 seasons and 4 flowers.\n","Также есть 8 дополнительных костей: 4 сезона и 4 цветка.\n" },
             {"Seasons\n","Сезоны\n" },

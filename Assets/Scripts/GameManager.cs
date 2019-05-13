@@ -159,7 +159,7 @@ public class GameManager : NetworkBehaviour
             }
 
             if (winds[i].player != null)
-                winds[i].player.RpcFillPositionList(pos);
+                winds[i].player.RpcFillPositionList(pos,winds[i].rotation);
         }
 
 
@@ -229,6 +229,8 @@ public class GameManager : NetworkBehaviour
         if (!isServer) return;
 
         Debug.Log(currentWind + "cur");
+        
+
         //may need fix
         if (currentWind >= 4)
         {
@@ -269,6 +271,8 @@ public class GameManager : NetworkBehaviour
         }
 
         Debug.Log(player.playerTiles.Count);
+        if (player.playerTiles[player.playerTiles.Count - 1].name[0] != 'f')
+            player.Sort();
         player.RpcLieOutTile(player.playerTiles.Count - 1, winds[currentWind].freeFlowerPosition, winds[currentWind].rotation, "flowers");
         //player.playerTiles.RemoveAt(player.playerTiles.Count - 1);
 
