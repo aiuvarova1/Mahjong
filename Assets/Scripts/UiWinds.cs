@@ -11,6 +11,7 @@ public class UiWinds : MonoBehaviour
 
     Dictionary<string, Text> windLabels = new Dictionary<string, Text>();
 
+    //assigns labels to winds
     public void AssignWinds()
     {
         windLabels.Clear();
@@ -34,11 +35,12 @@ public class UiWinds : MonoBehaviour
         }
     }
 
-    void AssignLabels(string left,string up,string right)
+    //adds names and winds on labels
+    void AssignLabels(string left, string up, string right)
     {
-        windLabels.Add(left,labels[0]);
-        windLabels.Add(up,labels[1]);
-        windLabels.Add(right,labels[2]);
+        windLabels.Add(left, labels[0]);
+        windLabels.Add(up, labels[1]);
+        windLabels.Add(right, labels[2]);
 
         List<string> names = new List<string>();
 
@@ -48,11 +50,11 @@ public class UiWinds : MonoBehaviour
             {
                 try
                 {
-                    names.Add( "\n"+(labels[i].text.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))[1]);
+                    names.Add("\n" + (labels[i].text.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))[1]);
                 }
                 catch (Exception ex)
                 {
-                    names.Add( "");
+                    names.Add("");
                 }
             }
             else
@@ -71,17 +73,19 @@ public class UiWinds : MonoBehaviour
         else
         {
             labels[0].text = left + names[0];
-            labels[1].text = up+ names[1];
-            labels[2].text = right+names[2];
+            labels[1].text = up + names[1];
+            labels[2].text = right + names[2];
         }
     }
 
-    public void SetName(string wind,string name)
+    //adds new player's name on label
+    public void SetName(string wind, string name)
     {
         if (windLabels.ContainsKey(wind))
             windLabels[wind].text = windLabels[wind].text + "\n" + name;
     }
 
+    //removes disconnected player's name from label
     public void RemoveName(string wind)
     {
         if (windLabels.ContainsKey(wind))

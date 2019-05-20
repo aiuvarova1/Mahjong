@@ -8,9 +8,6 @@ using UnityEngine;
 
  class East:Wind
 {
-    //const int num = 1;
-
-   // public Vector3 
     public East(Player p) : base(p)
     {
         startPosition = new Vector3(-31, 1f, 11);
@@ -19,21 +16,22 @@ using UnityEngine;
 
         rotation = -90;
         Refresh();
-        Name = "East";
-        
+        Name = "East";  
     }
 
-
+    // moves right free position (from player's point of view)
     public override void MoveRightFreePosition(ref Vector3 pos)
     {
         pos.z -= 2f;
     }
 
+    // moves left free position (from player's point of view)
     public override void MoveLeftFreePosition(ref Vector3 pos)
     {
         pos.z += 2f;
     }
 
+    // moves free position closer to player
     public override void MoveForwardPosition(ref Vector3 pos)
     {
         pos.x -= 2f;

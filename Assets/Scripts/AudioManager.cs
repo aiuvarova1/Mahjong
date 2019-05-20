@@ -26,6 +26,7 @@ public class AudioManager : MonoBehaviour
 
     public static AudioManager instance;
 
+    //initialization
     private void Awake()
     {
 
@@ -39,7 +40,7 @@ public class AudioManager : MonoBehaviour
     }
 
     
-
+    //changes music theme in lobby/game
     public void SetTheme()
     {
         if (playingClip == lobbyTheme)
@@ -57,15 +58,9 @@ public class AudioManager : MonoBehaviour
     }
 
 
-
+    // restores references to scene gameobjects e.g. sliders
     public void SetReferences()
     {
-        Debug.Log("audio");
-
-        if (GameObject.FindGameObjectWithTag("SettingsPanel") == null)
-        {
-            Debug.Log(GameObject.FindGameObjectWithTag("SettingsPanel") == null);
-        }
 
         if (soundSlider != null)
             return;
@@ -74,10 +69,6 @@ public class AudioManager : MonoBehaviour
 
         soundSlider = settingsPanel.GetComponentsInChildren<Slider>()[0];
         musicSlider = settingsPanel.GetComponentsInChildren<Slider>()[1];
-
-        Debug.Log(musicValue);
-        Debug.Log(soundValue);
-
 
         soundSlider.onValueChanged.AddListener(delegate { SetSound(soundSlider.value); });
         musicSlider.onValueChanged.AddListener(delegate { SetMusic(musicSlider.value); });
@@ -88,32 +79,28 @@ public class AudioManager : MonoBehaviour
         mixer.SetFloat("soundVol", Mathf.Log(soundValue) * 20);
     }
 
+
+    //sets sliders' values
     public void SetSliders()
     {
-        Debug.Log(musicValue);
         musicSlider.value = musicValue;
-        Debug.Log(musicSlider.value);
-
-
-        soundSlider.value = soundValue;
-        
+        soundSlider.value = soundValue;  
     }
 
     // Start is called before the first frame update
     void Start()
     {
         playingClip = GetComponent<AudioSource>().clip;
-        //SetReferences();
-
     }
 
+    //sets music sound to given float
     public void SetMusic(float soundLevel)
     {
         mixer.SetFloat("musicVol", Mathf.Log(soundLevel) * 20);
         musicValue = soundLevel;
     }
 
-
+    //sets sounds' sound to given float
     public void SetSound(float soundLevel)
     {
         mixer.SetFloat("soundVol", Mathf.Log(soundLevel) * 20);

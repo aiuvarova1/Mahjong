@@ -42,7 +42,6 @@ public class GameManager : NetworkBehaviour
         set
         {
             numOfAnsweredPlayers = value;
-            Debug.Log(numOfAnsweredPlayers + " num answered");
         }
     }
 
@@ -62,30 +61,29 @@ public class GameManager : NetworkBehaviour
         {
             if (value > 3) currentWind = 0;
             else currentWind = value;
-            Debug.Log("current wind" + currentWind);
         }
     }
 
     #region Coroutines
+
+    //lightens the screen after the wall is built
     IEnumerator Lighten()
     {
         yield return new WaitForSeconds(1.9f);
         GameMaster.instance.LightenScreens();
     }
 
-
+    //makes the tiles visible
     IEnumerator Build()
     {
-
         yield return new WaitForSeconds(1.8f);
-
         RpcMakeTilesVisible();
-
     }
     #endregion
 
     #region Game Start
 
+    //initialization
     private void Awake()
     {
         if (instance == null)
@@ -104,21 +102,19 @@ public class GameManager : NetworkBehaviour
 
         CurrentWind = 0;
         GameTable = new Table();
-
-
     }
 
+    //initialization of refresh events
     private void Start()
     {
         RefreshEv += instance.Refresh;
         RefreshEv += Wall.instance.Refresh;
         RefreshEv += BuildWall.instance.Refresh;
-        
     }
 
+    //fills array of wall tiles on server
     public void StartGame()
     {
-
         BuildWall.instance.FillIndexes();
 
         var o = new MemoryStream(); //Create something to hold the data
@@ -135,13 +131,10 @@ public class GameManager : NetworkBehaviour
         GameMaster.instance.DarkenScreens();
 
         StartCoroutine(Build());
-
         StartCoroutine(Lighten());
-
-        Debug.Log(BuildWall.instance.tiles.Count + "tiles");
-
     }
 
+    //distributes tiles at the beginning of the game
     public void DistributeTiles()
     {
         for (int i = 0; i < winds.Count; i++)
@@ -162,9 +155,7 @@ public class GameManager : NetworkBehaviour
                 winds[i].player.RpcFillPositionList(pos,winds[i].rotation);
         }
 
-
         Wall.instance.AssighFreeTiles();
-
         Wall.instance.DistributeTiles();
 
         Invoke("SortTiles", 3f);
@@ -173,6 +164,7 @@ public class GameManager : NetworkBehaviour
         Invoke("CheckAllPlayersForFlowers", 3.5f);
     }
 
+    
     void FixTilesPositions()
     {
         for (int i = 0; i < winds.Count; i++)
@@ -182,6 +174,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    //builds wall on clients based on server data
     [ClientRpc]
     void RpcBuildOnAllClients(string data)
     {
@@ -194,9 +187,7 @@ public class GameManager : NetworkBehaviour
         BuildWall.instance.Build(indexes);
     }
 
-
-
-
+    //makes wall tiles visible on clients
     [ClientRpc]
     void RpcMakeTilesVisible()
     {
@@ -211,6 +202,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    //sorts tiles on all players
     public void SortTiles()
     {
         Debug.Log("sort tiles");
@@ -219,18 +211,16 @@ public class GameManager : NetworkBehaviour
             if (winds[i].player != null)
                 winds[i].player.RpcSort();
         }
-        //RpcSortTiles();
     }
     #endregion
 
     #region CheckFlowers
+
+    //check all players for flowers at the beginning of the game
     void CheckAllPlayersForFlowers()
     {
         if (!isServer) return;
 
-        Debug.Log(currentWind + "cur");
-
-        //may need fix
         if (currentWind >= 4)
         {
             currentWind = 0;
@@ -243,19 +233,16 @@ public class GameManager : NetworkBehaviour
             CheckAllPlayersForFlowers();
             return;
         }
-        Debug.Log(currentWind);
 
         CheckForFlowers();
-
     }
 
+    //checks one player for flowers
     public void CheckForFlowers()
     {
         Player player = winds[currentWind].player;
         if (!player.CheckForFlowers())
         {
-            Debug.Log(GameMaster.instance.gameState);
-
             if (GameMaster.instance.gameState == "distributing" || GameMaster.instance.gameState == "starting")
             {
                 currentWind++;
@@ -269,21 +256,19 @@ public class GameManager : NetworkBehaviour
             return;
         }
 
-        Debug.Log(player.playerTiles.Count);
         if (player.playerTiles[player.playerTiles.Count - 1].name[0] != 'f')
             player.Sort();
         player.RpcLieOutTile(player.playerTiles.Count - 1, winds[currentWind].freeFlowerPosition, winds[currentWind].rotation, "flowers");
-        //player.playerTiles.RemoveAt(player.playerTiles.Count - 1);
-
+       
         winds[currentWind].MoveRightFreePosition(ref winds[currentWind].freeFlowerPosition);
         winds[currentWind].MoveLeftFreePosition(ref winds[currentWind].freePosition);
-
     }
     #endregion
 
 
     #region Combinations and turns
 
+    //shows declaration message on all clients except declarator
     public void DeclareCombination(string combination, int audioNum)
     {
         string wind = winds[CurrentWind].Name;
@@ -302,14 +287,13 @@ public class GameManager : NetworkBehaviour
         Invoke("ChangeTurn", 1.6f);
     }
 
+    //gives wall tile to the next player
     public void ChangeTurn()
     {
         Wall.instance.GiveWallTile();
-
-        //Invoke("CheckForFlowers", 1f);
     }
 
-
+    //gives turn to the next player
     public void BeginPlayerMove()
     {
         Player curPlayer = winds[CurrentWind].player;
@@ -328,7 +312,7 @@ public class GameManager : NetworkBehaviour
         GameObject.FindWithTag("Player").GetComponent<Player>().playerTurn = turn;
     }
 
-
+    //prepares for combination declarations
     public void PrepareForCombinations()
     {
         for (int i = 0; i < winds.Count; i++)
@@ -340,6 +324,7 @@ public class GameManager : NetworkBehaviour
 
     }
 
+    //prepares for combination declarations
     void Prepare()
     {
         Debug.Log("prepare for comb");
@@ -356,7 +341,6 @@ public class GameManager : NetworkBehaviour
         if (winds[CurrentWind].player != null)
             winds[CurrentWind].player.isFreeTile = false;
 
-
         for (int i = 0; i < winds.Count; i++)
         {
             if (winds[i].player != null && i != CurrentWind)
@@ -365,6 +349,7 @@ public class GameManager : NetworkBehaviour
 
     }
 
+    //defines declarator's wind
     int DefineWind(Player player)
     {
         for (int i = 0; i < winds.Count; i++)
@@ -375,9 +360,7 @@ public class GameManager : NetworkBehaviour
         return -1;
     }
 
-
-
-
+    //indicates when it's time to declare combination or change turn
     private void Update()
     {
         if (!isServer) return;
@@ -436,10 +419,10 @@ public class GameManager : NetworkBehaviour
     #endregion
 
     #region End of the game
-    //!!!!!!!!!
+
+    //draw declaration and refresh
     public void DeclareDraw()
     {
-        Debug.Log("Draw");
         RefreshWinds();
         for (int i = 0; i < winds.Count; i++)
         {
@@ -452,17 +435,16 @@ public class GameManager : NetworkBehaviour
 
     }
 
-   
-
+    //opens all players' tile at the end of the game
     void OpenAllTiles()
     {
-        Debug.Log("OpenTiles");
         for (int i = 0; i < winds.Count; i++)
         {
             winds[i].player.RpcOpenTiles(winds[i].rotation);
         }
     }
 
+    //counts all points
     public void FinishGame(MahJong mahjong)
     {
         Invoke("OpenAllTiles", 3f);
@@ -486,6 +468,7 @@ public class GameManager : NetworkBehaviour
         Invoke("SetScores", 2f);
     }
 
+    //shows sore tables on all clients
     void SetScores()
     {
         int[] scores = new int[winds.Count];
@@ -508,57 +491,52 @@ public class GameManager : NetworkBehaviour
 
 
     #region refreshing
+
+    //refreshes all players' data before the next round
     public void RefreshAll()
     {
         if (!isServer) return;
 
         RefreshWinds();
-        Debug.Log("Refresh all");
+
         for (int i = 0; i < winds.Count; i++)
         {
-            //winds[i].Refresh();
-            Debug.Log(i);
+
             if (winds[i].player != null)
             {
-                Debug.Log("player");
                 try
                 {
                     winds[i].player.RpcRefresh();
-
                     winds[i].player.TargetRefresh(winds[i].player.connectionToClient);
                 }catch(Exception ex)
                 {
-                    Debug.Log("ex");
                     continue;
                     
                 }
             }
         }
 
-
-
         GameMaster.instance.gameState = "prepare";
     }
 
+    //refreshes free winds' positions
     public void RefreshWinds()
     {
         for (int i = 0; i < winds.Count; i++)
         {
-            Debug.Log("refresh wind " + i);
-            
             winds[i].Refresh();
-            Debug.Log(winds[i].freePosition);
         }
     }
 
+    //calls refresh event
     public void OnRefresh()
     {
         RefreshEv?.Invoke();
     }
 
+    //refreshes gameManager's data
     public void Refresh()
     {
-        Debug.Log("gm refresh");
         wallIsBuilt = false;
         tilesAreGiven = false;
         waitForCombinations = false;

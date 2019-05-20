@@ -11,6 +11,7 @@ public class SetupPlayer : NetworkBehaviour
 
     public Player player;
 
+    //initialization
     private void Start()
     {
 
@@ -32,31 +33,29 @@ public class SetupPlayer : NetworkBehaviour
         if (!isLocalPlayer)
         {
             gameObject.GetComponent<PlayerUI>().canvas.enabled = false;
-
             return;
         }
     }
 
+    //adds player name on server
     [Command]
     void CmdAddPlayerName(string wind, string name)
     {
         TargetAddPlayerName(connectionToClient, wind, name);
     }
+
+    //adds player's name on other players' labels
     [TargetRpc]
     public void TargetAddPlayerName(NetworkConnection conn, string wind, string name)
     {
-        Debug.Log(name);
-        Debug.Log(wind);
-
-        Debug.Log("target");
         gameObject.GetComponent<UiWinds>().SetName(wind, name);
     }
 
+    //changes wind for the new round
     [TargetRpc]
     public void TargetChangeWind(NetworkConnection conn)
     {
         GameMaster.instance.lights[player.order].SetActive(false);
-        
 
         player.order--;
         if (player.order == -1)
@@ -65,7 +64,6 @@ public class SetupPlayer : NetworkBehaviour
         AssignWind();
 
         GameMaster.instance.lights[player.order].SetActive(true);
-
         Camera cam = Instantiate(GameMaster.instance.allCameras[player.order]);
 
         Destroy(player.Camera.gameObject);
@@ -74,37 +72,37 @@ public class SetupPlayer : NetworkBehaviour
         float newRotation = player.Camera.transform.eulerAngles.y;
 
         GetComponent<PlayerUI>().mainCam.enabled = true;
-
         GetComponent<PlayerUI>().mainCam.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
 
         GetComponent<PlayerUI>().mainCam.enabled = false;
-
         gameObject.GetComponent<UiWinds>().AssignWinds();
 
         CmdChangeWind(player.order, player.wind);
     }
 
+    //commands to change player's name
     [Command]
-    public void CmdChangeWind(int order,string wind)
+    public void CmdChangeWind(int order, string wind)
     {
         RpcChangeWind(order, wind);
     }
 
+    //tells new wind to other clients
     [ClientRpc]
     public void RpcChangeWind(int order, string wind)
     {
-
         player.order = order;
         player.wind = wind;
-        Debug.Log($"ord {player.order}");
     }
 
+    //refreshes old score on all clients
     [ClientRpc]
     public void RpcRefreshOldScore()
     {
         player.oldScore = 2000;
     }
 
+    //sets player's wind on server
     void SetOrder()
     {
         int order = 0;
@@ -122,10 +120,10 @@ public class SetupPlayer : NetworkBehaviour
         }
         player = gameObject.GetComponent<Player>();
 
-
         TargetSetOrder(player.connectionToClient, order);
     }
 
+    //sets camera and wind on player
     [TargetRpc]
     void TargetSetOrder(NetworkConnection conn, int order)
     {
@@ -136,21 +134,19 @@ public class SetupPlayer : NetworkBehaviour
             player.name = PlayerPrefs.instance.Name;
 
         gameObject.tag = "Player";
-
         player.Camera = Instantiate(GameMaster.instance.allCameras[player.order]);
 
         float newRotation = player.Camera.transform.eulerAngles.y;
-
         Camera.main.transform.rotation = Quaternion.Euler(Camera.main.transform.eulerAngles.x, newRotation, Camera.main.transform.eulerAngles.z);
 
         GameMaster.instance.lights[order].SetActive(true);
         AssignWind();
-
         gameObject.GetComponent<UiWinds>().AssignWinds();
 
         CmdAddPlayer(player.order, player.wind, player.name);
     }
 
+    //assigns wind by order
     void AssignWind()
     {
         switch (player.order)
@@ -184,6 +180,7 @@ public class SetupPlayer : NetworkBehaviour
 
     }
 
+    //adds player data on server
     [Command]
     void CmdAddPlayer(int ord, string wind, string name)
     {
@@ -192,6 +189,7 @@ public class SetupPlayer : NetworkBehaviour
         GameMaster.instance.AddLabel(this);
     }
 
+    //adds player data on clients
     [ClientRpc]
     void RpcAddPlayer(int ord, string wind, string name)
     {
@@ -204,16 +202,9 @@ public class SetupPlayer : NetworkBehaviour
 
         GameObject.FindGameObjectWithTag("Player").GetComponent<UiWinds>().SetName(wind, name);
 
-        Debug.Log($"Camera {ord}, wind {wind}");
-        Debug.Log(GameMaster.instance.PlayerCount + "players");
-
-        Debug.Log(GameMaster.instance.availableCameras.Count + "cameras");
-        for (int i = 0; i < GameMaster.instance.availableCameras.Count; i++)
-        {
-            Debug.Log($"Camera {GameMaster.instance.availableCameras[i]}");
-        }
     }
 
+    //adds new player on initialization
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -222,14 +213,12 @@ public class SetupPlayer : NetworkBehaviour
         Player player = GetComponent<Player>();
 
         GameMaster.instance.RegisterPlayer(netID, player);
-
     }
 
-
+    //invokes player's disconnect
     [TargetRpc]
     private void TargetDisconnect(NetworkConnection target)
     {
-        Debug.Log("Target");
         GetComponent<PlayerUI>().DropConnection();
     }
 

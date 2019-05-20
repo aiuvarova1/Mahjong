@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-class North:Wind
+class North : Wind
 {
     public North(Player p) : base(p)
     {
@@ -19,16 +19,19 @@ class North:Wind
         Name = "North";
     }
 
+    // moves position to the right from player
     public override void MoveRightFreePosition(ref Vector3 pos)
     {
         pos.x -= 2f;
     }
 
+    // moves position to the left from player
     public override void MoveLeftFreePosition(ref Vector3 pos)
     {
         pos.x += 2f;
     }
 
+    // moves position to player
     public override void MoveForwardPosition(ref Vector3 pos)
     {
         pos.z += 2f;

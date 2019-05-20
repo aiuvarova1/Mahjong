@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-class South:Wind
+class South : Wind
 {
     public South(Player p) : base(p)
     {
@@ -15,23 +15,25 @@ class South:Wind
         startFlowerPosition = new Vector3(-15, 0, -23);
 
         rotation = 180;
-       
+
         base.Refresh();
         Name = "South";
     }
 
 
-
+    //moves position right from player
     public override void MoveRightFreePosition(ref Vector3 pos)
     {
         pos.x += 2;
     }
 
+    //moves position left from player
     public override void MoveLeftFreePosition(ref Vector3 pos)
     {
         pos.x -= 2;
     }
 
+    //moves position to player
     public override void MoveForwardPosition(ref Vector3 pos)
     {
         pos.z -= 2f;
@@ -47,7 +49,5 @@ class South:Wind
         base.Refresh();
         Name = "South";
     }
-
-    
 }
 

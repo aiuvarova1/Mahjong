@@ -12,17 +12,18 @@ public class NewNetworkManager : NetworkManager
 {
     public static bool hostLeft = false;
 
+    //indicates server disconnect on client 
     public override void OnClientDisconnect(NetworkConnection conn)
     {
         hostLeft = true;
         base.OnClientDisconnect(conn);
-        Debug.Log("Server is stopped from Manager");
     }
+
+    //indicates client disconnect on server
     public override void OnServerDisconnect(NetworkConnection conn)
     {
         GameMaster.instance.TestUnregister(conn);
         base.OnServerDisconnect(conn);
-        Debug.Log("Client is stopped from Manager");
     }
 }
 

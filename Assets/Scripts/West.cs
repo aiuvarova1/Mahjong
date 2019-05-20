@@ -19,16 +19,19 @@ class West : Wind
 
     }
 
+    //moves position closer to player
     public override void MoveForwardPosition(ref Vector3 pos)
     {
         pos.x += 2f;
     }
 
+    //moves position righter
     public override void MoveRightFreePosition(ref Vector3 pos)
     {
         pos.z += 2;
     }
 
+    //moves position lefter
     public override void MoveLeftFreePosition(ref Vector3 pos)
     {
         pos.z -= 2;

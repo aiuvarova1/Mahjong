@@ -18,20 +18,18 @@ public class JoinGame : MonoBehaviour
 
     public static GameObject hostPanel;
 
-    
-
     public static NewNetworkManager networkManager;
 
     IEnumerator refresher;
 
+    //enables panel with  left host info
     public static void EnableHostPanel()
     {
         if (GameObject.FindGameObjectWithTag("Host") == null) return;
         hostPanel = GameObject.FindGameObjectWithTag("Host");
-        //hostPanel.SetActive(true);
-
     }
 
+    //disables panel with left host info
     public static void DisableHostPanel()
     {
         if (GameObject.FindGameObjectWithTag("Host") == null) return;
@@ -42,23 +40,19 @@ public class JoinGame : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
         hostPanel = GameObject.FindGameObjectWithTag("Host");
 
         if (!NewNetworkManager.hostLeft)
             hostPanel.SetActive(false);
         else
             NewNetworkManager.hostLeft = false;
-
-        Debug.Log("started");
-
         refresher = Refresher();
 
         networkManager = (NewNetworkManager)NetworkManager.singleton;
         if (networkManager.matchMaker == null)
             networkManager.StartMatchMaker();
 
-        if (LocalizationManager.instance==null|| LocalizationManager.instance.language == "Eng")
+        if (LocalizationManager.instance == null || LocalizationManager.instance.language == "Eng")
             status.text = "Loading...";
         else
             status.text = "Загрузка...";
@@ -67,29 +61,29 @@ public class JoinGame : MonoBehaviour
             LocalizationManager.instance.ChangeFont(ref status);
         RefreshRoomList();
         StartCoroutine(refresher);
-        
     }
 
+    //ask unity server to refresh rooms
     public void RefreshRoomList()
     {
         try
         {
             networkManager.matchMaker.ListMatches(0, 15, "", true, 0, 0, OnMatchList);
         }
-        catch(NullReferenceException)
+        catch (NullReferenceException)
         {
             networkManager.StartMatchMaker();
         }
     }
 
+    //refreshes room list on client with unity server info
     void OnMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matches)
     {
-        Debug.Log("Refresh");
         status.text = "";
         ClearRoomList();
         if (matches == null || matches.Count == 0 || !success)
         {
-            if (LocalizationManager.instance==null || LocalizationManager.instance.language == "Eng")
+            if (LocalizationManager.instance == null || LocalizationManager.instance.language == "Eng")
                 status.text = "No rooms found";
             else
                 status.text = "Нет доступных комнат";
@@ -98,13 +92,14 @@ public class JoinGame : MonoBehaviour
                 LocalizationManager.instance.ChangeFont(ref status);
             return;
         }
-        
+
         foreach (MatchInfoSnapshot match in matches)
         {
             CreateRoomButton(match);
         }
     }
 
+    //creates button of an available room
     public void CreateRoomButton(MatchInfoSnapshot match)
     {
         GameObject room = Instantiate(roomPrefab);
@@ -117,6 +112,7 @@ public class JoinGame : MonoBehaviour
         roomList.Add(room);
     }
 
+    //clears all rooms
     void ClearRoomList()
     {
         for (int i = 0; i < roomList.Count; i++)
@@ -126,6 +122,7 @@ public class JoinGame : MonoBehaviour
         roomList.Clear();
     }
 
+    //launches join to the room
     public void JoinRoom(MatchInfoSnapshot match)
     {
         networkManager.matchMaker.JoinMatch(match.networkId, "", "", "", 0, 0, networkManager.OnMatchJoined);
@@ -133,11 +130,10 @@ public class JoinGame : MonoBehaviour
         refresher = Refresher();
         ClearRoomList();
 
-        //status.text = "Joining...";
-        //StopCoroutine(Refresher());
-
         StartCoroutine(WaitForJoin());
     }
+
+    //counts down to stop connection for the join
     IEnumerator WaitForJoin()
     {
 
@@ -177,18 +173,20 @@ public class JoinGame : MonoBehaviour
         }
 
         yield return new WaitForSeconds(2);
+
+        RefreshRoomList();
         StartCoroutine(refresher);
 
     }
 
+    //refreshes room list every 4 seconds
     IEnumerator Refresher()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         while (SceneManager.GetActiveScene().name == "Lobby")
 
         {
             yield return new WaitForSeconds(4);
-            
             RefreshRoomList();
 
         }

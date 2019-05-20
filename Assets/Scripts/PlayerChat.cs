@@ -8,27 +8,25 @@ public class PlayerChat : NetworkBehaviour
 {
     public Text chatTextPrefab;
     ScrollRect scrollRect;
-    
+
     public GameObject chatScroll;
 
     public InputField enteredText;
     public GameObject content;
 
+    //sets references
     public void Start()
     {
         scrollRect = chatScroll.GetComponent<ScrollRect>();
     }
 
+    //adds message on this client
     public void AddMessage()
     {
         string message = enteredText.text;
-        Debug.Log(message);
 
         Text textModel = Instantiate(chatTextPrefab);
-
-        textModel.transform.SetParent(content.transform,false);
-        Debug.Log(textModel.transform.position);
-        Debug.Log(textModel.transform.parent);
+        textModel.transform.SetParent(content.transform, false);
 
         textModel.text = $"{LocalizationManager.instance.GetLocalizedValue("You: ")} {message}";
         textModel.transform.localScale = new Vector3(1, 1, 1);
@@ -43,12 +41,14 @@ public class PlayerChat : NetworkBehaviour
         CmdSendMessage(gameObject.GetComponent<Player>().name, message);
     }
 
+    //commands to send message
     [Command]
     void CmdSendMessage(string name, string message)
     {
         RpcSendMessage(name, message);
     }
 
+    //adds message on other clients
     [ClientRpc]
     void RpcSendMessage(string name, string message)
     {
@@ -60,14 +60,13 @@ public class PlayerChat : NetworkBehaviour
 
         UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerChat>().content.GetComponent<RectTransform>());
 
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerChat>().scrollRect.velocity= new Vector2(0f, 1000f);
-
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerChat>().scrollRect.velocity = new Vector2(0f, 1000f);
         textModel.text = $"{name}:  {message}";
     }
 
+    //clears all messages
     public void ClearChat()
     {
-        Debug.Log("clear");
         GameObject[] messages = GameObject.FindGameObjectsWithTag("Message");
         for (int i = 0; i < messages.Length; i++)
         {
@@ -75,16 +74,19 @@ public class PlayerChat : NetworkBehaviour
         }
     }
 
+    //increases chat images' sizes
     public void IncreaseImage(GameObject image)
     {
         image.GetComponent<RectTransform>().localScale = new Vector3(1.1f, 1.1f);
     }
 
+    //decreases chat images' sizes
     public void DecreaseImage(GameObject image)
     {
         image.GetComponent<RectTransform>().localScale = new Vector3(1, 1f);
     }
 
+    //sends message on pressing "enter"
     private void Update()
     {
         if (!isLocalPlayer) return;

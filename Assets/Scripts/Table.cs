@@ -34,6 +34,7 @@ public class Table
         CurrentPosition = startPosition;
     }
 
+    //moves right free table position
     public void MoveRightStartPosition()
     {
         Vector3 curPos = CurrentPosition;
@@ -41,6 +42,7 @@ public class Table
         CurrentPosition = curPos;
     }
 
+    //moves left free table position
     public void MoveLeftStartPosition()
     {
         Vector3 curPos = CurrentPosition;

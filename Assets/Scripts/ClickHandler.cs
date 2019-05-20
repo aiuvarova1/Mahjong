@@ -11,6 +11,4 @@ public class ClickHandler : MonoBehaviour
         Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
         player.SelectTile(gameObject);
     }
-
-    
 }

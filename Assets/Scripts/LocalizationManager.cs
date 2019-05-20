@@ -23,21 +23,18 @@ public class LocalizationManager : MonoBehaviour
     public Font RuFont;
     public Font EngFont;
 
+    //sets references to gameobjects after reload
     public void SetReferences()
     {
         if (GameObject.FindGameObjectWithTag("SettingsPanel") == null) return;
 
         settingsPanel = GameObject.FindGameObjectWithTag("SettingsPanel");
         
-
         PlayerPrefs.instance.nameText= GameObject.FindObjectsOfType<InputField>()[1];
-
         PlayerPrefs.instance.SetReferences();
 
         dropDown = settingsPanel.GetComponentInChildren<Dropdown>();
-
         label = dropDown.GetComponentInChildren<Text>();
-
 
         if (language == "Eng")
             dropDown.value = 0;
@@ -49,6 +46,7 @@ public class LocalizationManager : MonoBehaviour
         settingsPanel.SetActive(false);
     }
 
+    //changes font (different for ru and eng)
     public void ChangeFont(ref Text text)
     {
         if (language == "Eng")
@@ -57,6 +55,7 @@ public class LocalizationManager : MonoBehaviour
             text.font = RuFont;
     }
 
+    //initialization
     private void Awake()
     {
         if (instance == null)
@@ -68,7 +67,6 @@ public class LocalizationManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-
 
         EngRu = new Dictionary<string, string>()
         {
@@ -111,7 +109,7 @@ public class LocalizationManager : MonoBehaviour
             {"Total","Итог" },
             {"Points","Очки" },
             {"Old score","Счёт" },
-            {"New score","Новый счёт" },
+            {"New score","Всего" },
             {"OK","ОК" },
             {"Combinations","Комбинации" },
             {"Continue","Продолжить" },
@@ -287,18 +285,13 @@ Each losing player pays any other losing player with a greater value hand, the d
 "<b>Удвоения только для выигравшего</b>\n\n-Без Чоу\n\n-Мизер (только Чоу и пара)\n\n-Кость на Маджонг взята из свободных\n\n-Кость на Маджонг была ограблением открытого Конга\n\n" +
 "<b>Цветы и сезоны (подсчитываются после всех остальных очков и удвоений)</b>\n\n-Не свой цветок/сезон - 2\n\n-Собственный цветок/сезон - 4  ( например 1 сезон/цветок даёт 4 очка Востоку, 2-Югу и т.д.\n\n" +
 "-Все 4 цветка/сезона - удвоение очков за цветы и сезоны\n" }
-
-
-
-
-
-
         };
 
         RuEng = EngRu.ToDictionary(x => x.Value, x => x.Key);
 
     }
 
+    //returns value from the dictionary
     public string GetLocalizedValue(string key)
     {
         string result = "";
@@ -326,15 +319,12 @@ Each losing player pays any other losing player with a greater value hand, the d
             result = localizedText[key];
         }
 
-
         return result;
-
     }
 
+    //invokes language change event
     public void OnLanguageChanged()
     {
-        Debug.Log("onlangch");
-        Debug.Log(ChangeEvent == null);
         if (ChangeEvent == null) return;
         language = label.text;
         ChangeEvent?.Invoke();

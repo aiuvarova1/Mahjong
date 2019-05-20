@@ -7,10 +7,9 @@ using UnityEngine.EventSystems;
 
 public class SliderDrag : MonoBehaviour, IPointerUpHandler
 {
-
+    //indicates end of slider moving
     public void OnPointerUp(PointerEventData eventData)
     {
         PlayerPrefs.instance.WriteFileData();
-        Debug.Log("Sliding finished");
     }
 }

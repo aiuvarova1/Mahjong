@@ -43,12 +43,15 @@ public class Player : NetworkBehaviour
     float tileRotation;
 
     #region sorting
+
+    //invokes player tiles sort on all clients
     public void Sort()
     {
         if (GameMaster.instance.gameState == "end") return;
         RpcSort();
     }
 
+    //sorts on all clients
     [ClientRpc]
     public void RpcSort()
     {
@@ -66,6 +69,7 @@ public class Player : NetworkBehaviour
 
     }
 
+    //fixes tile positions
     [ClientRpc]
     public void RpcFix()
     {
@@ -75,28 +79,23 @@ public class Player : NetworkBehaviour
         }
     }
 
+    //sorts closed tiles
     public void SortTiles()
     {
 
-        Debug.Log(playerTiles.Count);
-
         playerTiles.Sort();
-
         Debug.Log("sorted");
 
-        //playerTiles[0].tile.transform.position = startPosition;
         for (int i = 0; i < playerTiles.Count; i++)
         {
-            //playerTiles[i].tile.transform.rotation = Quaternion.Euler(-90, playerTiles[i].tile.transform.eulerAngles.y, 0);
             playerTiles[i].tile.transform.rotation = Quaternion.Euler(-90, tileRotation, 0);
-            // Debug.Log(playerTiles[i]);
             playerTiles[i].tile.transform.position = positionList[i];
-            // Debug.Log($"{i}, {playerTiles[i].name}");
         }
     }
 
+    //fills list with sorted tiles' positions
     [ClientRpc]
-    public void RpcFillPositionList(Vector3[] pos,float rotation)
+    public void RpcFillPositionList(Vector3[] pos, float rotation)
     {
         positionList = new List<Vector3>(pos);
         tileRotation = rotation;
@@ -106,12 +105,15 @@ public class Player : NetworkBehaviour
 
 
     #region player turn
+
+    //sets turn for move on client
     [TargetRpc]
     public void TargetSetCombinationTurn(NetworkConnection conn)
     {
         GameObject.FindWithTag("Player").gameObject.GetComponent<PlayerUI>().LaunchWaitForCombination();
     }
 
+    //sets turn for move on server
     [Command]
     void CmdSetPlayerTurn(bool turn)
     {
@@ -122,21 +124,20 @@ public class Player : NetworkBehaviour
 
     #region lying tiles
 
+    //moves tile from the table to player on clients
     [ClientRpc]
     void RpcTakeTableTile(Vector3 freePosition, float rotation, bool closed)
     {
         GameManager.instance.GameTable.lastTile.tile.GetComponent<BezierMove>().LieOut(freePosition, rotation, closed);
     }
 
+    //lies out player tile on all clients
     [ClientRpc]
     public void RpcLieOutTile(int index, Vector3 freePosition, float rotation, string array)
     {
-        Debug.Log(playerTiles.Count);
 
         playerTiles[index].tile.GetComponent<BezierMove>().LieOut(freePosition, rotation, false);
-
         tileToMove = playerTiles[index];
-
 
         switch (array)
         {
@@ -163,19 +164,17 @@ public class Player : NetworkBehaviour
 
         }
         EnableToolTipsForTile(index);
-
         playerTiles.RemoveAt(index);
-
     }
 
+    //adds tile to player list on server
     [Command]
     public void CmdAddTileToPlayerArray(int currentWall, int currentPair, string tile)
     {
         RpcAddTileToPlayerArray(currentWall, currentPair, tile);
-
     }
 
-
+    //adds tile to player list on all clients
     [ClientRpc]
     public void RpcAddTileToPlayerArray(int currentWall, int currentPair, string tile)
     {
@@ -194,7 +193,6 @@ public class Player : NetworkBehaviour
         }
         else if (tile == "free")
         {
-            Debug.Log(Wall.instance.freeTiles.Count - 1);
             playerTiles.Add(Wall.instance.freeTiles[Wall.instance.freeTiles.Count - 1]);
             Wall.instance.freeTiles.RemoveAt(Wall.instance.freeTiles.Count - 1);
 
@@ -205,6 +203,7 @@ public class Player : NetworkBehaviour
 
     }
 
+    //commands to lie tile on table
     [Command]
     public void CmdLieTileOnTable(int index)
     {
@@ -228,27 +227,27 @@ public class Player : NetworkBehaviour
         Invoke("InvokeDelete", 0.5f);
     }
 
+    //sets last table tile on all clients
     [ClientRpc]
     void RpcSetLastTile(int index)
     {
         GameManager.instance.GameTable.lastTile = playerTiles[index];
     }
 
-
+    //invokes removing free space after liying out tile
     void InvokeDelete()
     {
         Wind wind = GameManager.instance.winds[GameManager.instance.CurrentWind];
 
         for (int i = freeSpaceIndex; i < playerTiles.Count; i++)
         {
-
             RpcDeleteFreeSpace(wind.freePosition, i);
             wind.MoveRightFreePosition(ref wind.freePosition);
         }
         Invoke("Sort", 0.1f);
-
     }
 
+    //moves tile to free space
     [ClientRpc]
     void RpcDeleteFreeSpace(Vector3 position, int index)
     {
@@ -258,13 +257,13 @@ public class Player : NetworkBehaviour
 
     #region SelectTile
 
+    //selects tile by rising it
     public void SelectTile(GameObject tile)
     {
         int index = CheckList(tile);
-        if (!playerTurn || !startedCoroutine || index == -1 ) return;
+        if (!playerTurn || !startedCoroutine || index == -1) return;
 
         Tile tileToSelect = playerTiles[index];
-        Debug.Log("my tile");
         if (selectedTile != tileToSelect)
         {
 
@@ -281,13 +280,14 @@ public class Player : NetworkBehaviour
         }
     }
 
+    //invokes tile selection
     [TargetRpc]
     public void TargetSelectLastTile(NetworkConnection conn)
     {
-
         Invoke("InvokeSelect", 0.2f);
     }
 
+    //rises tile
     public void InvokeSelect()
     {
         try
@@ -303,16 +303,18 @@ public class Player : NetworkBehaviour
     #endregion
 
     #region checking
+
+    //finds tile in closed tiles by reference
     int CheckList(GameObject tile)
     {
         for (int i = 0; i < playerTiles.Count; i++)
         {
             if (playerTiles[i].tile == tile) return i;
         }
-
         return -1;
     }
 
+    //finds tile in closed tiles by its name
     int CheckForTileInArray(string name)
     {
         for (int i = 0; i < playerTiles.Count; i++)
@@ -325,12 +327,14 @@ public class Player : NetworkBehaviour
 
     #region checkCombinations
 
+    //invokes pass on server
     public void Pass()
     {
         if (!isLocalPlayer) return;
         CmdPass();
     }
 
+    //indicates pass on server
     [Command]
     public void CmdPass()
     {
@@ -345,6 +349,7 @@ public class Player : NetworkBehaviour
         gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
     }
 
+    //returns number of tiles with the same name in closed tiles
     int FindNumOfSimilarTiles(string name, ref int firstIndex)
     {
         int num = 0;
@@ -354,26 +359,25 @@ public class Player : NetworkBehaviour
             {
                 num++;
                 if (num == 1) firstIndex = i;
-
             }
         }
         return num;
     }
 
+    //invokes check for chow on server
     public void CheckChow()
     {
         if (isLocalPlayer)
             CmdCheckChow();
     }
 
+    //checks for chow
     [Command]
     void CmdCheckChow()
     {
-        //if (!isServer) return;
-        Debug.Log("check chow");
+
         if (!turnForCombination)
         {
-            Debug.Log("not your turn");
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "It's not your turn");
             return;
         }
@@ -385,7 +389,6 @@ public class Player : NetworkBehaviour
 
         if (GameManager.instance.winds[nextWind].player != this)
         {
-            Debug.Log("not next player");
             GameManager.instance.NumOfAnsweredPlayers++;
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
@@ -402,46 +405,35 @@ public class Player : NetworkBehaviour
 
         string tileName = tileInDemand.name;
         string tileSuit = tileName[0].ToString();
-        Debug.Log("demand name" + tileName);
-        Debug.Log("demand suit" + tileSuit);
 
         int tileNum = 0;
         if (!int.TryParse(tileName[tileName.Length - 1].ToString(), out tileNum))
         {
             GameManager.instance.NumOfAnsweredPlayers++;
-            Debug.Log("not suit");
             turnForCombination = false;
             gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "Chow can not be declared of winds or dragons");
             return;
         }
-        Debug.Log(tileNum + "tilenum");
 
         if (tileNum - 1 > 0 && tileNum - 2 > 0)
         {
             string firstName = tileSuit + (tileNum - 2).ToString();
             string secondName = tileSuit + (tileNum - 1).ToString();
 
-            Debug.Log(firstName);
-            Debug.Log(secondName);
-
             int firstInd = CheckForTileInArray(firstName);
             int secondInd = CheckForTileInArray(secondName);
-            Debug.Log("first ind" + firstInd);
-            Debug.Log("second ind" + secondInd);
 
             if (firstInd != -1 && secondInd != -1)
             {
                 firstCombination = new Chow(playerTiles[firstInd], playerTiles[secondInd], tileInDemand);
-                //firstCombination = $"{tileNum - 2}-{tileNum - 1}-{tileNum}";
             }
         }
+
         if (tileNum - 1 > 0 && tileNum + 1 < 10)
         {
             string firstName = tileSuit + (tileNum - 1).ToString();
             string secondName = tileSuit + (tileNum + 1).ToString();
-            Debug.Log(firstName);
-            Debug.Log(secondName);
 
             int firstInd = CheckForTileInArray(firstName);
             int secondInd = CheckForTileInArray(secondName);
@@ -450,7 +442,6 @@ public class Player : NetworkBehaviour
             {
                 if (firstCombination == null)
                     firstCombination = new Chow(playerTiles[firstInd], tileInDemand, playerTiles[secondInd]);
-                //firstCombination = $"{tileNum - 1}-{tileNum}-{tileNum+1}";
 
                 else
                     secondCombination = new Chow(playerTiles[firstInd], tileInDemand, playerTiles[secondInd]);
@@ -462,9 +453,6 @@ public class Player : NetworkBehaviour
             string firstName = tileSuit + (tileNum + 1).ToString();
             string secondName = tileSuit + (tileNum + 2).ToString();
 
-            Debug.Log(firstName);
-            Debug.Log(secondName);
-
             int firstInd = CheckForTileInArray(firstName);
             int secondInd = CheckForTileInArray(secondName);
 
@@ -472,29 +460,21 @@ public class Player : NetworkBehaviour
             {
                 if (firstCombination == null)
                     firstCombination = new Chow(tileInDemand, playerTiles[firstInd], playerTiles[secondInd]);
-                //firstCombination = $"{tileNum}-{tileNum+1}-{tileNum + 2}";
+
                 else if (secondCombination == null)
-                    //secondCombination = $"{tileNum}-{tileNum + 1}-{tileNum + 2}";
                     secondCombination = new Chow(tileInDemand, playerTiles[firstInd], playerTiles[secondInd]);
                 else
-                    //thirdCombination = $"{tileNum}-{tileNum + 1}-{tileNum + 2}";
                     thirdCombination = new Chow(tileInDemand, playerTiles[firstInd], playerTiles[secondInd]);
-
             }
         }
         if (firstCombination == null && secondCombination == null && thirdCombination == null)
         {
             turnForCombination = false;
-            gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
-            Debug.Log("no chow");
+            gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient); ;
             GameManager.instance.NumOfAnsweredPlayers++;
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "No tiles for chow");
             return;
         }
-        Debug.Log((firstCombination == null) + "first");
-        Debug.Log((secondCombination == null) + "second");
-        Debug.Log((thirdCombination == null) + "third");
-
 
         if (secondCombination == null)
         {
@@ -506,31 +486,28 @@ public class Player : NetworkBehaviour
         }
         else
         {
-            Debug.Log("else");
             gameObject.GetComponent<PlayerUI>().MakeChowChoice(firstCombination, secondCombination, thirdCombination);
         }
-
     }
 
+    //invokes check for pung on server
     public void CheckPung()
     {
         if (isLocalPlayer)
             CmdCheckPung();
     }
 
+    //checks for pung
     [Command]
     void CmdCheckPung()
     {
         if (!turnForCombination)
         {
-            Debug.Log("not your turn");
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "It's not your turn");
             return;
         }
 
         int firstIndex = -1;
-        Debug.Log(GameManager.instance.GameTable.lastTile.name + "last tile");
-        Debug.Log(FindNumOfSimilarTiles(GameManager.instance.GameTable.lastTile.name, ref firstIndex));
 
         if (FindNumOfSimilarTiles(GameManager.instance.GameTable.lastTile.name, ref firstIndex) < 2)
         {
@@ -547,21 +524,21 @@ public class Player : NetworkBehaviour
         gameObject.GetComponent<PlayerUI>().TargetStopWaitingForCombination(connectionToClient);
     }
 
+    //invokes check for kong on server
     public void CheckKong()
     {
         if (isLocalPlayer)
             CmdCheckKong();
     }
 
+    //checks for kong
     [Command]
     void CmdCheckKong()
     {
-
         if (GameManager.instance.winds[GameManager.instance.CurrentWind].player != this)
         {
             if (!turnForCombination)
             {
-                Debug.Log("not your turn");
                 gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "It's not your turn");
                 return;
             }
@@ -593,7 +570,6 @@ public class Player : NetworkBehaviour
                 {
                     DeclareClosedKong(firstIndex);
                     return;
-
                 }
             }
 
@@ -603,7 +579,6 @@ public class Player : NetworkBehaviour
                 if (comb is Pung) pung = (Pung)comb;
                 else
                 {
-                    Debug.Log("not pung");
                     continue;
                 }
                 Debug.Log(pung.tileList[0].name);
@@ -613,29 +588,28 @@ public class Player : NetworkBehaviour
 
                 if (tileIndex != -1)
                 {
-                    Debug.Log("kong from pung");
                     DeclareKongFromPung(pung, tileIndex);
                     return;
                 }
             }
 
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "No tiles for Kong");
-
         }
     }
 
+    //invokes check for mahjong on server
     public void CheckMahJong()
     {
         if (isLocalPlayer)
             CmdCheckMahJong();
     }
 
+    //checks tiles for mahjong
     [Command]
     void CmdCheckMahJong()
     {
         if (!playerTurn && !turnForCombination)
         {
-            Debug.Log("not your turn");
             gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "It's not your turn");
             return;
         }
@@ -652,7 +626,6 @@ public class Player : NetworkBehaviour
             closedTiles.Add(GameManager.instance.GameTable.lastTile);
         }
         closedTiles.Sort();
-        Debug.Log("closed tiles" + closedTiles.Count);
 
         //0-bamboos,1-dots,2-symbols,3-winds,4-dragons
         List<List<Tile>> suitSets = new List<List<Tile>>();
@@ -681,12 +654,10 @@ public class Player : NetworkBehaviour
             }
             else if (set.Count % 3 != 0)
             {
-                Debug.Log("wrong %3");
                 AbortMahJong();
                 return;
             }
         }
-        Debug.Log("set with pair" + setWithPair.Count);
 
         //set is sorted
         //try to find pair set combinations
@@ -694,7 +665,6 @@ public class Player : NetworkBehaviour
         {
             if (setWithPair[i].name == setWithPair[i + 1].name)
             {
-                Debug.Log(setWithPair[i].name + "equal");
                 List<Combination> combinations = new List<Combination>();
 
                 List<Tile> setWithoutPair = new List<Tile>(suitSets[pairSetNum]);
@@ -704,16 +674,13 @@ public class Player : NetworkBehaviour
 
                 if (setWithoutPair.Count == 0 || FillOneSuitCombinations(setWithoutPair, ref combinations))
                 {
-                    Debug.Log("fill true" + combinations.Count);
                     closedCombinations[pairSetNum] = combinations;
-                    Debug.Log("fill true" + closedCombinations[pairSetNum].Count);
                     closedCombinations[pairSetNum].Add(new Pair(setWithPair[i], setWithPair[i + 1]));
                     break;
                 }
             }
             if (i == setWithPair.Count - 2)
             {
-                Debug.Log("no fillonesuit variants in pair");
                 AbortMahJong();
                 return;
             }
@@ -722,21 +689,17 @@ public class Player : NetworkBehaviour
         //other suits
         for (int i = 0; i < suitSets.Count; i++)
         {
-            Debug.Log(i + " " + suitSets.Count + " " + pairSetNum);
+
             if (i != pairSetNum)
             {
                 List<Combination> combinations = new List<Combination>();
 
                 if (suitSets[i].Count == 0 || FillOneSuitCombinations(suitSets[i], ref combinations))
                 {
-                    Debug.Log(combinations.Count);
                     closedCombinations[i] = combinations;
-                    Debug.Log(closedCombinations[i].Count);
-
                 }
                 else
                 {
-                    Debug.Log("no fillonesuit variants");
                     AbortMahJong();
                     return;
                 }
@@ -761,25 +724,20 @@ public class Player : NetworkBehaviour
 
     }
 
+    //finds one suit combinations in closed tiles
     bool FillOneSuitCombinations(List<Tile> suitSet, ref List<Combination> combinationList)
     {
-        Debug.Log("fill" + suitSet.Count);
         for (int i = 0; i < suitSet.Count - 2; i++)
         {
-            Debug.Log(suitSet[i].name);
             for (int j = i + 1; j < suitSet.Count - 1; j++)
             {
-                Debug.Log(suitSet[j].name);
                 for (int k = j + 1; k < suitSet.Count; k++)
                 {
-                    Debug.Log(suitSet[k].name);
                     List<Tile> newList = new List<Tile>(suitSet);
                     if (suitSet[i].name == suitSet[j].name && suitSet[j].name == suitSet[k].name)
                     {
-                        Debug.Log("pung");
                         for (int m = 0; m < 3; m++)
                         {
-                            //!!!!!!!!!!!!!!!!!!!
                             newList.RemoveAt(i);
                         }
                         if (newList.Count == 0)
@@ -798,13 +756,10 @@ public class Player : NetworkBehaviour
                     }
                     if (!char.IsDigit(suitSet[i].name[1])) continue;
 
-                    Debug.Log($"{char.IsLower(suitSet[i].name[0])},i {int.Parse(suitSet[i].name[1].ToString())}, j {int.Parse(suitSet[j].name[1].ToString())},k {int.Parse(suitSet[k].name[1].ToString())}");
                     if (char.IsLower(suitSet[i].name[0])
                       && int.Parse(suitSet[i].name[1].ToString()) + 1 == int.Parse(suitSet[j].name[1].ToString())
                       && int.Parse(suitSet[j].name[1].ToString()) + 1 == int.Parse(suitSet[k].name[1].ToString()))
                     {
-
-                        //newList.RemoveAt(i);
                         newList.RemoveAt(newList.FindIndex(x => x.name == suitSet[i].name));
                         newList.RemoveAt(newList.FindIndex(x => x.name == suitSet[j].name));
                         newList.RemoveAt(newList.FindIndex(x => x.name == suitSet[k].name));
@@ -826,11 +781,10 @@ public class Player : NetworkBehaviour
                 }
             }
         }
-
-
         return false;
     }
 
+    //divides closed tiles on suit sets
     void FillSuitSets(ref List<List<Tile>> suitSets, List<Tile> tiles)
     {
         for (int i = 0; i < tiles.Count; i++)
@@ -864,12 +818,11 @@ public class Player : NetworkBehaviour
                 default:
                     Debug.Log("wrong tile name");
                     break;
-
-
             }
         }
     }
 
+    //refuses mahjong
     void AbortMahJong()
     {
         if (turnForCombination)
@@ -881,11 +834,11 @@ public class Player : NetworkBehaviour
         }
         gameObject.GetComponent<PlayerUI>().TargetShowInfo(connectionToClient, "No MahJong");
     }
-
     #endregion
 
     #region Combination Declaration
 
+    //lies out tile for combination
     void LieCombinationTiles(int windPos)
     {
         int firstIndex = -1;
@@ -893,8 +846,7 @@ public class Player : NetworkBehaviour
 
         for (int i = 0; i < waitingCombination.tileList.Count; i++)
         {
-            Debug.Log(GameManager.instance.GameTable.lastTile.name);
-            //playerTiles[i].tile.GetComponent<BezierMove>().speed = 30;
+
             if (waitingCombination.tileList[i] == GameManager.instance.GameTable.lastTile)
             {
                 bool closed = (i == 3) ? true : false;
@@ -903,8 +855,7 @@ public class Player : NetworkBehaviour
             else
             {
                 int index = playerTiles.FindIndex((x) => x == waitingCombination.tileList[i]);
-                Debug.Log(index + "index");
-                Debug.Log(playerTiles[index].name);
+
                 if (firstIndex == -1)
                 {
                     freeSpacePosition = playerTiles[index].tile.transform.position;
@@ -912,17 +863,17 @@ public class Player : NetworkBehaviour
                     freeSpaceIndex = index;
                     firstIndex = index;
                 }
-                Debug.Log(i);
                 if (i != 3)
                     RpcLieOutCombinationTile(GameManager.instance.winds[windPos].freeOpenPosition, GameManager.instance.winds[windPos].rotation, waitingCombination.tileList[i].name, false);
                 else
                     RpcLieOutCombinationTile(GameManager.instance.winds[windPos].freeOpenPosition, GameManager.instance.winds[windPos].rotation, waitingCombination.tileList[i].name, true);
             }
-            //RpcLieOutTile(i, GameManager.instance.winds[windPos].freeOpenPosition, GameManager.instance.winds[windPos].rotation, "combination");
+
             GameManager.instance.winds[windPos].MoveRightFreePosition(ref GameManager.instance.winds[windPos].freeOpenPosition);
         }
     }
 
+    //moves combination tile on clients
     [ClientRpc]
     void RpcLieOutCombinationTile(Vector3 freePosition, float rotation, string name, bool closed)
     {
@@ -934,6 +885,7 @@ public class Player : NetworkBehaviour
         playerTiles.RemoveAt(index);
     }
 
+    //declares closed kong
     public void DeclareClosedKong(int firstIndex)
     {
         playerTurn = false;
@@ -968,6 +920,7 @@ public class Player : NetworkBehaviour
         Invoke("AskForFreeTile", 1.7f);
     }
 
+    //declares kong from pung
     public void DeclareKongFromPung(Pung pung, int index)
     {
         playerTurn = false;
@@ -986,7 +939,6 @@ public class Player : NetworkBehaviour
         RpcLieOutCombinationTile(pung.additionalPosition, GameManager.instance.winds[GameManager.instance.CurrentWind].rotation, playerTiles[index].name, true);
 
         GameManager.instance.DeclareCombination("Kong", 2);
-
         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
         Invoke("InvokeDelete", 1.2f);
 
@@ -994,6 +946,7 @@ public class Player : NetworkBehaviour
 
     }
 
+    //declares pung
     public void DeclarePung(int windPos)
     {
         LieCombinationTiles(windPos);
@@ -1017,7 +970,7 @@ public class Player : NetworkBehaviour
 
     }
 
-
+    //declares chow
     public void DeclareChow(int windPos)
     {
         LieCombinationTiles(windPos);
@@ -1025,17 +978,15 @@ public class Player : NetworkBehaviour
         GameManager.instance.CurrentWind = windPos;
 
         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
-
         GameManager.instance.DeclareCombination("Chow", 0);
 
         Invoke("InvokeDelete", 1.8f);
-
         openedTiles.Add(waitingCombination);
 
         Invoke("AskForMove", 2f);
     }
 
-
+    //declares opened kong
     public void DeclareKong(int windPos)
     {
         LieCombinationTiles(windPos);
@@ -1044,7 +995,6 @@ public class Player : NetworkBehaviour
         GameManager.instance.CurrentWind = windPos;
 
         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
-
         GameManager.instance.DeclareCombination("Kong", 2);
 
         Invoke("InvokeDelete", 1.8f);
@@ -1053,26 +1003,20 @@ public class Player : NetworkBehaviour
         Invoke("AskForFreeTile", 2f);
     }
 
+    //declares mahjong
     public void DeclareMahJong(int windPos)
     {
         if (playerTurn)
         {
-            Debug.Log("stop");
-           // gameObject.GetComponent<PlayerUI>().StopWaitingForMove();
+            // gameObject.GetComponent<PlayerUI>().StopWaitingForMove();
             GameMaster.instance.readyToContinuePlayers = 0;
             GameMaster.instance.gameState = "end";
 
         }
         MahJong mahjong = (MahJong)waitingCombination;
 
-        Debug.Log("Declare");
-
         Combination combToOpen = null;
         int combinationNum = -1;
-
-        Debug.Log(mahjong.closedCombinations.Count);
-
-        Debug.Log(GameManager.instance.GameTable.lastTile.name);
 
         for (int k = 0; k < mahjong.closedCombinations.Count; k++)
         {
@@ -1085,7 +1029,6 @@ public class Player : NetworkBehaviour
                     if (comb.tileList[j] == GameManager.instance.GameTable.lastTile)
                     {
                         combinationNum = i;
-                        Debug.Log("found" + i);
                         combToOpen = comb;
 
                         mahjong.closedCombinations[k].Remove(combToOpen);
@@ -1096,10 +1039,6 @@ public class Player : NetworkBehaviour
                         GameManager.instance.CurrentWind = windPos;
 
                         GameManager.instance.winds[GameManager.instance.CurrentWind].freePosition = freeSpacePosition;
-
-                        //Invoke("InvokeDelete", 1.8f);
-                       // Invoke("Sort", 1f);
-
                         openedTiles.Add(waitingCombination);
 
                         break;
@@ -1115,14 +1054,15 @@ public class Player : NetworkBehaviour
         GameManager.instance.RefreshWinds();
 
         GameManager.instance.FinishGame(mahjong);
-
     }
 
+    //invokes giving free tile
     void AskForFreeTile()
     {
         Wall.instance.GiveFreeTile();
     }
 
+    //indicates turn to make move
     void AskForMove()
     {
         GameManager.instance.BeginPlayerMove();
@@ -1132,36 +1072,35 @@ public class Player : NetworkBehaviour
 
     #region extras
 
+    //indicates that it is needed to check whether tile is moving
     void EnableCheck()
     {
         needToCheckMoving = true;
     }
 
+    //opens player tiles at the end of the game on clients
     [ClientRpc]
     public void RpcOpenTiles(float rotation)
     {
-        Debug.Log("rpcopen");
         for (int i = 0; i < playerTiles.Count; i++)
         {
-            Debug.Log(i);
             playerTiles[i].tile.GetComponent<BezierMove>().ShowTile(rotation);
         }
     }
 
+    //invokes new check for flowers
     void GetNextFlower()
     {
-        Debug.Log("get next");
         GameManager.instance.CheckForFlowers();
     }
 
+    //checks player tiles for flowers
     public bool CheckForFlowers()
     {
         foreach (Tile tile in playerTiles)
         {
-
             if (tile.name.Contains("f"))
             {
-                Debug.Log(tile.name);
                 return true;
             }
         }
@@ -1169,13 +1108,14 @@ public class Player : NetworkBehaviour
 
     }
 
+    //enables tool tips for player
     public void EnableToolTipsForTile(int index)
     {
         ToolTip tip = playerTiles[index].tile.GetComponent<ToolTip>();
         tip.enabled = true;
-
     }
 
+    //commands to wait for combination declaration
     [Command]
     void CmdPrepareForCombinations()
     {
@@ -1183,7 +1123,7 @@ public class Player : NetworkBehaviour
         GameManager.instance.PrepareForCombinations();
     }
 
-
+    //commands to add player's wind to rhe server list
     [Command]
     public void CmdAddWind()
     {
@@ -1191,7 +1131,6 @@ public class Player : NetworkBehaviour
         {
             case "East":
                 GameManager.instance.winds[0].player = this;
-
                 break;
             case "South":
                 GameManager.instance.winds[1].player = this;
@@ -1205,20 +1144,18 @@ public class Player : NetworkBehaviour
             default:
 
                 return;
-
         }
-
-
     }
 
+    //checks whether the tile is moving
     bool CheckTileMoving(Tile tile)
     {
         return tile.tile.GetComponent<BezierMove>().moving;
     }
 
+    //controls turns and tiles movements
     private void Update()
     {
-
         if (isServer && needToCheckMoving)
         {
 
@@ -1228,19 +1165,16 @@ public class Player : NetworkBehaviour
                 {
                     if (Wall.instance.freeTiles.Count == 0)
                     {
-                        Debug.Log("count 0");
                         return;
                     }
 
                     if (Wall.instance.freeTileIsMoving || Wall.instance.freeTiles.Count - 1 < 0)
                     {
-                        Debug.Log(Wall.instance.freeTileIsMoving);
                         return;
                     }
 
                     if (Wall.instance.freeTileIsMoving)
                     {
-                        Debug.Log("free move");
                         return;
                     }
 
@@ -1250,8 +1184,6 @@ public class Player : NetworkBehaviour
                         Wall.instance.tiles
                         [Wall.instance.beginningWall][Wall.instance.beginningPair].upperTile.tile.transform.position.z))
                     {
-                        Debug.Log("Tile is moving!");
-                        Debug.Log(Wall.instance.freeTiles.Count);
                         return;
                     }
 
@@ -1268,8 +1200,6 @@ public class Player : NetworkBehaviour
                 }
                 else
                 {
-                    Debug.Log("not moving");
-                    //  Invoke("Sort", 0.5f);
                     Invoke("GetNextFlower", 0.6f);
                 }
             }
@@ -1286,12 +1216,10 @@ public class Player : NetworkBehaviour
 
     #region finish game
 
+    //refresh player's data on all clients
     [ClientRpc]
     public void RpcRefresh()
     {
-
-        Debug.Log("rpcrefresh");
-
         needToCheckMoving = false;
         needFreeTile = false;
 
@@ -1309,24 +1237,13 @@ public class Player : NetworkBehaviour
         isFreeTile = false;
     }
 
+    //refreshes data for client
     [TargetRpc]
     public void TargetRefresh(NetworkConnection conn)
     {
-        Debug.Log("target refresh");
         GetComponent<PlayerUI>().Refresh();
         GameManager.instance.OnRefresh();
-
     }
 
-    //public void testRefr()
-    //{
-    //    CmdRefr();
-    //}
-
-    //[Command]
-    //public void CmdRefr()
-    //{
-    //    GameManager.instance.stopTheGame = true;
-    //}
-#endregion
+    #endregion
 }

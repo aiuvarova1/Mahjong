@@ -9,13 +9,11 @@ using System;
 public class PlayerPrefs : MonoBehaviour
 {
     public InputField nameText;
-
     GameObject namePanel;
 
     string playerName = "";
 
     public static PlayerPrefs instance;
-
 
     public string Name
     {
@@ -26,19 +24,18 @@ public class PlayerPrefs : MonoBehaviour
                 throw new ArgumentException();
             playerName = value;
             nameText.text = playerName;
-
         }
     }
 
+    string path;
 
-    string path; 
-
+    //initialization
     private void Awake()
     {
         if (instance == null)
         {
             instance = this;
-            path= Application.dataPath + "/playerPrefs.txt";
+            path = Application.dataPath + "/playerPrefs.txt";
         }
         else
         {
@@ -47,6 +44,7 @@ public class PlayerPrefs : MonoBehaviour
         }
     }
 
+    //sets references to gameobjects
     public void SetReferences()
     {
         if (GameObject.FindGameObjectWithTag("NamePanel") == null) return;
@@ -57,12 +55,12 @@ public class PlayerPrefs : MonoBehaviour
             namePanel.SetActive(false);
         nameText.text = Name;
         nameText.onEndEdit.AddListener(delegate { ChangeName(nameText.text); });
-        
+
     }
+
     // Start is called before the first frame update
     void Start()
     {
-
         namePanel = (GameObject.FindGameObjectWithTag("NamePanel"));
         try
         {
@@ -74,8 +72,6 @@ public class PlayerPrefs : MonoBehaviour
                 {
 
                     string line = sr.ReadLine();
-                    Debug.Log(line);
-
                     float data;
 
                     switch (i)
@@ -129,18 +125,18 @@ public class PlayerPrefs : MonoBehaviour
         }
     }
 
+    //controls first name entering
     public void EnterFirstName()
     {
         string text = (GameObject.FindGameObjectWithTag("Name")).GetComponent<Text>().text;
 
         ChangeName(text);
-
         namePanel.SetActive(false);
     }
 
+    //writes player settings to file
     public void WriteFileData()
     {
-        Debug.Log("write");
         try
         {
             using (StreamWriter sw = new StreamWriter(path))
@@ -151,13 +147,13 @@ public class PlayerPrefs : MonoBehaviour
                 sw.WriteLine(Name);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             return;
         }
-
     }
 
+    //changes name and fixes it in file
     public void ChangeName(string text)
     {
         try

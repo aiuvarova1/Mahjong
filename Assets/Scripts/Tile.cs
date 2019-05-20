@@ -6,27 +6,29 @@ using UnityEngine;
 using System;
 
 
-public class Tile:IComparable<Tile>
+public class Tile : IComparable<Tile>
 {
     public string name;
     public GameObject tile;
     int numOfTile;
 
-    public bool isOwned=false;
+    public bool isOwned = false;
 
-    public Tile(GameObject tile,bool created,Vector2 coords)
+    public Tile(GameObject tile, bool created, Vector2 coords)
     {
         this.tile = tile;
-        if(!created)
+        if (!created)
             CreateFace(coords);
         CreateName(coords);
     }
 
+    //compares tiles
     public int CompareTo(Tile tileToCompare)
     {
         return numOfTile.CompareTo(tileToCompare.numOfTile);
     }
 
+    //makes tile visible to client
     public void MakeVisible()
     {
         Material[] materials = tile.GetComponent<Renderer>().materials;
@@ -39,6 +41,7 @@ public class Tile:IComparable<Tile>
         }
     }
 
+    //creates name for tooltips and code names
     void CreateName(Vector2 coordinates)
     {
         //y
@@ -46,7 +49,7 @@ public class Tile:IComparable<Tile>
         {
             case 0:
                 name += 'f';
-                name += (int)coordinates[0]+1;
+                name += (int)coordinates[0] + 1;
                 if ((int)coordinates[0] / 4 == 0)
                 {
                     tile.GetComponent<TileName>().Name = $"Season {(int)coordinates[0] + 1}";
@@ -62,25 +65,25 @@ public class Tile:IComparable<Tile>
                 break;
             case 2:
                 name += 's';
-                name += (int)coordinates[0]+1;
+                name += (int)coordinates[0] + 1;
                 tile.GetComponent<TileName>().Name = $"Symbols {(int)coordinates[0] + 1}";
                 tile.GetComponent<TileName>().RuName = $"Символы {(int)coordinates[0] + 1}";
-                numOfTile =19+ (int)coordinates[0]; 
+                numOfTile = 19 + (int)coordinates[0];
                 break;
 
             case 3:
                 name += 'b';
-                name += (int)coordinates[0]+1;
+                name += (int)coordinates[0] + 1;
                 tile.GetComponent<TileName>().Name = $"Bamboo {(int)coordinates[0] + 1}";
                 tile.GetComponent<TileName>().RuName = $"Бамбук {(int)coordinates[0] + 1}";
                 numOfTile = (int)coordinates[0];
                 break;
             case 4:
                 name += 'd';
-                name += (int)coordinates[0]+1;
+                name += (int)coordinates[0] + 1;
                 tile.GetComponent<TileName>().Name = $"Dots {(int)coordinates[0] + 1}";
                 tile.GetComponent<TileName>().RuName = $"Доты {(int)coordinates[0] + 1}";
-                numOfTile = 10+ (int)coordinates[0]; 
+                numOfTile = 10 + (int)coordinates[0];
                 break;
             case 1:
                 switch ((int)coordinates[0])
@@ -135,6 +138,8 @@ public class Tile:IComparable<Tile>
                 break;
         }
     }
+
+    //creates tile drawings
     void CreateFace(Vector2 coords)
     {
         Vector2 coordinates = new Vector2(coords[0] * 1 / 9f, coords[1] * 1 / 5f);

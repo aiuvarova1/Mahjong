@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class GameMaster : NetworkBehaviour
 {
     public const uint playersToStart = 4;
-    
+
     public static GameMaster instance = null;
 
     public SyncListInt availableCameras = new SyncListInt();
@@ -22,8 +22,6 @@ public class GameMaster : NetworkBehaviour
         set
         {
             playerCount = value;
-            //if(isServer)
-            //    RefreshNumOfPlayers();
         }
     }
 
@@ -42,6 +40,8 @@ public class GameMaster : NetworkBehaviour
     private Dictionary<string, Player> players = new Dictionary<string, Player>();
 
     #region Start
+
+    //initialization
     private void Awake()
     {
         if (instance == null)
@@ -51,7 +51,6 @@ public class GameMaster : NetworkBehaviour
         else if (instance != this) Destroy(gameObject);
 
         Application.runInBackground = true;
-
         foreach (GameObject light in lights)
         {
             light.SetActive(false);
@@ -59,17 +58,20 @@ public class GameMaster : NetworkBehaviour
 
     }
 
+    //refreshes num of ready players
     void Refresh()
     {
         readyPlayers = 0;
     }
 
+    //initialization
     private void Start()
     {
         if (availableCameras.Count == 0) InitCameras();
         GameManager.instance.RefreshEv += Refresh;
     }
 
+    //initializes nums of available cameras
     private void InitCameras()
     {
         for (int i = 0; i < allCameras.Count; i++)
@@ -78,26 +80,28 @@ public class GameMaster : NetworkBehaviour
         }
     }
 
+    //refreshes available cameras
     public void AddPlayer(string netID, int ord, string wind)
     {
         availableCameras.Remove(ord);
         GameMaster.instance.players[netID].order = ord;
-        instance.players[netID].wind= wind;
+        instance.players[netID].wind = wind;
 
     }
 
+    //adds player to the dictionary
     public void RegisterPlayer(string netID, Player player)
     {
         players.Add(netID, player);
-        if(player.Camera!=null) availableCameras.Remove(player.order);
+        if (player.Camera != null) availableCameras.Remove(player.order);
         PlayerCount++;
-        if(isServer && gameState == "end")
+        if (isServer && gameState == "end")
         {
             player.GetComponent<PlayerUI>().TargetInfo(player.connectionToClient, "Waiting for the end of the game...");
         }
-
     }
 
+    //adds all players' names to labels of the new player
     public void AddLabel(SetupPlayer p)
     {
         foreach (Player player in players.Values)
@@ -110,37 +114,29 @@ public class GameMaster : NetworkBehaviour
 
     #region remove player
 
+    //refreshes data after player's disconnection
     public void TestUnregister(NetworkConnection conn)
     {
         PlayerCount--;
-        Debug.Log(PlayerCount);
-        Player player = null;
 
-        Debug.Log("tst");
+        Player player = null;
         string remove = null;
 
         foreach (string netID in players.Keys)
         {
             player = players[netID];
-            Debug.Log(player.order);
-
             try
             {
                 if (player.connectionToClient == conn)
                 {
-                    Debug.Log("found");
                     availableCameras.Add(player.order);
-                    Debug.Log($"add {player.order} back");
                     remove = netID;
                     break;
                 }
             }
-            catch(MissingReferenceException)
+            catch (MissingReferenceException)
             {
-                Debug.Log("эксепшон");
-                Debug.Log("found");
                 availableCameras.Add(player.order);
-                Debug.Log($"add {player.order} back");
                 remove = netID;
                 break;
             }
@@ -158,13 +154,14 @@ public class GameMaster : NetworkBehaviour
             {
                 if (id == remove) return;
                 Player p = players[id];
-                p.GetComponent<PlayerUI>().TargetShowLeftPlayerInfo(p.connectionToClient,player.name,player.wind);
+                p.GetComponent<PlayerUI>().TargetShowLeftPlayerInfo(p.connectionToClient, player.name, player.wind);
                 player.GetComponent<SetupPlayer>().RpcRefreshOldScore();
             }
 
         }
     }
 
+    //removes name from the labels of connected players
     [ClientRpc]
     void RpcRemovePlayerName(string wind)
     {
@@ -174,22 +171,24 @@ public class GameMaster : NetworkBehaviour
     #endregion
     #region Game Beginning
 
+    //launches waiting of ready affirmation
     void GetReady()
     {
         Debug.Log(players.Count + " get ready");
         List<int> orders = new List<int>();
         foreach (Player player in players.Values)
         {
-            if (orders.FindIndex(x => x == player.order) == -1 )
+            if (orders.FindIndex(x => x == player.order) == -1)
                 orders.Add(player.order);
             else
                 player.GetComponent<PlayerUI>().leave = true;
 
-            
+
             player.GetComponent<PlayerUI>().TargetStartWaiting(player.connectionToClient);
         }
     }
 
+    //stops waiting coroutines
     void SetReady()
     {
         Debug.Log(players.Count + " set ready");
@@ -199,6 +198,7 @@ public class GameMaster : NetworkBehaviour
         }
     }
 
+    //darkens players' screens
     public void DarkenScreens()
     {
         foreach (Player player in players.Values)
@@ -207,6 +207,7 @@ public class GameMaster : NetworkBehaviour
         }
     }
 
+    //lightens players' screens
     public void LightenScreens()
     {
         foreach (Player player in players.Values)
@@ -215,9 +216,9 @@ public class GameMaster : NetworkBehaviour
         }
     }
 
+    //disconnects players' who didn't confirm start
     public void KickAFK()
     {
-        
         foreach (Player player in players.Values)
         {
             if (!player.GetComponent<PlayerUI>().ready)
@@ -226,43 +227,45 @@ public class GameMaster : NetworkBehaviour
         gameState = "prepare";
     }
 
-     void DisableInfo()
+    //disables quit button
+    void DisableInfo()
     {
 
         foreach (Player player in players.Values)
         {
             player.GetComponent<PlayerUI>().TargetDisableInfoComponents(player.connectionToClient);
         }
-        
+
     }
 
-
+    //assign players' winds on server
     void AssignWinds()
     {
-        
+
         foreach (Player player in players.Values)
         {
             TargetAddWind(player.connectionToClient);
         }
     }
 
+    //adds one player's wind to server list
     [TargetRpc]
     void TargetAddWind(NetworkConnection conn)
     {
         GameObject.FindWithTag("Player").GetComponent<Player>().CmdAddWind();
     }
 
+    //changes winds at the beginning of a new round
     void ChangeWinds()
     {
         foreach (Player player in players.Values)
         {
             player.GetComponent<SetupPlayer>().TargetChangeWind(player.connectionToClient);
-            TargetAddWind(player.connectionToClient);
-            // TargetAddWind(player.connectionToClient);
-           // AddLabel(player.gameObject.GetComponent<SetupPlayer>());
+            TargetAddWind(player.connectionToClient); 
         }
     }
 
+    //controls game state
     private void Update()
     {
         if (!isServer) return;
@@ -273,9 +276,7 @@ public class GameMaster : NetworkBehaviour
                 return;
             case "ready":
                 gameState = "waiting";
-                Invoke("GetReady",1.2f);
-
-                //GetReady();
+                Invoke("GetReady", 1.2f);
                 return;
             case "waiting":
                 if (playersToStart != PlayerCount)
@@ -306,7 +307,6 @@ public class GameMaster : NetworkBehaviour
                 if (GameManager.instance.wallIsBuilt)
                 {
                     GameManager.instance.DistributeTiles();
-                    //Debug.Log("free tiles");
                     gameState = "distributing";
                 }
                 return;
@@ -315,7 +315,6 @@ public class GameMaster : NetworkBehaviour
             case "playing":
                 GameManager.instance.CurrentWind = 0;
                 GameManager.instance.InvokeChange();
-                Debug.Log(gameState);
                 gameState = "in process";
                 return;
             case "in process":
@@ -333,7 +332,7 @@ public class GameMaster : NetworkBehaviour
                             roundsPlayed++;
 
                             //switch major wind at the end of the round
-                            if (roundsPlayed % 4==0)
+                            if (roundsPlayed % 4 == 0)
                             {
                                 switch (GameManager.instance.majorWind)
                                 {
@@ -362,10 +361,8 @@ public class GameMaster : NetworkBehaviour
                         foreach (Player player in players.Values)
                         {
                             player.GetComponent<SetupPlayer>().RpcRefreshOldScore();
-                            // TargetAddWind(player.connectionToClient);
                         }
                     }
-                    Debug.Log("continue");
                     gameState = "prepare";
                 }
 

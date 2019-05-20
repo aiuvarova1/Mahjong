@@ -5,23 +5,25 @@ using UnityEngine.Networking.Match;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class RoomListItem : NetworkBehaviour {
+public class RoomListItem : NetworkBehaviour
+{
 
     MatchInfoSnapshot match;
     public Text roomInfo;
     public delegate void JoinRoomDelegate(MatchInfoSnapshot match);
     JoinRoomDelegate joinRoomDelegate;
 
-    public void Setup(MatchInfoSnapshot myMatch,JoinRoomDelegate joinRoomCallback)
+    //initialization
+    public void Setup(MatchInfoSnapshot myMatch, JoinRoomDelegate joinRoomCallback)
     {
         match = myMatch;
         joinRoomDelegate = joinRoomCallback;
-        roomInfo.text = match.name + " (" + match.currentSize + "/" + match.maxSize + ")" ;
+        roomInfo.text = match.name + " (" + match.currentSize + "/" + match.maxSize + ")";
     }
 
+    //invokes room joining
     public void JoinRoom()
     {
-        Debug.Log("join");
         joinRoomDelegate.Invoke(match);
     }
 }

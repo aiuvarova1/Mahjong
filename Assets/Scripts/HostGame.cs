@@ -17,9 +17,8 @@ public class HostGame : MonoBehaviour
     void Start()
     {
         networkManager = (NewNetworkManager)NewNetworkManager.singleton;
-        if(networkManager.matchMaker==null)
+        if (networkManager.matchMaker == null)
             networkManager.StartMatchMaker();
-        if (networkManager == null) Debug.Log("((");
 
         networkManager = (NewNetworkManager)NewNetworkManager.singleton;
         ConnectionConfig myConfig = networkManager.connectionConfig;
@@ -36,28 +35,24 @@ public class HostGame : MonoBehaviour
         myConfig.AcksType = ConnectionAcksType.Acks128;
         myConfig.MaxSentMessageQueueSize = 256;
         myConfig.AckDelay = 1;
-        
 
         networkManager.maxDelay = 0.5f;
     }
 
+    //creates new game room
     public void CreateRoom()
     {
-        if (RoomName!="" && RoomName != null)
+        if (RoomName != "" && RoomName != null)
         {
             GameObject.FindGameObjectWithTag("ok").SetActive(false);
-            Debug.Log(RoomName+ " created");
             try
             {
                 networkManager.matchMaker.CreateMatch(RoomName, roomSize, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
-            }catch (NullReferenceException)
+            }
+            catch (NullReferenceException)
             {
                 GameObject.FindGameObjectWithTag("ok").SetActive(true);
             }
-            
-
         }
-
     }
-
 }

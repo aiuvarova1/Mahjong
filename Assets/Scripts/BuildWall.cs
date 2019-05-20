@@ -25,6 +25,7 @@ public class BuildWall : MonoBehaviour
 
     public static BuildWall instance;
 
+    //initialization
     private void Awake()
     {
         if (instance == null)
@@ -39,7 +40,7 @@ public class BuildWall : MonoBehaviour
         }
     }
 
-    //all possible texture coordinates
+    //fills all possible texture coordinates
     void FillCoordinates()
     {
         //flowers
@@ -54,17 +55,14 @@ public class BuildWall : MonoBehaviour
             if (y == 1)
             {
                 for (int x = 0; x <= 6; x++)
-
                     coordinates.Add(new Vector2(x, y));
             }
             else
             {
                 for (int x = 0; x < 9; x++)
-
                     coordinates.Add(new Vector2(x, y));
             }
         }
-
     }
 
 
@@ -86,6 +84,7 @@ public class BuildWall : MonoBehaviour
         }
     }
 
+    //builds all 4 parts of the wall
     public void Build(List<int> ind)
     {
 
@@ -110,6 +109,7 @@ public class BuildWall : MonoBehaviour
         Wall.instance.Initialize(tiles);
     }
 
+    //fills available indexes 
     public void FillIndexes()
     {
 
@@ -123,10 +123,9 @@ public class BuildWall : MonoBehaviour
         }
     }
 
-
+    //builds one part of the wall
     public void CreateWall(int num, GameObject tile, ref List<int> ind)
     {
-
         //coordinates of first right tile in the second row
         Vector3 start = new Vector3();
         float rotation = 90;
@@ -152,21 +151,19 @@ public class BuildWall : MonoBehaviour
                 c = 1;
                 break;
         }
-        //fiil the wall from right to left
+        //fill the wall from right to left
         for (int i = 0; i < 18; i++)
         {
             Vector3 upperPosition = new Vector3(start[0] + c * 2 * i * ((num + 1) % 2), start[1], start[2] + c * 2 * i * (num % 2));
             Vector3 lowerPosition = new Vector3(start[0] + c * 2 * i * ((num + 1) % 2), start[1] - 1.2f, start[2] + c * 2 * i * (num % 2));
 
             Tile upper = availableTiles[ind[0]];
-
             ind.RemoveAt(0);
 
             upper.tile.transform.position = upperPosition;
             upper.tile.transform.rotation = Quaternion.Euler(0, rotation, 0);
 
             Tile lower = availableTiles[ind[0]];
-
             ind.RemoveAt(0);
 
             lower.tile.transform.position = lowerPosition;

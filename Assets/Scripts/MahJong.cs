@@ -17,26 +17,19 @@ public class MahJong : Combination
         closedCombinations = comb;
     }
 
+    //calculates main winner points
     public int CalculateMahJongPoints(string wind, bool playerTurn, bool isFreeTile, int order)
     {
         int score = 20;
         int twice = 1;
 
-        Debug.Log(openedCombinations.Count + "open");
-
-        foreach (List<Combination> lst in closedCombinations)
-        {
-            Debug.Log(lst.Count);
-        }
         if (playerTurn) score += 2;
 
         bool noChow = true;
         bool noPoints = true;
 
-        //!!
         bool winds = true;
         bool dragons = true;
-
 
         for (int i = 0; i < openedCombinations.Count; i++)
         {
@@ -47,7 +40,6 @@ public class MahJong : Combination
 
             score += openedCombinations[i].CalculatePoints(wind);
             twice *= openedCombinations[i].doubling;
-
         }
 
         for (int i = 0; i < closedCombinations.Count; i++)
@@ -75,29 +67,19 @@ public class MahJong : Combination
         if (!playerTurn && GameManager.instance.kongDeclarator != null) twice *= 2;
 
         twice *= CountRestOfWinnerDoubles();
-
-        Debug.Log(score);
-
         score *= twice;
 
         if (openedCombinations.Count == 0) score *= 2;
 
-        Debug.Log(twice + "twice");
-        Debug.Log(score + "twice score");
-
         score += GetFlowerPoints(flowers, order);
-        Debug.Log(score + "total");
-
-
 
         return score;
-
     }
 
+    //calculates points for flowers and seasons
     static int GetFlowerPoints(List<Tile> flowers, int order)
     {
         int flowerPoints = 0;
-
         flowers.Sort();
 
         List<Tile> seasons = new List<Tile>();
@@ -121,6 +103,7 @@ public class MahJong : Combination
         return flowerPoints;
     }
 
+    //counts common doubles for winner
     int CountRestOfWinnerDoubles()
     {
         int twice = 1;
@@ -131,7 +114,6 @@ public class MahJong : Combination
         bool onlyWindsAndDragons = true;
 
         string suit = "";
-
 
         for (int i = 0; i < openedCombinations.Count; i++)
         {
@@ -146,7 +128,7 @@ public class MahJong : Combination
                     clear = false;
                     clearWithWindsAndDragons = false;
                 }
-                Debug.Log(suit);
+
                 for (int j = 0; j < openedCombinations[i].tileList.Count; j++)
                 {
                     if (openedCombinations[i].tileList[j].name[1] != '1' && openedCombinations[i].tileList[j].name[1] != '9')
@@ -159,8 +141,6 @@ public class MahJong : Combination
 
         }
 
-
-
         for (int i = 0; i < closedCombinations.Count; i++)
         {
             if (i < 3 && closedCombinations[i].Count > 0 && suit == "")
@@ -168,7 +148,7 @@ public class MahJong : Combination
                 suit = closedCombinations[i][0].tileList[0].name[0].ToString();
                 onlyWindsAndDragons = false;
             }
-            else if (i < 3 && closedCombinations[i].Count > 0 && suit != "" && closedCombinations[i][0].tileList[0].name[0].ToString()!=suit)
+            else if (i < 3 && closedCombinations[i].Count > 0 && suit != "" && closedCombinations[i][0].tileList[0].name[0].ToString() != suit)
             {
                 onlyWindsAndDragons = false;
                 clear = false;
@@ -177,32 +157,7 @@ public class MahJong : Combination
 
             if (i > 2 && closedCombinations[i].Count > 0)
                 clear = false;
-
         }
-
-        //    if (clearWithWindsAndDragons)
-        //{
-        //    Debug.Log("check clear wd");
-
-        //    int suitNum = -1;
-        //    suitNum= (suit[0] == 'b') ?0 : (suit[0] == 'd') ? 1:2;
-
-        //    Debug.Log(suitNum);
-
-        //    for (int i = 0; i < closedCombinations.Count; i++)
-        //    {
-        //        Debug.Log(closedCombinations[i].Count);
-
-        //        if(i!=suitNum && closedCombinations[i].Count>0)
-        //        {
-        //            Debug.Log("not clear");
-        //            clear = false;
-        //            clearWithWindsAndDragons = false;
-        //        }
-        //        if (i > 2 && closedCombinations[i].Count > 0)
-        //            clear = false;
-        //    }
-        //}
 
         if (only19WindsDragons)
         {
@@ -224,7 +179,6 @@ public class MahJong : Combination
         }
         //0-bamboos,1-dots,2-symbols,3-winds,4-dragons
 
-
         if (clear)
         {
             twice *= 8;
@@ -234,7 +188,6 @@ public class MahJong : Combination
         {
             twice *= 2;
             Debug.Log("clear with winds");
-
         }
 
         if (onlyWindsAndDragons)
@@ -250,9 +203,9 @@ public class MahJong : Combination
         }
 
         return twice;
-
     }
 
+    //count doubles not for the winner
     public static int CountNotWinnerDoubles(List<Combination> opened, List<Tile> closed)
     {
         int twice = 1;
@@ -300,8 +253,6 @@ public class MahJong : Combination
 
                 if (closed[i].name[1] != '1' && closed[i].name[1] != '9')
                     only19WindsDragons = false;
-
-
             }
             else
                 clear = false;
@@ -334,11 +285,11 @@ public class MahJong : Combination
         return twice;
     }
 
+    //count not winner scores
     public static int CountNotWinnerScore(ref List<Combination> closedComb, List<Combination> opened,
         List<Tile> closed, List<Tile> flowers, string wind, int order)
     {
         int twice = 1;
-
         int score = 0;
 
         for (int i = 0; i < opened.Count; i++)
@@ -376,7 +327,6 @@ public class MahJong : Combination
 
         score *= twice;
 
-
         Debug.Log(twice + "twice");
         Debug.Log(score + "twice score");
 
@@ -385,8 +335,6 @@ public class MahJong : Combination
 
         return score;
     }
-
-
 
     public override int CalculatePoints(string wind)
     {

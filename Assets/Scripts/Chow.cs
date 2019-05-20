@@ -13,6 +13,7 @@ public class Chow : Combination
         Name = "Chow";
     }
 
+    //returns points for chow - always 0
     public override int CalculatePoints(string wind)
     {
         Debug.Log("chow" + tileList[0].name[0]);

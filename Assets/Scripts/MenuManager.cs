@@ -4,23 +4,25 @@ using UnityEngine;
 
 using UnityEngine.SceneManagement;
 
-public class MenuManager : MonoBehaviour {
+public class MenuManager : MonoBehaviour
+{
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         Application.targetFrameRate = 60;
-       
+
     }
 
+    //adds onload event
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    void OnSceneLoaded(Scene scene,LoadSceneMode mode)
+    //resets references when scene loades
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log("onsceneloaded");
-        Debug.Log(scene.name);
 
         if (scene.name == "Menu" && LocalizationManager.instance != null)
         {
@@ -39,28 +41,34 @@ public class MenuManager : MonoBehaviour {
 
         if (scene.name == "Lobby" && AudioManager.instance.playingClip != AudioManager.instance.lobbyTheme)
             AudioManager.instance.SetTheme();
-
     }
 
+    //unregisters onsceneload from event
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
+    //leaves app
     public void Quit()
     {
-        Debug.Log("pressed exit");
         Application.Quit();
     }
 
+    //back from lobby
     public void BackToMenu()
     {
         SceneManager.LoadScene("Menu");
     }
+
+    //go to lobby
     public void Play()
     {
         SceneManager.LoadScene("Lobby");
 
     }
+
+    //loads scene async
     IEnumerator LoadAsyncScene()
     {
         // The Application loads the Scene in the background as the current Scene runs.
